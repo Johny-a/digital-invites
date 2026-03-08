@@ -104,7 +104,7 @@ const safeEvent: EventData = {
   gifts: Array.isArray(event?.gifts) ? event.gifts : [],
   text_positions: event?.text_positions || {},
 };
-
+const gallery = safeEvent.gallery ?? [];
 
 const [mainName, setMainName] = useState("");
 const [attending, setAttending] = useState<boolean | null>(null);
@@ -214,14 +214,14 @@ const onPhotoTouchEnd = () => {
 
   if (photoOffset > threshold) {
     // swipe right → previous
-    setPhotoIndex((i) =>
-      i === 0 ? safeEvent.gallery.length - 1 : i - 1
-    );
+setPhotoIndex((i) =>
+  i === 0 ? gallery.length - 1 : i - 1
+);
   } else if (photoOffset < -threshold) {
     // swipe left → next
-    setPhotoIndex((i) =>
-      i === safeEvent.gallery.length - 1 ? 0 : i + 1
-    );
+setPhotoIndex((i) =>
+  i === gallery.length - 1 ? 0 : i + 1
+);
   }
 
   setPhotoOffset(0);
@@ -531,7 +531,7 @@ const onPhotoTouchEnd = () => {
     onTouchMove={onPhotoTouchMove}
     onTouchEnd={onPhotoTouchEnd}
   >
-    {safeEvent.gallery.length === 0 ? (
+    {gallery.length === 0 ? (
       <p>No photos yet</p>
     ) : (
       <>
@@ -555,7 +555,7 @@ const onPhotoTouchEnd = () => {
 
         {/* Dots (Instagram style) */}
         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-          {safeEvent.gallery.map((_, i) => (
+          {gallery.map((_, i) => (
             <button
               key={i}
               onClick={() => setPhotoIndex(i)}
