@@ -586,11 +586,11 @@ setPhotoIndex((i) =>
     </p>
 
     <div className="space-y-4 mt-4 max-h-64 overflow-y-auto pr-1">
-  {gifts.length === 0 && (
+{safeEvent.gifts?.length === 0 && (
     <p className="text-white/60 text-sm">No gift methods added.</p>
   )}
 
-  {gifts.map((g, i) => (
+  {safeEvent.gifts?.map((g, i) => (
     <div
       key={i}
       className="border border-white/20 rounded-xl p-4 flex items-center justify-between gap-3 bg-black/30"
@@ -622,7 +622,7 @@ setPhotoIndex((i) =>
 {current === "ending" && (
   <div className="relative w-full h-full flex items-center justify-center flex-col">
     
-    {ending_photo && (
+    {safeEvent.ending_photo && (
       <div className="bg-white rounded-lg p-3 shadow-2xl transform -rotate-6 mb-6">
         <div className="w-56 h-72 overflow-hidden rounded">
           <img
@@ -634,7 +634,7 @@ setPhotoIndex((i) =>
     )}
 
     <div className="text-center text-white font-serif text-2xl px-6">
-      {ending_message || "Happily ever after"}
+      {safeEvent.ending_message || "Happily ever after"}
     </div>
 
     {/* Subtle brand / footer */}
@@ -649,7 +649,7 @@ setPhotoIndex((i) =>
       </div>
 
 {/* Music Toggle */}
-{music_url && started && (
+{safeEvent.music_url && started && (
   <button
 onClick={() => {
   setMuted((m) => {
