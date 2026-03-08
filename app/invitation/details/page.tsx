@@ -33,6 +33,7 @@ const TABS = [
   "hero",
   "invitation",
   "locations",
+  "media",
   "gallery",
   "gifts",
   "rsvp",
@@ -116,10 +117,10 @@ const goTab = (t: Tab) => {
           </select>
 
 <div className="flex gap-2 flex-wrap mb-6">
-  {[...SLIDES, "media"].map((t) => (
+  {TABS.map((t) => (
     <button
       key={t}
-      onClick={() => goTab(t as Tab)}
+      onClick={() => goTab(t)}
       className={`px-4 py-2 rounded-full text-sm ${
         tab === t ? "bg-purple-600" : "bg-white/10"
       }`}
