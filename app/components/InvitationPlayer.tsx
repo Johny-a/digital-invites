@@ -105,6 +105,7 @@ const safeEvent: EventData = {
   text_positions: event?.text_positions || {},
 };
 const gallery = safeEvent.gallery ?? [];
+const bgImages = safeEvent.bg_images ?? [];
 
 const [mainName, setMainName] = useState("");
 const [attending, setAttending] = useState<boolean | null>(null);
@@ -247,9 +248,9 @@ setPhotoIndex((i) =>
 )}
 
 
-{safeEvent.bg_mode === "slideshow" && safeEvent.bg_images.length > 0 && (
+{safeEvent.bg_mode === "slideshow" && bgImages.length > 0 && (
   <div className="absolute inset-0">
-    {safeEvent.bg_images.map((img, i) => (
+    {bgImages.map((img, i) => (
       <img
         key={i}
         src={img}
