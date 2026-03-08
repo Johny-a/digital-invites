@@ -26,12 +26,12 @@ const [publicLink, setPublicLink] = useState("");
     const init = async () => {
       setLoading(true);
       setError("");
+const { data: { user } } = await supabase.auth.getUser();
 
-const {
-  data: { user },
-} = await supabase.auth.getUser();
-
-
+if (!user) {
+  router.push("/admin/login");
+  return;
+}
 
 console.log("LOGGED USER:", user.id, user.email);
 console.log("URL SLUG:", slug);
