@@ -441,12 +441,12 @@ setPhotoIndex((i) =>
   <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-6">
     <h2 className="text-3xl font-bold">The Celebration</h2>
 
-    <div className="text-lg">📍 {safeEvent.celebration_place}</div>
-    <div className="text-lg">{safeEvent.celebration_time}</div>
+    <div className="text-lg">📍 {celebration_place}</div>
+    <div className="text-lg">{celebration_time}</div>
 
-    {safeEvent.celebration_map && (
+    {celebration_map && (
       <a
-        href={safeEvent.celebration_map}
+        href={celebration_map}
         target="_blank"
         className="inline-block mt-2 border border-white px-6 py-2 rounded"
       >
@@ -545,10 +545,10 @@ setPhotoIndex((i) =>
           style={{
             transform: `translateX(calc(${-photoIndex * 100}% + ${photoOffset}px))`,
             transition: isDragging ? "none" : "transform 0.5s ease",
-            width: `${safeEvent.gallery.length * 100}%`,
+            width: `${gallery.length * 100}%`,
           }}
         >
-          {safeEvent.gallery.map((img, i) => (
+          {gallery.map((img, i) => (
             <div key={i} className="w-full flex-shrink-0 flex justify-center">
               <img
                 src={img}
@@ -585,11 +585,11 @@ setPhotoIndex((i) =>
     </p>
 
     <div className="space-y-4 mt-4 max-h-64 overflow-y-auto pr-1">
-  {safeEvent.gifts.length === 0 && (
+  {gifts.length === 0 && (
     <p className="text-white/60 text-sm">No gift methods added.</p>
   )}
 
-  {safeEvent.gifts.map((g, i) => (
+  {gifts.map((g, i) => (
     <div
       key={i}
       className="border border-white/20 rounded-xl p-4 flex items-center justify-between gap-3 bg-black/30"
@@ -621,11 +621,11 @@ setPhotoIndex((i) =>
 {current === "ending" && (
   <div className="relative w-full h-full flex items-center justify-center flex-col">
     
-    {safeEvent.ending_photo && (
+    {ending_photo && (
       <div className="bg-white rounded-lg p-3 shadow-2xl transform -rotate-6 mb-6">
         <div className="w-56 h-72 overflow-hidden rounded">
           <img
-            src={safeEvent.ending_photo}
+            src={ending_photo}
             className="w-full h-full object-cover"
           />
         </div>
@@ -633,7 +633,7 @@ setPhotoIndex((i) =>
     )}
 
     <div className="text-center text-white font-serif text-2xl px-6">
-      {safeEvent.ending_message || "Happily ever after"}
+      {ending_message || "Happily ever after"}
     </div>
 
     {/* Subtle brand / footer */}
@@ -648,7 +648,7 @@ setPhotoIndex((i) =>
       </div>
 
 {/* Music Toggle */}
-{safeEvent.music_url && started && (
+{music_url && started && (
   <button
 onClick={() => {
   setMuted((m) => {
