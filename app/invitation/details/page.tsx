@@ -317,12 +317,36 @@ const goTab = (t: Tab) => {
         {/* RIGHT PREVIEW */}
         <div className="flex justify-center">
           <div className="relative bg-black rounded-2xl overflow-hidden aspect-[9/16] max-h-[80vh] w-full max-w-[360px]">
-            <InvitationPlayer
-              event={event}
-              templateId={templateId}
-              editorMode={true}
-              forcedPage={previewSlide}
-            />
+           <InvitationPlayer
+  event={{
+    hero_names: event.title,
+    hero_tagline: event.message,
+    hero_headline: "",
+    ending_photo: "",
+    ending_message: event.ending_message,
+
+    ceremony_place: event.ceremony_place,
+    ceremony_time: event.ceremony_time,
+    ceremony_map: event.ceremony_map,
+
+    celebration_place: event.party_place,
+    celebration_time: event.party_time,
+    celebration_map: event.party_map,
+
+    music_url: event.music_url,
+    bg_video: event.cover_video_url,
+
+    gallery: event.image_urls,
+
+    gifts: event.gifts.map((g) => ({
+      label: g.title,
+      value: g.value,
+    })),
+  }}
+  templateId={templateId}
+  editorMode={true}
+  forcedPage={previewSlide}
+/>
           </div>
         </div>
       </div>
