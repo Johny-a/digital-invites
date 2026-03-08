@@ -11,13 +11,12 @@ const supabase = createClient(
 type EventData = {
   id?: string;
 
-ending_photo: string;
+  ending_photo: string;
 
-bg_mode?: "video" | "slideshow";
-bg_images?: string[];
-bg_video?: string;
-music_url?: string;
-
+  bg_mode?: "video" | "slideshow";
+  bg_images?: string[];
+  bg_video?: string;
+  music_url?: string;
 
   title?: string;
   subtitle?: string;
@@ -26,10 +25,15 @@ music_url?: string;
   time_text?: string;
   location_text?: string;
 
-hero_names: string;
-hero_tagline: string;
-hero_headline: string;
+  hero_names: string;
+  hero_tagline: string;
+  hero_headline: string;
 
+  // ✅ ADD THESE
+  invitation_quote?: string;
+  invitation_parents_left?: string;
+  invitation_parents_right?: string;
+  invitation_request_line?: string;
 
   ceremony_place?: string;
   ceremony_time?: string;
@@ -40,11 +44,11 @@ hero_headline: string;
   celebration_map?: string;
 
   video_url?: string;
-  
 
   gallery?: string[];
 
   gifts?: { label: string; value: string }[];
+
   ending_message?: string;
 
   template_id?: string;
