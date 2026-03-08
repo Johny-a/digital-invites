@@ -37,8 +37,7 @@ music_url?: string;
   celebration_time: string;
   celebration_map: string;
 
-  video_url: string;
-  music_url: string;
+music_url: string;
 
   gallery: string[];
 
@@ -53,14 +52,12 @@ const EMPTY_EVENT: EventData = {
   hero_tagline: "",
   hero_headline: "",
 
-bg_mode: "slideshow",
-bg_images: [],
-bg_video: "",
-music_url: "",
+  bg_mode: "slideshow",
+  bg_images: [],
+  bg_video: "",
+  music_url: "",
 
-
-ending_photo: "",
-
+  ending_photo: "",
 
   date_text: "",
   time_text: "",
@@ -75,10 +72,8 @@ ending_photo: "",
   celebration_map: "",
 
   video_url: "",
-  music_url: "",
 
   gallery: [],
-
   gifts: [],
   ending_message: "",
 
