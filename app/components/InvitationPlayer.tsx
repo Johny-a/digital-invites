@@ -40,7 +40,7 @@ hero_headline: string;
   celebration_map?: string;
 
   video_url?: string;
-  music_url?: string;
+  
 
   gallery?: string[];
 
