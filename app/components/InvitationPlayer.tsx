@@ -141,7 +141,7 @@ useEffect(() => {
 
   const interval = setInterval(() => {
     setBgIndex((i) =>
-      i === safeEvent.bg_images.length - 1 ? 0 : i + 1
+      i === (safeEvent.bg_images?.length ?? 0) - 1 ? 0 : i + 1
     );
   }, 4000); // 4 seconds (change to 3000–5000 if you want)
 
