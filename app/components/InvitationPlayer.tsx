@@ -97,7 +97,7 @@ export default function InvitationPlayer({
   editorMode?: boolean;
   forcedPage?: number;
 }) {
-const safeEvent: Required<EventData> = {
+const safeEvent: EventData = {
   ...event,
   gallery: Array.isArray(event?.gallery) ? event.gallery : [],
   bg_images: Array.isArray(event?.bg_images) ? event.bg_images : [],
