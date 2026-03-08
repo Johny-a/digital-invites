@@ -1,12 +1,27 @@
-const toggleStatus = async (id: string, current: "active" | "inactive") => {
-  await fetch("/api/super-admin/toggle-status", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      id,
-      status: current === "active" ? "inactive" : "active",
-    }),
-  });
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-  loadAdmins();
-};
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { id, status } = body;
+
+    const { error } = await supabaseAdmin
+      .from("profiles")
+      .update({ status })
+      .eq("id", id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
