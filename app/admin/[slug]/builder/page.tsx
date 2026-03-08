@@ -37,7 +37,7 @@ music_url?: string;
   celebration_time: string;
   celebration_map: string;
 
-music_url: string;
+
 
   gallery: string[];
 
@@ -71,7 +71,7 @@ const EMPTY_EVENT: EventData = {
   celebration_time: "",
   celebration_map: "",
 
-  video_url: "",
+  
 
   gallery: [],
   gifts: [],
