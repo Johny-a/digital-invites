@@ -59,7 +59,6 @@ const slug = decodeURIComponent(rawSlug);
 <InvitationPlayer
   event={event}
   templateId={event.template_id || "classic-01"}
-  editorMode={true}
 />
       </div>
     </div>
