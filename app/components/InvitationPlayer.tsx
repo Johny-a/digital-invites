@@ -332,8 +332,8 @@ setPhotoIndex((i) =>
       {/* Content */}
 <div
   className={`relative z-10 h-full flex flex-col items-center justify-center text-center px-6 transition-all duration-700 ${
-    !started
-      ? "opacity-0 scale-[1.02]"
+!started
+  ? "opacity-100"
       : fade
       ? "opacity-0 scale-[0.98]"
       : "opacity-100 scale-100"
