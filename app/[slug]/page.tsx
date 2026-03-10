@@ -23,34 +23,42 @@ const slug = decodeURIComponent(rawSlug);
   useEffect(() => {
     setMounted(true);
   }, []);
+useEffect(() => {
+  if (!slug) return;
 
-  useEffect(() => {
-    if (!slug) return;
+  const load = async () => {
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .eq("slug", slug)
+      .maybeSingle();
 
-    const load = async () => {
-      const { data } = await supabase
-        .from("events")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
+    if (error) {
+      console.error(error);
+      setEvent(null);
+      return;
+    }
 
-      setEvent(data);
-    };
+    setEvent(data);
+  };
 
-    load();
-  }, [slug]);
+  load();
+}, [slug]);
 
   if (!mounted) {
     return null;
   }
 
-  if (!event) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-black">
-        Loading...
+if (!event) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center text-white bg-black gap-4">
+      <div>Loading invitation...</div>
+      <div className="text-white/60 text-sm">
+        If it takes too long, refresh the page.
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-[#0b0b0f] flex items-center justify-center p-4">
