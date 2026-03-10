@@ -17,9 +17,7 @@ export async function generateMetadata({ params }: any) {
 
   const title = data?.hero_names || "Wedding Invitation";
 
-  const image =
-    data?.ending_photo ||
-    "https://digital-invites-xi.vercel.app/default-preview.jpg";
+const image = `https://digital-invites-xi.vercel.app/api/og/${slug}`;
 
   return {
     title,
@@ -28,13 +26,13 @@ export async function generateMetadata({ params }: any) {
       title,
       description: "Tap to view the invitation",
       url: `https://digital-invites-xi.vercel.app/${slug}`,
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-        },
-      ],
+images: [
+  {
+    url: `https://digital-invites-xi.vercel.app/api/og/${slug}`,
+    width: 1200,
+    height: 630,
+  },
+],
     },
     twitter: {
       card: "summary_large_image",
