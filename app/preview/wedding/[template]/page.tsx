@@ -16,18 +16,24 @@ export default function WeddingTemplatePreviewPage() {
 
   if (!mounted) return null;
 
-  const demoEvent = {
-  title: "Chris & Karen",
-  message: "We are getting married",
-  date: "September 21, 2026",
-  location: "Beirut, Lebanon",
-  cover_video_url: "/demo/demo-video.mp4",
-  music_url: "/demo/demo-music.mp3",
-  image_urls: [
-    "/demo/demo1.jpg",
-    "/demo/demo2.jpg",
-    "/demo/demo3.jpg",
-  ],
+const demoEvent = {
+  hero_names: "Chris & Karen",
+  hero_tagline: "Together in Christ, Forever in Love",
+  hero_headline: "The wedding day has arrived!",
+
+  ending_photo: "",
+
+  date_text: "September 21, 2026",
+  location_text: "Beirut, Lebanon",
+
+  bg_video: "",
+  music_url: "",
+
+  gallery: [],
+
+  gifts: [],
+
+  ending_message: "We can’t wait to celebrate with you ❤️",
 };
 
 
