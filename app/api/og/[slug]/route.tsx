@@ -27,35 +27,43 @@ export async function GET(req: Request, { params }: any) {
           width: "1200px",
           height: "630px",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+          position: "relative",
           background: "#000",
           color: "white",
-          fontSize: 60,
-          fontWeight: 600,
         }}
       >
+        {/* Background Photo */}
         {photo && (
           <img
             src={photo}
             style={{
+              position: "absolute",
+              inset: 0,
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              position: "absolute",
             }}
           />
         )}
 
+        {/* Dark Overlay */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(0,0,0,0.35)",
+          }}
+        />
+
+        {/* Names */}
         <div
           style={{
             position: "absolute",
             bottom: 80,
+            width: "100%",
             textAlign: "center",
-            background: "rgba(0,0,0,0.4)",
-            padding: "20px 40px",
-            borderRadius: 20,
+            fontSize: 72,
+            fontWeight: 600,
           }}
         >
           {names}
