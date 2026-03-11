@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
@@ -551,9 +551,14 @@ setPhotoIndex((i) =>
 >
   {gallery.map((img, i) => (
     <div key={i} className="w-full flex-shrink-0 flex justify-center">
-<img
-  src={`${img}?width=900&quality=65&format=webp`}
+<Image
+  src={img}
+  width={900}
+  height={1200}
+  quality={70}
+  loading="lazy"
   className="w-[90%] h-[70vh] object-cover rounded-2xl shadow-xl"
+  alt=""
 />
     </div>
   ))}
@@ -625,9 +630,14 @@ setPhotoIndex((i) =>
     {safeEvent.ending_photo && (
       <div className="bg-white rounded-lg p-3 shadow-2xl transform -rotate-6 mb-6">
         <div className="w-56 h-72 overflow-hidden rounded">
-<img
-  src={`${safeEvent.ending_photo}?width=900&quality=65&format=webp`}
+<Image
+  src={safeEvent.ending_photo}
+  width={800}
+  height={1000}
+  quality={70}
+  loading="lazy"
   className="w-full h-full object-cover"
+  alt=""
 />
         </div>
       </div>
