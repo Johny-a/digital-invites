@@ -5,27 +5,25 @@ export const runtime = "edge";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function GET(req: Request, { params }: any) {
-  const slug = decodeURIComponent(params.slug);
+export async function GET(
+  req: Request,
+  context: { params: Promise<{ slug: string }> }
+) {
+
+  const { slug } = await context.params;
+  const decodedSlug = decodeURIComponent(slug);
 
   const { data } = await supabase
     .from("events")
     .select("*")
-    .eq("slug", slug)
+    .eq("slug", decodedSlug)
     .maybeSingle();
 
   const names = data?.hero_names || "Wedding Invitation";
-  const photoUrl = data?.ending_photo;
-
-  let imageBuffer: ArrayBuffer | null = null;
-
-  if (photoUrl) {
-    const img = await fetch(photoUrl);
-    imageBuffer = await img.arrayBuffer();
-  }
+  const photo = data?.ending_photo;
 
   return new ImageResponse(
     (
@@ -41,9 +39,10 @@ export async function GET(req: Request, { params }: any) {
           color: "white",
         }}
       >
-        {imageBuffer && (
+
+        {photo && (
           <img
-            src={imageBuffer as any}
+            src={photo}
             width="1200"
             height="630"
             style={{
