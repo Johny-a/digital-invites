@@ -6,8 +6,17 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export async function generateMetadata({ params }: any) {
-  const slug = decodeURIComponent(params.slug);
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> }
+) {
+
+  const { slug } = await params;
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   const { data } = await supabase
     .from("events")
@@ -17,27 +26,19 @@ export async function generateMetadata({ params }: any) {
 
   const title = data?.hero_names || "Wedding Invitation";
 
-const image = `https://digital-invites-xi.vercel.app/api/og/${slug}`;
-
   return {
     title,
-    description: "You are invited to our special day",
+    description: `You're invited to the wedding of ${title}`,
     openGraph: {
       title,
       description: "Tap to view the invitation",
       url: `https://digital-invites-xi.vercel.app/${slug}`,
-images: [
-  {
-    url: `https://digital-invites-xi.vercel.app/api/og/${slug}`,
-    width: 1200,
-    height: 630,
-  },
-],
+      images: [`https://digital-invites-xi.vercel.app/api/og/${slug}`],
     },
     twitter: {
       card: "summary_large_image",
       title,
-      images: [image],
+      images: [`https://digital-invites-xi.vercel.app/api/og/${slug}`],
     },
   };
 }
