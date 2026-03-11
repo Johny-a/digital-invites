@@ -16,59 +16,65 @@ export async function GET(req: Request, { params }: any) {
     .select("*")
     .eq("slug", slug)
     .maybeSingle();
-console.log("EVENT:", data);
 
   const names = data?.hero_names || "Wedding Invitation";
-  const photo = data?.ending_photo;
+  const photoUrl = data?.ending_photo;
 
-return new ImageResponse(
-  (
-    <div
-      style={{
-        width: "1200px",
-        height: "630px",
-        position: "relative",
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "center",
-        color: "white",
-        background: "black",
-      }}
-    >
-      {photo && (
-        <img
-          src={photo}
-          width="1200"
-          height="630"
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "1200px",
-            height: "630px",
-            objectFit: "cover",
-          }}
-        />
-      )}
+  let imageBuffer: ArrayBuffer | null = null;
 
+  if (photoUrl) {
+    const img = await fetch(photoUrl);
+    imageBuffer = await img.arrayBuffer();
+  }
+
+  return new ImageResponse(
+    (
       <div
         style={{
+          width: "1200px",
+          height: "630px",
           position: "relative",
-          fontSize: 72,
-          fontWeight: 600,
-          marginBottom: 60,
-          background: "rgba(0,0,0,0.4)",
-          padding: "20px 40px",
-          borderRadius: 20,
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "center",
+          background: "black",
+          color: "white",
         }}
       >
-        {names}
+        {imageBuffer && (
+          <img
+            src={imageBuffer as any}
+            width="1200"
+            height="630"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "1200px",
+              height: "630px",
+              objectFit: "cover",
+            }}
+          />
+        )}
+
+        <div
+          style={{
+            position: "relative",
+            fontSize: 72,
+            fontWeight: 600,
+            marginBottom: 60,
+            background: "rgba(0,0,0,0.4)",
+            padding: "20px 40px",
+            borderRadius: 20,
+          }}
+        >
+          {names}
+        </div>
       </div>
-    </div>
-  ),
-  {
-    width: 1200,
-    height: 630,
-  }
-);
+    ),
+    {
+      width: 1200,
+      height: 630,
+    }
+  );
 }
