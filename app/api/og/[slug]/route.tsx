@@ -16,6 +16,7 @@ export async function GET(req: Request, { params }: any) {
     .select("*")
     .eq("slug", slug)
     .maybeSingle();
+console.log("EVENT:", data);
 
   const names = data?.hero_names || "Wedding Invitation";
   const photo = data?.ending_photo;
