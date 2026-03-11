@@ -255,10 +255,10 @@ setPhotoIndex((i) =>
 
 {safeEvent.bg_mode === "slideshow" && bgImages.length > 0 && (
   <div className="absolute inset-0">
-    {bgImages.map((img, i) => (
-      <img
-        key={i}
-        src={img}
+{bgImages.map((img, i) => (
+  <img
+    key={i}
+    src={`${img}?width=1200&quality=70`}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
           i === bgIndex ? "opacity-100" : "opacity-0"
         }`}
@@ -551,10 +551,10 @@ setPhotoIndex((i) =>
 >
   {gallery.map((img, i) => (
     <div key={i} className="w-full flex-shrink-0 flex justify-center">
-      <img
-        src={img}
-        className="w-[90%] h-[70vh] object-cover rounded-2xl shadow-xl"
-      />
+<img
+  src={`${img}?width=800&quality=70`}
+  className="w-[90%] h-[70vh] object-cover rounded-2xl shadow-xl"
+/>
     </div>
   ))}
 </div>
@@ -625,8 +625,8 @@ setPhotoIndex((i) =>
     {safeEvent.ending_photo && (
       <div className="bg-white rounded-lg p-3 shadow-2xl transform -rotate-6 mb-6">
         <div className="w-56 h-72 overflow-hidden rounded">
-          <img
-            src={safeEvent.ending_photo}
+<img
+  src={`${safeEvent.ending_photo}?width=1000&quality=70`}
             className="w-full h-full object-cover"
           />
         </div>
