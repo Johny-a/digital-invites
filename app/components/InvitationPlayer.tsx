@@ -552,7 +552,7 @@ setPhotoIndex((i) =>
   {gallery.map((img, i) => (
     <div key={i} className="w-full flex-shrink-0 flex justify-center">
 <img
-  src={`${img}?width=800&quality=70`}
+  src={`${img}?width=900&quality=65&format=webp`}
   className="w-[90%] h-[70vh] object-cover rounded-2xl shadow-xl"
 />
     </div>
@@ -626,9 +626,9 @@ setPhotoIndex((i) =>
       <div className="bg-white rounded-lg p-3 shadow-2xl transform -rotate-6 mb-6">
         <div className="w-56 h-72 overflow-hidden rounded">
 <img
-  src={`${safeEvent.ending_photo}?width=1000&quality=70`}
-            className="w-full h-full object-cover"
-          />
+  src={`${safeEvent.ending_photo}?width=900&quality=65&format=webp`}
+  className="w-full h-full object-cover"
+/>
         </div>
       </div>
     )}
