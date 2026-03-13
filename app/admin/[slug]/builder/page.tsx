@@ -13,6 +13,8 @@ const supabase = createClient(
 type EventData = {
   id?: string;
 
+cover_image?: string;
+
   ending_photo: string;
 
   bg_mode?: "video" | "slideshow";
@@ -164,10 +166,13 @@ export default function BuilderPage() {
     if (!event.id || saving) return;
     setSaving(true);
 
-    const { error } = await supabase
-      .from("events")
-      .update(event)
-      .eq("id", event.id);
+const { error } = await supabase
+  .from("events")
+  .update({
+    ...event,
+    cover_image: event.ending_photo
+  })
+  .eq("id", event.id);
 
     setSaving(false);
 
