@@ -6,7 +6,9 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata(
+  { params }: { params: { slug: string } }
+) {
 
   const slug = params.slug;
 
@@ -20,15 +22,15 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   const image =
     data?.ending_photo ||
-    "https://digital-invites-xi.vercel.app/default-preview.jpg";
+    "https://images.unsplash.com/photo-1520854221256-17451cc331bf";
 
   return {
-    title: `${title} Wedding`,
-    description: `You're invited to ${title} Wedding`,
+    title,
+    description: `You're invited to ${title}`,
 
     openGraph: {
-      title: `${title} Wedding`,
-      description: `You're invited to ${title} Wedding`,
+      title,
+      description: `You're invited to ${title}`,
       url: `https://digital-invites-xi.vercel.app/${slug}`,
       images: [
         {
