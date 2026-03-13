@@ -8,10 +8,10 @@ const supabase = createClient(
 
 
 export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: { slug: string } }
 ) {
 
-  const { slug } = await params;
+  const { slug } = params;
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -33,12 +33,26 @@ export async function generateMetadata(
       title,
       description: "Tap to view the invitation",
       url: `https://digital-invites-xi.vercel.app/${slug}`,
-      images: [`https://digital-invites-xi.vercel.app/api/og/${slug}`],
+      images: [
+  {
+    url: `https://digital-invites-xi.vercel.app/api/og/${slug}`,
+    width: 1200,
+    height: 630,
+    alt: title,
+  },
+],
     },
     twitter: {
       card: "summary_large_image",
       title,
-      images: [`https://digital-invites-xi.vercel.app/api/og/${slug}`],
+      images: [
+  {
+    url: `https://digital-invites-xi.vercel.app/api/og/${slug}`,
+    width: 1200,
+    height: 630,
+    alt: title,
+  },
+],
     },
   };
 }

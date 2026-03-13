@@ -59,14 +59,13 @@ type EventData = {
     invitationBlock?: { x: number; y: number };
   };
 };
-const SLIDES = [
+const BASE_SLIDES = [
   "hero",
   "invitation",
   "ceremony",
   "celebration",
-  "gifts",    
+  "gifts",
   "rsvp",
-  "photos",
   "ending",
 ] as const;
 
@@ -109,6 +108,9 @@ const safeEvent: EventData = {
   text_positions: event?.text_positions || {},
 };
 const gallery = safeEvent.gallery ?? [];
+const SLIDES = gallery.length > 0
+  ? [...BASE_SLIDES.slice(0, 6), "photos", "ending"]
+  : BASE_SLIDES;
 const bgImages = safeEvent.bg_images ?? [];
 
 
@@ -140,6 +142,41 @@ const touchStartX = useRef<number | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+// PRELOAD ALL MEDIA BEFORE START
+useEffect(() => {
+
+  // preload background images
+  if (safeEvent.bg_images) {
+safeEvent.bg_images.forEach((src) => {
+  const img = new window.Image();
+  img.src = src;
+});
+  }
+
+  // preload gallery
+  if (safeEvent.gallery) {
+    safeEvent.gallery.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+    });
+  }
+
+  // preload video
+  if (safeEvent.bg_video) {
+    const video = document.createElement("video");
+    video.src = safeEvent.bg_video;
+    video.preload = "auto";
+  }
+
+  // preload music
+  if (safeEvent.music_url) {
+    const audio = document.createElement("audio");
+    audio.src = safeEvent.music_url;
+    audio.preload = "auto";
+  }
+
+}, [safeEvent]);
 
 useEffect(() => {
   if (safeEvent.bg_mode !== "slideshow") return;
@@ -241,15 +278,16 @@ setPhotoIndex((i) =>
       {/* Video */}
 {/* BACKGROUND */}
 {safeEvent.bg_mode === "video" && safeEvent.bg_video && (
-  <video
-    ref={videoRef}
-    className="absolute inset-0 w-full h-full object-cover"
-    src={safeEvent.bg_video}
-    loop
-    playsInline
-    muted={muted}
-    autoPlay={started}
-  />
+<video
+  ref={videoRef}
+  className="absolute inset-0 w-full h-full object-cover"
+  src={safeEvent.bg_video}
+  loop
+  playsInline
+  muted={muted}
+  autoPlay={started}
+  preload="auto"
+/>
 )}
 
 
@@ -269,13 +307,14 @@ setPhotoIndex((i) =>
 
       {/* Music */}
 {safeEvent.music_url && (
-  <audio
-    ref={audioRef}
-    src={safeEvent.music_url}
-    loop
-    muted={muted}
-    autoPlay={started}
-  />
+<audio
+  ref={audioRef}
+  src={safeEvent.music_url}
+  loop
+  muted={muted}
+  autoPlay={started}
+  preload="auto"
+/>
 )}
 
 
@@ -361,10 +400,21 @@ setPhotoIndex((i) =>
 {current === "hero" && (
   <div className="flex flex-col items-center justify-center text-center px-6">
     {/* Names */}
-    <h1 className="text-white text-5xl font-semibold mb-6 font-[cursive] leading-tight">
-      {safeEvent.hero_names || "Joe & Dayane"}
-    </h1>
+<div className="flex flex-col items-center justify-center mb-6 leading-tight">
+  {safeEvent.hero_names?.split("&")[0] && (
+    <div className="text-white text-5xl font-semibold text-center font-[cursive]">
+      {safeEvent.hero_names.split("&")[0].trim()}
+    </div>
+  )}
 
+  <div className="text-white text-4xl font-light my-2">&</div>
+
+  {safeEvent.hero_names?.split("&")[1] && (
+    <div className="text-white text-5xl font-semibold text-center font-[cursive]">
+      {safeEvent.hero_names.split("&")[1].trim()}
+    </div>
+  )}
+</div>
     {/* Tagline */}
     <p className="text-white/90 text-lg mb-6">
       {safeEvent.hero_tagline || "Together in Christ, Forever in Love"}
@@ -401,10 +451,22 @@ setPhotoIndex((i) =>
       {safeEvent.invitation_request_line}
     </p>
 
-    {/* Names */}
-    <h1 className="text-3xl font-bold mt-4">
-      {safeEvent.hero_names}
-    </h1>
+{/* Names */}
+<div className="flex flex-col items-center justify-center mt-6 leading-tight">
+  {safeEvent.hero_names?.split("&")[0] && (
+    <div className="text-3xl font-bold text-center">
+      {safeEvent.hero_names.split("&")[0].trim()}
+    </div>
+  )}
+
+  <div className="text-2xl font-light my-1">&</div>
+
+  {safeEvent.hero_names?.split("&")[1] && (
+    <div className="text-3xl font-bold text-center">
+      {safeEvent.hero_names.split("&")[1].trim()}
+    </div>
+  )}
+</div>
 
     {/* Date */}
     <p className="text-lg mt-2">
@@ -649,7 +711,7 @@ setPhotoIndex((i) =>
 
     {/* Subtle brand / footer */}
     <div className="absolute bottom-6 text-xs text-white/60 tracking-widest">
-      3AZIMEH
+
     </div>
   </div>
 )}
