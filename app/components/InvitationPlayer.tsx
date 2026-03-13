@@ -112,7 +112,8 @@ const SLIDES = gallery.length > 0
   ? [...BASE_SLIDES.slice(0, 6), "photos", "ending"]
   : BASE_SLIDES;
 const bgImages = safeEvent.bg_images ?? [];
-
+const [assetsReady, setAssetsReady] = useState(false);
+const [loadingProgress, setLoadingProgress] = useState(0);
 
 const [mainName, setMainName] = useState("");
 const [attending, setAttending] = useState<boolean | null>(null);
@@ -143,38 +144,70 @@ const touchStartX = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-// PRELOAD ALL MEDIA BEFORE START
+// PRELOAD ALL MEDIA AND WAIT UNTIL FINISHED
 useEffect(() => {
 
-  // preload background images
-  if (safeEvent.bg_images) {
-safeEvent.bg_images.forEach((src) => {
-  const img = new window.Image();
-  img.src = src;
-});
-  }
+  const loaders: Promise<any>[] = [];
 
-  // preload gallery
-  if (safeEvent.gallery) {
-    safeEvent.gallery.forEach((src) => {
-      const img = new window.Image();
-      img.src = src;
-    });
-  }
+  const addLoader = (promise: Promise<any>) => {
+    loaders.push(
+      promise.then(() => {
+        setLoadingProgress((p) => p + 1);
+      })
+    );
+  };
 
-  // preload video
+  // Background images
+  safeEvent.bg_images?.forEach((src) => {
+    addLoader(
+      new Promise((resolve) => {
+        const img = new window.Image();
+        img.src = src;
+        img.onload = resolve;
+        img.onerror = resolve;
+      })
+    );
+  });
+
+  // Gallery
+  safeEvent.gallery?.forEach((src) => {
+    addLoader(
+      new Promise((resolve) => {
+        const img = new window.Image();
+        img.src = src;
+        img.onload = resolve;
+        img.onerror = resolve;
+      })
+    );
+  });
+
+  // Video
   if (safeEvent.bg_video) {
-    const video = document.createElement("video");
-    video.src = safeEvent.bg_video;
-    video.preload = "auto";
+    addLoader(
+      new Promise((resolve) => {
+        const video = document.createElement("video");
+        video.src = safeEvent.bg_video;
+        video.onloadeddata = resolve;
+        video.onerror = resolve;
+      })
+    );
   }
 
-  // preload music
+  // Music
   if (safeEvent.music_url) {
-    const audio = document.createElement("audio");
-    audio.src = safeEvent.music_url;
-    audio.preload = "auto";
+    addLoader(
+      new Promise((resolve) => {
+        const audio = document.createElement("audio");
+        audio.src = safeEvent.music_url;
+        audio.onloadeddata = resolve;
+        audio.onerror = resolve;
+      })
+    );
   }
+
+  Promise.all(loaders).then(() => {
+    setAssetsReady(true);
+  });
 
 }, [safeEvent]);
 
@@ -238,7 +271,16 @@ const submitRSVP = async () => {
 
 
   const current = SLIDES[page];
+const totalAssets =
+  (safeEvent.bg_images?.length ?? 0) +
+  (safeEvent.gallery?.length ?? 0) +
+  (safeEvent.bg_video ? 1 : 0) +
+  (safeEvent.music_url ? 1 : 0);
 
+const progressPercent = Math.min(
+  (loadingProgress / Math.max(totalAssets, 1)) * 100,
+  100
+);
 const onPhotoTouchStart = (e: React.TouchEvent) => {
   touchStartX.current = e.touches[0].clientX;
   setIsDragging(true);
@@ -327,42 +369,65 @@ setPhotoIndex((i) =>
 
 {/* START OVERLAY - LUXURY */}
 {!started && !editorMode && (
-  <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-    <div className="flex flex-col items-center gap-6 animate-fadeIn">
-      <div className="text-white/80 tracking-[0.3em] text-xs uppercase">
-        You are invited
+  <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+
+    {!assetsReady ? (
+      <div className="flex flex-col items-center gap-4 text-center">
+        <div className="text-white/70 tracking-widest text-sm">
+          Preparing your invitation
+        </div>
+
+        <div className="w-48 h-1 bg-white/20 rounded">
+          <div
+            className="h-full bg-white transition-all duration-300"
+            style={{
+  width: `${progressPercent}%`
+}}
+          />
+        </div>
+
+        <div className="text-xs text-white/50">
+          Loading assets...
+        </div>
       </div>
+    ) : (
+      <div className="flex flex-col items-center gap-6 animate-fadeIn">
+        <div className="text-white/80 tracking-[0.3em] text-xs uppercase">
+          You are invited
+        </div>
 
-      <button
-        onClick={() => {
-          setStarted(true);
-          setMuted(false);
+        <button
+          onClick={() => {
+            setStarted(true);
+            setMuted(false);
 
-          if (videoRef.current) {
-            videoRef.current.play().catch(() => {});
-          }
+            if (videoRef.current) {
+              videoRef.current.play().catch(() => {});
+            }
 
-          if (audioRef.current) {
-            audioRef.current.volume = 0;
-            audioRef.current.play().catch(() => {});
-            // Soft fade-in music
-            let v = 0;
-            const fade = setInterval(() => {
-              v += 0.05;
-              if (audioRef.current) audioRef.current.volume = Math.min(v, 1);
-              if (v >= 1) clearInterval(fade);
-            }, 100);
-          }
-        }}
-        className="px-10 py-4 rounded-full border border-white/40 text-white text-lg tracking-wide hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-md"
-      >
-        ✦ Enter Invitation ✦
-      </button>
+            if (audioRef.current) {
+              audioRef.current.volume = 0;
+              audioRef.current.play().catch(() => {});
+              let v = 0;
+              const fade = setInterval(() => {
+                v += 0.05;
+                if (audioRef.current)
+                  audioRef.current.volume = Math.min(v, 1);
+                if (v >= 1) clearInterval(fade);
+              }, 100);
+            }
+          }}
+          className="px-10 py-4 rounded-full border border-white/40 text-white text-lg tracking-wide hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-md"
+        >
+          ✦ Enter Invitation ✦
+        </button>
 
-      <div className="text-white/50 text-xs tracking-widest">
-        Tap to begin
+        <div className="text-white/50 text-xs tracking-widest">
+          Tap to begin
+        </div>
       </div>
-    </div>
+    )}
+
   </div>
 )}
 
