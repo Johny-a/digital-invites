@@ -313,7 +313,24 @@ setPhotoIndex((i) =>
   setIsDragging(false);
   touchStartX.current = null;
 };
+if (!assetsReady && !editorMode) {
+  return (
+    <div className="w-full h-screen flex items-center justify-center bg-black text-white">
+      <div className="text-center space-y-4">
+        <div className="text-lg tracking-widest">Preparing your invitation</div>
 
+        <div className="w-48 h-1 bg-white/20 rounded">
+          <div
+            className="h-full bg-white transition-all duration-300"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+
+        <div className="text-sm text-white/60">Loading media...</div>
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-black text-white">
