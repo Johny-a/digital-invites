@@ -47,5 +47,16 @@ export async function generateMetadata(
     }
   };
 }
+
+export default async function Page(
+  { params }: { params: { slug: string } }
+) {
+
+  const { data } = await supabase
+    .from("events")
+    .select("*")
+    .eq("slug", params.slug)
+    .single();
+
   return <WeddingClient event={data} />;
 }
