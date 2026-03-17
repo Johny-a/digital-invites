@@ -146,69 +146,86 @@ const touchStartX = useRef<number | null>(null);
 
 // PRELOAD ALL MEDIA AND WAIT UNTIL FINISHED
 useEffect(() => {
+  let isMounted = true;
 
-  const loaders: Promise<any>[] = [];
+  const loadImage = (src: string) =>
+    new Promise<void>((resolve) => {
+      const img = new window.Image();
+      img.src = src;
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
 
-  const addLoader = (promise: Promise<any>) => {
-    loaders.push(
-      promise.then(() => {
-        setLoadingProgress((p) => p + 1);
+  const loadVideo = (src: string) =>
+    new Promise<void>((resolve) => {
+      const video = document.createElement("video");
+      video.src = src;
+      video.preload = "auto";
+
+      video.oncanplaythrough = () => resolve();
+      video.onerror = () => resolve();
+    });
+
+  const loadAudio = (src: string) =>
+    new Promise<void>((resolve) => {
+      const audio = document.createElement("audio");
+      audio.src = src;
+      audio.preload = "auto";
+
+      audio.oncanplaythrough = () => resolve();
+      audio.onerror = () => resolve();
+    });
+
+  const loadAll = async () => {
+    const tasks: Promise<void>[] = [];
+
+    // Background images
+    safeEvent.bg_images?.forEach((src) => {
+      tasks.push(loadImage(src));
+    });
+
+    // Gallery images
+    safeEvent.gallery?.forEach((src) => {
+      tasks.push(loadImage(src));
+    });
+
+    // Ending photo
+    if (safeEvent.ending_photo) {
+      tasks.push(loadImage(safeEvent.ending_photo));
+    }
+
+    // Video
+    if (safeEvent.bg_video) {
+      tasks.push(loadVideo(safeEvent.bg_video));
+    }
+
+    // Music
+    if (safeEvent.music_url) {
+      tasks.push(loadAudio(safeEvent.music_url));
+    }
+
+    let loaded = 0;
+    tasks.forEach((p) =>
+      p.then(() => {
+        loaded++;
+        if (isMounted) {
+          setLoadingProgress(loaded);
+        }
       })
     );
+
+    await Promise.all(tasks);
+
+    if (isMounted) {
+      setAssetsReady(true);
+    }
   };
 
-  // Background images
-  safeEvent.bg_images?.forEach((src) => {
-    addLoader(
-      new Promise((resolve) => {
-        const img = new window.Image();
-        img.src = src;
-        img.onload = resolve;
-        img.onerror = resolve;
-      })
-    );
-  });
+  loadAll();
 
-  // Gallery
-  safeEvent.gallery?.forEach((src) => {
-    addLoader(
-      new Promise((resolve) => {
-        const img = new window.Image();
-        img.src = src;
-        img.onload = resolve;
-        img.onerror = resolve;
-      })
-    );
-  });
-
-  // Video
-  if (safeEvent.bg_video) {
-    addLoader(
-      new Promise((resolve) => {
-        const video = document.createElement("video");
-        video.src = safeEvent.bg_video;
-        video.onloadeddata = resolve;
-        video.onerror = resolve;
-      })
-    );
-  }
-
-  // Music
-  if (safeEvent.music_url) {
-    addLoader(
-      new Promise((resolve) => {
-        const audio = document.createElement("audio");
-        audio.src = safeEvent.music_url;
-        audio.onloadeddata = resolve;
-        audio.onerror = resolve;
-      })
-    );
-  }
-
-  Promise.all(loaders).then(() => {
-    setAssetsReady(true);
-  });
-
+  return () => {
+    isMounted = false;
+  };
 }, [safeEvent]);
 
 useEffect(() => {
@@ -274,9 +291,9 @@ const submitRSVP = async () => {
 const totalAssets =
   (safeEvent.bg_images?.length ?? 0) +
   (safeEvent.gallery?.length ?? 0) +
+  (safeEvent.ending_photo ? 1 : 0) +
   (safeEvent.bg_video ? 1 : 0) +
   (safeEvent.music_url ? 1 : 0);
-
 const progressPercent = Math.min(
   (loadingProgress / Math.max(totalAssets, 1)) * 100,
   100
@@ -329,6 +346,7 @@ setPhotoIndex((i) =>
   muted={muted}
   autoPlay={started}
   preload="auto"
+  style={{ display: started ? "block" : "none" }}
 />
 )}
 
@@ -356,6 +374,7 @@ setPhotoIndex((i) =>
   muted={muted}
   autoPlay={started}
   preload="auto"
+  style={{ display: started ? "block" : "none" }}
 />
 )}
 
@@ -695,7 +714,7 @@ setPhotoIndex((i) =>
   width={900}
   height={1200}
   quality={70}
-  loading="lazy"
+  priority
   className="w-[90%] h-[70vh] object-cover rounded-2xl shadow-xl"
   alt=""
 />
@@ -774,7 +793,7 @@ setPhotoIndex((i) =>
   width={800}
   height={1000}
   quality={70}
-  loading="lazy"
+  priority
   className="w-full h-full object-cover"
   alt=""
 />
