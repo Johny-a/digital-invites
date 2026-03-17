@@ -2,7 +2,9 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-
+const getOptimizedSrc = (src: string) =>
+  `${src}?width=1200&quality=70`;
+const [firstBgLoaded, setFirstBgLoaded] = useState(false);
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -148,23 +150,29 @@ const touchStartX = useRef<number | null>(null);
 useEffect(() => {
   let isMounted = true;
 
-  const loadImage = (src: string) =>
-    new Promise<void>((resolve) => {
-      const img = new window.Image();
-      img.src = src;
-      img.onload = () => resolve();
-      img.onerror = () => resolve();
-    });
+const loadImage = (src: string) =>
+  new Promise<void>((resolve) => {
+    const img = new window.Image();
+    img.src = src;
+    img.crossOrigin = "anonymous"; // ✅ ADD THIS
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+  });
+const loadVideo = (src: string) =>
+  new Promise<void>((resolve) => {
+    const video = document.createElement("video");
+    video.src = src;
+    video.preload = "auto";
 
-  const loadVideo = (src: string) =>
-    new Promise<void>((resolve) => {
-      const video = document.createElement("video");
-      video.src = src;
-      video.preload = "auto";
+    const checkReady = () => {
+      if (video.readyState >= 4) {
+        resolve();
+      }
+    };
 
-      video.oncanplaythrough = () => resolve();
-      video.onerror = () => resolve();
-    });
+    video.addEventListener("canplaythrough", checkReady);
+    video.onerror = resolve;
+  });
 
   const loadAudio = (src: string) =>
     new Promise<void>((resolve) => {
@@ -181,17 +189,17 @@ useEffect(() => {
 
     // Background images
     safeEvent.bg_images?.forEach((src) => {
-      tasks.push(loadImage(src));
+      tasks.push(loadImage(getOptimizedSrc(src)));
     });
 
     // Gallery images
     safeEvent.gallery?.forEach((src) => {
-      tasks.push(loadImage(src));
+      tasks.push(loadImage(getOptimizedSrc(src)));
     });
 
     // Ending photo
     if (safeEvent.ending_photo) {
-      tasks.push(loadImage(safeEvent.ending_photo));
+      tasks.push(loadImage(getOptimizedSrc(safeEvent.ending_photo)));
     }
 
     // Video
@@ -220,7 +228,8 @@ useEffect(() => {
       setAssetsReady(true);
     }
   };
-
+await loadImage(getOptimizedSrc(safeEvent.bg_images?.[0] || ""));
+setFirstBgLoaded(true);
   loadAll();
 
   return () => {
@@ -356,7 +365,8 @@ setPhotoIndex((i) =>
 {bgImages.map((img, i) => (
   <img
     key={i}
-    src={`${img}?width=1200&quality=70`}
+    src={getOptimizedSrc(img)}
+crossOrigin="anonymous"
         className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000 ${
           i === bgIndex ? "opacity-100" : "opacity-0"
         }`}
@@ -378,6 +388,12 @@ setPhotoIndex((i) =>
 />
 )}
 
+{!started && firstBgLoaded && safeEvent.bg_images?.[0] && (
+  <img
+    src={getOptimizedSrc(safeEvent.bg_images[0])}
+    className="absolute inset-0 w-full h-full object-cover blur-md scale-105 opacity-70"
+  />
+)}
 
       {/* Overlay */}
       <div className={`absolute inset-0 ${template.overlay}`} />
@@ -387,7 +403,9 @@ setPhotoIndex((i) =>
 
 
 {!started && !editorMode && (
-  <div className="absolute inset-0 z-30 flex items-center justify-center">
+  <div className={`absolute inset-0 z-30 flex items-center justify-center transition-opacity duration-700 ${
+  started ? "opacity-0 pointer-events-none" : "opacity-100"
+}`}>
 
     {/* Background blur */}
     <div className="absolute inset-0 bg-black/70 backdrop-blur-xl" />
@@ -451,7 +469,7 @@ setPhotoIndex((i) =>
             }}
             className="px-10 py-4 rounded-full border border-white/40 text-white text-lg tracking-wide hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-md"
           >
-            ✦ Enter Invitation ✦
+            ✦ Enter Invitation 11✦
           </button>
 
           <div className="text-white/50 text-xs tracking-widest">
@@ -709,14 +727,10 @@ setPhotoIndex((i) =>
 >
   {gallery.map((img, i) => (
     <div key={i} className="w-full flex-shrink-0 flex justify-center">
-<Image
-  src={img}
-  width={900}
-  height={1200}
-  quality={70}
-  priority
+<img
+  src={getOptimizedSrc(img)}
+  crossOrigin="anonymous"
   className="w-[90%] h-[70vh] object-cover rounded-2xl shadow-xl"
-  alt=""
 />
     </div>
   ))}
@@ -788,14 +802,10 @@ setPhotoIndex((i) =>
     {safeEvent.ending_photo && (
       <div className="bg-white rounded-lg p-3 shadow-2xl transform -rotate-6 mb-6">
         <div className="w-56 h-72 overflow-hidden rounded">
-<Image
-  src={safeEvent.ending_photo}
-  width={800}
-  height={1000}
-  quality={70}
-  priority
+<img
+  src={getOptimizedSrc(safeEvent.ending_photo)}
+  crossOrigin="anonymous"
   className="w-full h-full object-cover"
-  alt=""
 />
         </div>
       </div>
