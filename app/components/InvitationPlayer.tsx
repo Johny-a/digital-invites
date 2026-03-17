@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 const getOptimizedSrc = (src: string) =>
   `${src}?width=1200&quality=70`;
-const [firstBgLoaded, setFirstBgLoaded] = useState(false);
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -116,6 +116,7 @@ const SLIDES = gallery.length > 0
 const bgImages = safeEvent.bg_images ?? [];
 const [assetsReady, setAssetsReady] = useState(false);
 const [loadingProgress, setLoadingProgress] = useState(0);
+const [firstBgLoaded, setFirstBgLoaded] = useState(false);
 
 const [mainName, setMainName] = useState("");
 const [attending, setAttending] = useState<boolean | null>(null);
@@ -228,9 +229,16 @@ const loadVideo = (src: string) =>
       setAssetsReady(true);
     }
   };
-await loadImage(getOptimizedSrc(safeEvent.bg_images?.[0] || ""));
-setFirstBgLoaded(true);
-  loadAll();
+const init = async () => {
+  if (safeEvent.bg_images?.[0]) {
+    await loadImage(getOptimizedSrc(safeEvent.bg_images[0]));
+    if (isMounted) setFirstBgLoaded(true);
+  }
+
+  await loadAll();
+};
+
+init();
 
   return () => {
     isMounted = false;
@@ -391,6 +399,7 @@ crossOrigin="anonymous"
 {!started && firstBgLoaded && safeEvent.bg_images?.[0] && (
   <img
     src={getOptimizedSrc(safeEvent.bg_images[0])}
+  crossOrigin="anonymous"
     className="absolute inset-0 w-full h-full object-cover blur-md scale-105 opacity-70"
   />
 )}
