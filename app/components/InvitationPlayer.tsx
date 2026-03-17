@@ -2,9 +2,14 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-const getOptimizedSrc = (src: string) =>
-  `${src}?width=1200&quality=70`;
 
+const isMobile =
+  typeof window !== "undefined" && window.innerWidth < 768;
+
+const getOptimizedSrc = (src: string) =>
+  isMobile
+    ? `${src}?width=600&quality=50`
+    : `${src}?width=1200&quality=70`;
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -102,7 +107,17 @@ export default function InvitationPlayer({
   editorMode?: boolean;
   forcedPage?: number;
 }) {
-const safeEvent: EventData = {
+
+  // ✅ ADD HERE
+  const loadImage = (src: string) =>
+    new Promise<void>((resolve) => {
+      const img = new window.Image();
+      img.src = src;
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+
+  const safeEvent: EventData = {
   ...event,
   gallery: Array.isArray(event?.gallery) ? event.gallery : [],
   bg_images: Array.isArray(event?.bg_images) ? event.bg_images : [],
@@ -151,15 +166,39 @@ const touchStartX = useRef<number | null>(null);
 useEffect(() => {
   let isMounted = true;
 
-const loadImage = (src: string) =>
-  new Promise<void>((resolve) => {
-    const img = new window.Image();
-    img.src = src;
-img.decoding = "async";
-    img.crossOrigin = "anonymous"; // ✅ ADD THIS
-    img.onload = () => resolve();
-    img.onerror = () => resolve();
-  });
+  
+
+  const loadInitial = async () => {
+    // 👇 ONLY load 1–2 assets before enter
+    const tasks: Promise<void>[] = [];
+
+    if (safeEvent.bg_images?.[0]) {
+      tasks.push(loadImage(getOptimizedSrc(safeEvent.bg_images[0])));
+    }
+
+    if (safeEvent.ending_photo) {
+      tasks.push(loadImage(getOptimizedSrc(safeEvent.ending_photo)));
+    }
+
+    await Promise.all(tasks);
+
+    if (isMounted) {
+      setAssetsReady(true); // ✅ THIS unlocks button
+    }
+  };
+
+  loadInitial();
+
+  return () => {
+    isMounted = false;
+  };
+}, []);
+
+useEffect(() => {
+  if (!started) return;
+
+  let isMounted = true;
+
 const loadVideo = (src: string) =>
   new Promise<void>((resolve) => {
     const video = document.createElement("video");
@@ -190,24 +229,22 @@ const loadVideo = (src: string) =>
     const tasks: Promise<void>[] = [];
 
     // Background images
-    safeEvent.bg_images?.forEach((src) => {
-      tasks.push(loadImage(getOptimizedSrc(src)));
-    });
-
+    safeEvent.bg_images?.slice(0, 2).forEach((src) => {
+  tasks.push(loadImage(getOptimizedSrc(src)));
+});
     // Gallery images
-    safeEvent.gallery?.forEach((src) => {
-      tasks.push(loadImage(getOptimizedSrc(src)));
-    });
+    // only preload first 2 images
+safeEvent.gallery?.slice(0, 2).forEach((src) => {
+  tasks.push(loadImage(getOptimizedSrc(src)));
+});
 
     // Ending photo
     if (safeEvent.ending_photo) {
       tasks.push(loadImage(getOptimizedSrc(safeEvent.ending_photo)));
     }
 
-    // Video
-    if (safeEvent.bg_video) {
-      tasks.push(loadVideo(safeEvent.bg_video));
-    }
+
+    
 
     // Music
     if (safeEvent.music_url) {
@@ -244,7 +281,7 @@ init();
   return () => {
     isMounted = false;
   };
-}, []);
+}, [started]);
 
 useEffect(() => {
   if (safeEvent.bg_mode !== "slideshow") return;
@@ -363,7 +400,7 @@ setPhotoIndex((i) =>
   playsInline
   muted={muted}
   autoPlay={started}
-  preload="auto"
+preload="metadata"
   style={{ display: started ? "block" : "none" }}
 />
 )}
@@ -375,6 +412,7 @@ setPhotoIndex((i) =>
   <img
     key={i}
     src={getOptimizedSrc(img)}
+loading="lazy"
 crossOrigin="anonymous"
         className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000 ${
           i === bgIndex ? "opacity-100" : "opacity-0"
@@ -400,6 +438,7 @@ crossOrigin="anonymous"
 {!started && firstBgLoaded && safeEvent.bg_images?.[0] && (
   <img
     src={getOptimizedSrc(safeEvent.bg_images[0])}
+loading="lazy"
   crossOrigin="anonymous"
     className="absolute inset-0 w-full h-full object-cover blur-md scale-105 opacity-70"
   />
@@ -479,7 +518,7 @@ crossOrigin="anonymous"
             }}
             className="px-10 py-4 rounded-full border border-white/40 text-white text-lg tracking-wide hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-md"
           >
-            ✦ Enter Invitation 22✦
+            ✦ Enter Invitation ✦
           </button>
 
           <div className="text-white/50 text-xs tracking-widest">
@@ -739,6 +778,7 @@ crossOrigin="anonymous"
     <div key={i} className="w-full flex-shrink-0 flex justify-center">
 <img
   src={getOptimizedSrc(img)}
+loading="lazy"
   crossOrigin="anonymous"
   className="w-[90%] h-[70vh] object-cover rounded-2xl shadow-xl"
 />
@@ -814,6 +854,7 @@ crossOrigin="anonymous"
         <div className="w-56 h-72 overflow-hidden rounded">
 <img
   src={getOptimizedSrc(safeEvent.ending_photo)}
+loading="lazy"
   crossOrigin="anonymous"
   className="w-full h-full object-cover"
 />
