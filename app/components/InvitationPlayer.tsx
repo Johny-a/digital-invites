@@ -173,7 +173,7 @@ const loadVideo = (src: string) =>
     };
 
     video.addEventListener("canplaythrough", checkReady);
-    video.onerror = resolve;
+    video.onerror = () => resolve();
   });
 
   const loadAudio = (src: string) =>
