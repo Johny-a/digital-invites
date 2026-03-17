@@ -24,18 +24,30 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.98);
+    transform: scale(1.02);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
   }
 }
 
 .animate-fadeIn {
-  animation: fadeIn 1s ease-out forwards;
+  animation: fadeIn 1s ease forwards;
+}
+@keyframes slowZoom {
+  from {
+    transform: scale(1.05);
+  }
+  to {
+    transform: scale(1.12);
+  }
 }
 
+.animate-slowZoom {
+  animation: slowZoom 20s ease-in-out infinite alternate;
+}

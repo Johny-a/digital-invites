@@ -313,24 +313,7 @@ setPhotoIndex((i) =>
   setIsDragging(false);
   touchStartX.current = null;
 };
-if (!assetsReady && !editorMode) {
-  return (
-    <div className="w-full h-screen flex items-center justify-center bg-black text-white">
-      <div className="text-center space-y-4">
-        <div className="text-lg tracking-widest">Preparing your invitation</div>
 
-        <div className="w-48 h-1 bg-white/20 rounded">
-          <div
-            className="h-full bg-white transition-all duration-300"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-
-        <div className="text-sm text-white/60">Loading media...</div>
-      </div>
-    </div>
-  );
-}
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-black text-white">
@@ -339,7 +322,7 @@ if (!assetsReady && !editorMode) {
 {safeEvent.bg_mode === "video" && safeEvent.bg_video && (
 <video
   ref={videoRef}
-  className="absolute inset-0 w-full h-full object-cover"
+  className="absolute inset-0 w-full h-full object-cover scale-110 animate-slowZoom"
   src={safeEvent.bg_video}
   loop
   playsInline
@@ -356,7 +339,7 @@ if (!assetsReady && !editorMode) {
   <img
     key={i}
     src={`${img}?width=1200&quality=70`}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+        className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000 ${
           i === bgIndex ? "opacity-100" : "opacity-0"
         }`}
       />
@@ -384,81 +367,93 @@ if (!assetsReady && !editorMode) {
 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/30" />
 
 
-{/* START OVERLAY - LUXURY */}
 {!started && !editorMode && (
-  <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+  <div className="absolute inset-0 z-30 flex items-center justify-center">
 
-    {!assetsReady ? (
-      <div className="flex flex-col items-center gap-4 text-center">
-        <div className="text-white/70 tracking-widest text-sm">
-          Preparing your invitation
-        </div>
+    {/* Background blur */}
+    <div className="absolute inset-0 bg-black/70 backdrop-blur-xl" />
 
-        <div className="w-48 h-1 bg-white/20 rounded">
-          <div
-            className="h-full bg-white transition-all duration-300"
-            style={{
-  width: `${progressPercent}%`
-}}
-          />
-        </div>
+    {/* Content */}
+    <div className="relative flex flex-col items-center gap-8 text-center px-6">
 
-        <div className="text-xs text-white/50">
-          Loading assets...
-        </div>
+      {/* Logo / Names */}
+      <div className="text-white/80 text-xs tracking-[0.4em] uppercase">
+        Wedding Invitation
       </div>
-    ) : (
-      <div className="flex flex-col items-center gap-6 animate-fadeIn">
-        <div className="text-white/80 tracking-[0.3em] text-xs uppercase">
-          You are invited
-        </div>
 
-        <button
-          onClick={() => {
-            setStarted(true);
-            setMuted(false);
-
-            if (videoRef.current) {
-              videoRef.current.play().catch(() => {});
-            }
-
-            if (audioRef.current) {
-              audioRef.current.volume = 0;
-              audioRef.current.play().catch(() => {});
-              let v = 0;
-              const fade = setInterval(() => {
-                v += 0.05;
-                if (audioRef.current)
-                  audioRef.current.volume = Math.min(v, 1);
-                if (v >= 1) clearInterval(fade);
-              }, 100);
-            }
-          }}
-          className="px-10 py-4 rounded-full border border-white/40 text-white text-lg tracking-wide hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-md"
-        >
-          ✦ Enter Invitation ✦
-        </button>
-
-        <div className="text-white/50 text-xs tracking-widest">
-          Tap to begin
-        </div>
+      {/* Main Title */}
+      <div className="text-white text-3xl font-serif tracking-wide">
+        {safeEvent.hero_names || "You're Invited"}
       </div>
-    )}
 
+      {/* Loader OR Enter */}
+      {!assetsReady ? (
+        <div className="flex flex-col items-center gap-4 w-64">
+
+          {/* Animated bar */}
+          <div className="w-full h-[2px] bg-white/20 overflow-hidden relative">
+            <div
+              className="absolute left-0 top-0 h-full bg-white transition-all duration-300"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+
+          <div className="text-white/60 text-xs tracking-widest">
+            Preparing your experience...
+          </div>
+
+          {/* subtle spinner */}
+          <div className="w-6 h-6 border border-white/30 border-t-white rounded-full animate-spin" />
+
+        </div>
+      ) : (
+        <div className="flex flex-col items-center gap-6 animate-fadeIn">
+
+          <button
+            onClick={() => {
+              setStarted(true);
+              setMuted(false);
+
+              if (videoRef.current) {
+                videoRef.current.play().catch(() => {});
+              }
+
+              if (audioRef.current) {
+                audioRef.current.volume = 0;
+                audioRef.current.play().catch(() => {});
+                let v = 0;
+                const fade = setInterval(() => {
+                  v += 0.05;
+                  if (audioRef.current)
+                    audioRef.current.volume = Math.min(v, 1);
+                  if (v >= 1) clearInterval(fade);
+                }, 100);
+              }
+            }}
+            className="px-10 py-4 rounded-full border border-white/40 text-white text-lg tracking-wide hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-md"
+          >
+            ✦ Enter Invitation ✦
+          </button>
+
+          <div className="text-white/50 text-xs tracking-widest">
+            Tap to begin
+          </div>
+
+        </div>
+      )}
+    </div>
   </div>
 )}
-
-
 
       {/* Content */}
 <div
   className={`relative z-10 h-full flex flex-col items-center justify-center text-center px-6 transition-all duration-700 ${
-!started
-  ? "opacity-100"
+    !started
+      ? "opacity-100"
       : fade
       ? "opacity-0 scale-[0.98]"
       : "opacity-100 scale-100"
-  }`}
+  } ${started ? "animate-fadeIn" : ""}`}
   onTouchStart={(e) => {
     touchStartX.current = e.touches[0].clientX;
   }}
