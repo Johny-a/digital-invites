@@ -155,6 +155,7 @@ const loadImage = (src: string) =>
   new Promise<void>((resolve) => {
     const img = new window.Image();
     img.src = src;
+img.decoding = "async";
     img.crossOrigin = "anonymous"; // ✅ ADD THIS
     img.onload = () => resolve();
     img.onerror = () => resolve();
@@ -243,7 +244,7 @@ init();
   return () => {
     isMounted = false;
   };
-}, [safeEvent]);
+}, []);
 
 useEffect(() => {
   if (safeEvent.bg_mode !== "slideshow") return;
@@ -256,7 +257,7 @@ useEffect(() => {
   }, 4000); // 4 seconds (change to 3000–5000 if you want)
 
   return () => clearInterval(interval);
-}, [safeEvent.bg_mode, safeEvent.bg_images]);
+}, [safeEvent.bg_mode, safeEvent.bg_images?.length]);
 
 
   useEffect(() => {
