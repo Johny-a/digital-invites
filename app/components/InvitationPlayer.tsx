@@ -469,7 +469,7 @@ crossOrigin="anonymous"
             }}
             className="px-10 py-4 rounded-full border border-white/40 text-white text-lg tracking-wide hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-md"
           >
-            ✦ Enter Invitation 11✦
+            ✦ Enter Invitation 22✦
           </button>
 
           <div className="text-white/50 text-xs tracking-widest">
