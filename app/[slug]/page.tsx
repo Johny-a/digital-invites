@@ -1,29 +1,19 @@
 import WeddingClient from "./WeddingClient";
-import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
-export async function generateMetadata() {
-  const h = await headers();
-
-  // Get pathname safely
-  const pathname =
-    h.get("x-pathname") ||
-    h.get("x-forwarded-uri") ||
-    "/";
-
-  // Extract slug safely
-  const parts = pathname.split("/").filter(Boolean);
-  const slug = parts[parts.length - 1] || "Guest";
-
-  const name = decodeURIComponent(slug);
+export async function generateMetadata(
+  { params }: { params: { slug: string } }
+) {
+  const name = params.slug;
 
   return {
     title: `${name}'s Invitation`,
     description: "You're invited to our special day 💍",
     openGraph: {
       title: `${name}'s Invitation`,
-      description: "Join us for this special event",
       url: `https://digital-invites-xi.vercel.app/${name}`,
       images: [
         {
