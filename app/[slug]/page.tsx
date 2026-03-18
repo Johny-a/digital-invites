@@ -2,10 +2,15 @@ import WeddingClient from "./WeddingClient";
 
 export const dynamic = "force-dynamic";
 
+// ✅ THIS FIXES THE UNDEFINED SLUG ISSUE
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata(
   { params }: { params: { slug: string } }
 ) {
-  const name = params.slug;
+  const name = params.slug || "Guest";
 
   return {
     title: `${name}'s Invitation`,
@@ -15,7 +20,7 @@ export async function generateMetadata(
       description: "Join us for this special event",
       images: [
         {
-          url: `https://igital-invites-xi.vercel.app/api/og?name=${name}`,
+          url: `https://digital-invites-xi.vercel.app/api/og?name=${name}`,
           width: 1200,
           height: 630,
         },
@@ -24,7 +29,7 @@ export async function generateMetadata(
     twitter: {
       card: "summary_large_image",
       title: `${name}'s Invitation`,
-      images: [`https://igital-invites-xi.vercel.app/api/og?name=${name}`],
+      images: [`https://digital-invites-xi.vercel.app/api/og?name=${name}`],
     },
   };
 }
