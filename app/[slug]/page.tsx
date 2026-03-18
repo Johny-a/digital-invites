@@ -1,3 +1,4 @@
+import { createClient } from "@supabase/supabase-js";
 import WeddingClient from "./WeddingClient";
 
 export const dynamic = "force-dynamic";
@@ -8,15 +9,28 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;  // ✅ await params
+  const { slug } = await params;
   const name = slug || "Guest";
 
+  // Fetch hero names from supabase
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  const { data: event } = await supabase
+    .from("events")
+    .select("hero_names")
+    .single();
+
+  const heroNames = event?.hero_names || "The Wedding";
+
   return {
-    title: `${name}'s Invitation`,
-    description: "You're invited to our special day 💍",
+    title: `${heroNames} - ${name}'s Invitation`,  // ✅ "Ralph & Bernadette - Ralph's Invitation"
+    description: `${name}, you're invited to the wedding of ${heroNames} 💍`,
     openGraph: {
-      title: `${name}'s Invitation`,
-      description: "You're invited to our special day 💍",
+      title: `${heroNames} - ${name}'s Invitation`,
+      description: `${name}, you're invited to the wedding of ${heroNames} 💍`,
       url: `https://digital-invites-xi.vercel.app/${name}`,
       type: "website",
       images: [
@@ -30,13 +44,13 @@ export async function generateMetadata({ params }: Props) {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${name}'s Invitation`,
+      title: `${heroNames} - ${name}'s Invitation`,
       images: [`https://digital-invites-xi.vercel.app/api/og?name=${encodeURIComponent(name)}`],
     },
   };
 }
 
 export default async function Page({ params }: Props) {
-  const { slug } = await params;  // ✅ await here too
+  const { slug } = await params;
   return <WeddingClient slug={slug} />;
 }
