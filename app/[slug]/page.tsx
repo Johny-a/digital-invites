@@ -2,19 +2,21 @@ import WeddingClient from "./WeddingClient";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-export const fetchCache = "force-no-store";
 
-export async function generateMetadata(
-  { params }: { params: { slug: string } }
-) {
-  const name = params.slug;
+type Props = {
+  params: { slug: string };
+};
+
+// ✅ IMPORTANT: wrap metadata in function that uses params safely
+export async function generateMetadata({ params }: Props) {
+  const name = params.slug || "Guest";
 
   return {
     title: `${name}'s Invitation`,
     description: "You're invited to our special day 💍",
     openGraph: {
       title: `${name}'s Invitation`,
-      url: `https://digital-invites-xi.vercel.app/${name}`,
+      url: `https://digital-invites-xi.vercel.app/${name}`, // ✅ FIXED
       images: [
         {
           url: `https://digital-invites-xi.vercel.app/api/og?name=${name}`,
@@ -31,6 +33,6 @@ export async function generateMetadata(
   };
 }
 
-export default function Page({ params }: { params: { slug: string } }) {
+export default function Page({ params }: Props) {
   return <WeddingClient slug={params.slug} />;
 }
