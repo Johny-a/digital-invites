@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import InvitationPlayer from "../components/InvitationPlayer";
 
@@ -10,11 +9,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export default function WeddingPage() {
-  const params = useParams();
-  const rawSlug = params.slug as string;
-  const slug = decodeURIComponent(rawSlug);
-
+export default function WeddingPage({ slug }: { slug: string }) {
   const [event, setEvent] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
 
