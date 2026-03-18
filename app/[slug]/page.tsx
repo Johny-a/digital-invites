@@ -1,4 +1,6 @@
+import { notFound } from "next/navigation";
 import WeddingClient from "./WeddingClient";
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -7,7 +9,8 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const name = params.slug || "Guest";
+  const name = params.slug; // ❌ remove the || "Guest" fallback
+  if (!name) return {};     // just return empty if no slug
 
   return {
     title: `${name}'s Invitation`,
@@ -16,7 +19,7 @@ export async function generateMetadata({ params }: Props) {
       title: `${name}'s Invitation`,
       description: "You're invited to our special day 💍",
       url: `https://digital-invites-xi.vercel.app/${name}`,
-      type: "website", // ✅ fixes og:type warning
+      type: "website",
       images: [
         {
           url: `https://digital-invites-xi.vercel.app/api/og?name=${encodeURIComponent(name)}`,
@@ -37,3 +40,8 @@ export async function generateMetadata({ params }: Props) {
 export default function Page({ params }: Props) {
   return <WeddingClient slug={params.slug} />;
 }
+```
+
+Then push, and in Facebook debugger paste:
+```
+https://digital-invites-xi.vercel.app/Ralph
