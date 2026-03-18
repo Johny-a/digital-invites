@@ -26,26 +26,25 @@ export async function generateMetadata({ params }: Props) {
   const heroNames = event?.hero_names || "The Wedding";
 
   return {
-    title: `${heroNames} - ${name}'s Invitation`,  // ✅ "Ralph & Bernadette - Ralph's Invitation"
-    description: `${name}, you're invited to the wedding of ${heroNames} 💍`,
+    title: `${heroNames}'s Wedding Invitation`,  
+    description: `You're invited to the wedding of ${heroNames} 💍`,
     openGraph: {
-      title: `${heroNames} - ${name}'s Invitation`,
-      description: `${name}, you're invited to the wedding of ${heroNames} 💍`,
+      title: `${heroNames}'s Wedding Invitation`,
+      description: `You're invited to the wedding of ${heroNames} 💍`,
       url: `https://digital-invites-xi.vercel.app/${name}`,
       type: "website",
       images: [
-        {
-          url: `https://digital-invites-xi.vercel.app/api/og?name=${encodeURIComponent(name)}`,
+        { url: `https://digital-invites-xi.vercel.app/api/og/${encodeURIComponent(name)}`,  // ✅ path not query
           width: 1200,
           height: 630,
-          alt: `${name}'s Wedding Invitation`,
+          alt: `${heroNames}'s Wedding Invitation`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
       title: `${heroNames} - ${name}'s Invitation`,
-      images: [`https://digital-invites-xi.vercel.app/api/og?name=${encodeURIComponent(name)}`],
+      images: [`https://digital-invites-xi.vercel.app/api/og/${encodeURIComponent(name)}`],  // ✅ same here
     },
   };
 }
