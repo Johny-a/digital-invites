@@ -1,4 +1,4 @@
-import { ImageResponse } from '@vercel/og';
+import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 
@@ -13,7 +13,6 @@ export async function GET(req: Request) {
           width: '100%',
           height: '100%',
           display: 'flex',
-          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: '#ffffff',
@@ -21,8 +20,7 @@ export async function GET(req: Request) {
           fontWeight: 'bold',
         }}
       >
-        <div>You're Invited 💌</div>
-        <div style={{ marginTop: 20 }}>{name}</div>
+        You're Invited {name} 💌
       </div>
     ),
     {
