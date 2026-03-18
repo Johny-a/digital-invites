@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "edge";
 
@@ -6,24 +7,38 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const name = searchParams.get("name") || "Guest";
 
+  // Fetch event data from Supabase
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  const { data: event } = await supabase
+    .from("events")
+    .select("ending_photo, hero_names")
+    .single();
+
+  const endingPhoto = event?.ending_photo || "";
+  const heroNames = event?.hero_names || "The Wedding";
+
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: "1200px",
-          height: "630px",
-          background: "#1a1a2e",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "white",
-          fontFamily: "serif",
-        }}
-      >
-        <p style={{ fontSize: 36, margin: 0 }}>You're Invited 💍</p>
-        <h1 style={{ fontSize: 90, margin: "16px 0" }}>{name}</h1>
-        <p style={{ fontSize: 28, margin: 0 }}>Join us for our special day</p>
+      <div style={{ width: "1200px", height: "630px", position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+
+        {/* Ending photo background */}
+        <img src={endingPhoto} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+
+        {/* Dark overlay */}
+        <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.45)", display: "flex" }} />
+
+        {/* Text */}
+        <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", color: "white", textAlign: "center" }}>
+          <p style={{ fontSize: 36, margin: 0, letterSpacing: 4 }}>You're Invited 💍</p>
+          <h1 style={{ fontSize: 90, margin: "16px 0", fontWeight: 700 }}>{name}</h1>
+          <p style={{ fontSize: 32, margin: 0 }}>to the wedding of</p>
+          <p style={{ fontSize: 48, margin: "8px 0", fontStyle: "italic" }}>{heroNames}</p>
+        </div>
+
       </div>
     ),
     { width: 1200, height: 630 }
