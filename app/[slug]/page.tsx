@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
-  const h = headers();
+  const h = await headers();
 
   // Get full URL (works on Vercel)
   const url =
