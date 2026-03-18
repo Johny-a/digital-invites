@@ -1,5 +1,7 @@
 import WeddingClient from "./WeddingClient";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const name = params.slug || "Guest";
 
@@ -8,7 +10,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     description: "You're invited to our special day 💍",
     openGraph: {
       title: `${name}'s Invitation`,
-      description: "Join us for this special event",
       images: [
         {
           url: `https://igital-invites-xi.vercel.app/api/og?name=${name}`,
@@ -16,11 +17,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
           height: 630,
         },
       ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${name}'s Invitation`,
-      images: [`https://igital-invites-xi.vercel.app/api/og?name=${name}`],
     },
   };
 }
