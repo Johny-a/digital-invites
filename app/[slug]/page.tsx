@@ -1,17 +1,22 @@
 import WeddingClient from "./WeddingClient";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
-export const dynamicParams = true;
 
-// Optional but helps Next.js treat route correctly
-export async function generateStaticParams() {
-  return [];
-}
+export async function generateMetadata() {
+  const h = await headers();
 
-export async function generateMetadata(
-  { params }: { params: { slug: string } }
-) {
-  const name = params?.slug ?? "Guest";
+  // Get pathname safely
+  const pathname =
+    h.get("x-pathname") ||
+    h.get("x-forwarded-uri") ||
+    "/";
+
+  // Extract slug safely
+  const parts = pathname.split("/").filter(Boolean);
+  const slug = parts[parts.length - 1] || "Guest";
+
+  const name = decodeURIComponent(slug);
 
   return {
     title: `${name}'s Invitation`,
@@ -19,6 +24,7 @@ export async function generateMetadata(
     openGraph: {
       title: `${name}'s Invitation`,
       description: "Join us for this special event",
+      url: `https://digital-invites-xi.vercel.app/${name}`,
       images: [
         {
           url: `https://digital-invites-xi.vercel.app/api/og?name=${name}`,
