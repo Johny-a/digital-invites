@@ -139,10 +139,10 @@ const [note, setNote] = useState("");
 const [sending, setSending] = useState(false);
 const [sent, setSent] = useState(false);
 const [error, setError] = useState<string | null>(null);
-const [guestCount, setGuestCount] = useState(1);
+const [guestCount, setGuestCount] = useState(0);
 
 
-const [bgIndex, setBgIndex] = useState(0);
+
 
 
 const template = TEMPLATES[templateId] || TEMPLATES.classic;
@@ -172,10 +172,11 @@ useEffect(() => {
     // 👇 ONLY load 1–2 assets before enter
     const tasks: Promise<void>[] = [];
 
-    if (safeEvent.bg_images?.[0]) {
-      tasks.push(loadImage(getOptimizedSrc(safeEvent.bg_images[0])));
-    }
-
+safeEvent.bg_images?.forEach((src) => {
+  if (src) {
+    tasks.push(loadImage(getOptimizedSrc(src)));
+  }
+});
     if (safeEvent.ending_photo) {
       tasks.push(loadImage(getOptimizedSrc(safeEvent.ending_photo)));
     }
@@ -229,8 +230,10 @@ const loadVideo = (src: string) =>
     const tasks: Promise<void>[] = [];
 
     // Background images
-    safeEvent.bg_images?.slice(0, 2).forEach((src) => {
-  tasks.push(loadImage(getOptimizedSrc(src)));
+safeEvent.bg_images?.forEach((src) => {
+  if (src) {
+    tasks.push(loadImage(getOptimizedSrc(src)));
+  }
 });
     // Gallery images
     // only preload first 2 images
@@ -283,18 +286,6 @@ init();
   };
 }, [started]);
 
-useEffect(() => {
-  if (safeEvent.bg_mode !== "slideshow") return;
-  if (!safeEvent.bg_images || safeEvent.bg_images.length <= 1) return;
-
-  const interval = setInterval(() => {
-    setBgIndex((i) =>
-      i === (safeEvent.bg_images?.length ?? 0) - 1 ? 0 : i + 1
-    );
-  }, 4000); // 4 seconds (change to 3000–5000 if you want)
-
-  return () => clearInterval(interval);
-}, [safeEvent.bg_mode, safeEvent.bg_images?.length]);
 
 
   useEffect(() => {
@@ -313,11 +304,10 @@ useEffect(() => {
     }, 200);
   };
 const submitRSVP = async () => {
-  if (!mainName || attending === null) {
-    setError("Please enter your name and choose an option.");
-    return;
-  }
-
+  if (!mainName || attending === null || guestCount <= 0) {
+  setError("Please fill all fields.");
+  return;
+}
   
 
   setSending(true);
@@ -344,7 +334,7 @@ const submitRSVP = async () => {
 
   const current = SLIDES[page];
 const totalAssets =
-  (safeEvent.bg_images?.length ?? 0) +
+  (safeEvent.bg_images?.filter(Boolean).length ?? 0) +
   (safeEvent.gallery?.length ?? 0) +
   (safeEvent.ending_photo ? 1 : 0) +
   (safeEvent.bg_video ? 1 : 0) +
@@ -389,36 +379,31 @@ setPhotoIndex((i) =>
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-black text-white">
-      {/* Video */}
-{/* BACKGROUND */}
-{safeEvent.bg_mode === "video" && safeEvent.bg_video && (
-<video
-  ref={videoRef}
-  className="absolute inset-0 w-full h-full object-cover scale-110 animate-slowZoom"
-  src={safeEvent.bg_video}
-  loop
-  playsInline
-  muted={muted}
-  autoPlay={started}
-preload="metadata"
-  style={{ display: started ? "block" : "none" }}
-/>
-)}
+      {/* BACKGROUND */}
 
+{safeEvent.bg_mode === "video" && safeEvent.bg_video && (
+  <video
+    ref={videoRef}
+    className="absolute inset-0 w-full h-full object-cover scale-110 animate-slowZoom"
+    src={safeEvent.bg_video}
+    loop
+    playsInline
+    muted={muted}
+    autoPlay={started}
+    preload="metadata"
+    style={{ display: started ? "block" : "none" }}
+  />
+)}
 
 {safeEvent.bg_mode === "slideshow" && bgImages.length > 0 && (
   <div className="absolute inset-0">
-{bgImages.map((img, i) => (
-  <img
-    key={i}
-    src={getOptimizedSrc(img)}
-loading="lazy"
-crossOrigin="anonymous"
-        className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000 ${
-          i === bgIndex ? "opacity-100" : "opacity-0"
-        }`}
-      />
-    ))}
+    <img
+      key={page}
+      src={getOptimizedSrc(bgImages[page] || bgImages[0])}
+      className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-700 ${
+        fade ? "opacity-0" : "opacity-100"
+      }`}
+    />
   </div>
 )}
 
@@ -718,15 +703,26 @@ loading="lazy"
             Regretfully Decline
           </button>
         </div>
-{attending && (
+{attending !== null && (
   <div className="space-y-1">
-    <label className="text-sm text-white/80">Number of guests</label>
+    <label className="text-sm text-white/80">
+      {attending ? "Number of guests attending" : "Number of guests not attending"}
+    </label>
+
     <input
       type="number"
-      min={1}
-      className="w-full bg-black/40 border border-white/30 rounded px-3 py-2"
-      value={guestCount}
-      onChange={(e) => setGuestCount(Number(e.target.value) || 1)}
+      inputMode="numeric"
+      placeholder="Enter number"
+      className="w-full bg-black/40 border border-white/30 rounded px-3 py-2 appearance-none"
+      value={guestCount === 0 ? "" : guestCount}
+      onChange={(e) => {
+        const val = e.target.value;
+        if (val === "") {
+          setGuestCount(0);
+        } else {
+          setGuestCount(Number(val));
+        }
+      }}
     />
   </div>
 )}

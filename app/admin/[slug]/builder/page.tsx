@@ -404,16 +404,25 @@ const { error } = await supabase
 
     {/* Upload images */}
     <div>
-      <label className="text-sm">Background Images (slideshow)</label>
+      <label className="text-sm">
+  Background for: <span className="text-purple-400">{tab}</span>
+</label>
       <input
         type="file"
         accept="image/*"
         onChange={async (e) => {
-          const f = e.target.files?.[0];
-          if (!f) return;
-          const url = await uploadFile(f, "bg-image");
-          updateEvent({ bg_images: [...(event.bg_images || []), url] });
-        }}
+  const f = e.target.files?.[0];
+  if (!f) return;
+
+  const url = await uploadFile(f, "bg-image");
+
+  const index = SLIDES.indexOf(tab); // 🔥 current page
+
+  const newImages = [...(event.bg_images || [])];
+  newImages[index] = url;
+
+  updateEvent({ bg_images: newImages });
+}}
       />
     </div>
 
