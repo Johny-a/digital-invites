@@ -3,7 +3,7 @@ import WeddingClient from "./WeddingClient";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const name = params.slug || "Guest";
+  const name = params.slug;
 
   return {
     title: `${name}'s Invitation`,
