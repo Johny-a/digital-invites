@@ -1,22 +1,11 @@
 import WeddingClient from "./WeddingClient";
-import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata() {
-  const h = await headers();
-
-  // Get full URL (works on Vercel)
-  const url =
-    h.get("x-forwarded-proto") +
-    "://" +
-    h.get("host") +
-    h.get("x-forwarded-uri");
-
-  // Extract slug
-  const slug = url?.split("/").pop() || "Guest";
-
-  const name = decodeURIComponent(slug);
+export async function generateMetadata(
+  { params }: { params: { slug: string } }
+) {
+  const name = params.slug;
 
   return {
     title: `${name}'s Invitation`,
