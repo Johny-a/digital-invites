@@ -4,12 +4,12 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props) {
-  const name = params.slug;
-  if (!name) return {};
+  const { slug } = await params;  // ✅ await params
+  const name = slug || "Guest";
 
   return {
     title: `${name}'s Invitation`,
@@ -36,6 +36,7 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default function Page({ params }: Props) {
-  return <WeddingClient slug={params.slug} />;
+export default async function Page({ params }: Props) {
+  const { slug } = await params;  // ✅ await here too
+  return <WeddingClient slug={slug} />;
 }
