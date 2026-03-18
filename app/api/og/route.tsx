@@ -18,6 +18,7 @@ export async function GET(req: Request) {
           background: "#000",
           color: "#fff",
           fontSize: 60,
+          fontWeight: "bold",
         }}
       >
         {name}'s Invitation 💌

@@ -1,8 +1,9 @@
 import WeddingClient from "./WeddingClient";
 
 export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
-// ✅ THIS FIXES THE UNDEFINED SLUG ISSUE
+// Optional but helps Next.js treat route correctly
 export async function generateStaticParams() {
   return [];
 }
@@ -10,7 +11,7 @@ export async function generateStaticParams() {
 export async function generateMetadata(
   { params }: { params: { slug: string } }
 ) {
-  const name = params.slug || "Guest";
+  const name = params?.slug ?? "Guest";
 
   return {
     title: `${name}'s Invitation`,
