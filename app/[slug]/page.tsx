@@ -23,7 +23,11 @@ export async function generateMetadata({ params }: Props) {
     .single();
 
   const heroNames = event?.hero_names || "The Wedding";
-const endingPhoto = event?.ending_photo || "";
+const rawPhoto = event?.ending_photo || "";
+
+const endingPhoto = rawPhoto
+  ? `https://digital-invites-xi.vercel.app/api/image?url=${encodeURIComponent(rawPhoto)}`
+  : "";
 
 
   return {
