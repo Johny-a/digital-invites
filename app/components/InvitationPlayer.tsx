@@ -141,7 +141,13 @@ const [sent, setSent] = useState(false);
 const [error, setError] = useState<string | null>(null);
 const [guestCount, setGuestCount] = useState(0);
 
-
+// ⏳ COUNTDOWN STATE
+const [timeLeft, setTimeLeft] = useState({
+  days: 0,
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+});
 
 
 
@@ -294,6 +300,32 @@ init();
       setStarted(true);
     }
   }, [forcedPage]);
+
+// ⏳ COUNTDOWN EFFECT
+useEffect(() => {
+  if (!safeEvent.date_text) return;
+
+  const targetDate = new Date(safeEvent.date_text).getTime();
+
+  const interval = setInterval(() => {
+    const now = new Date().getTime();
+    const difference = targetDate - now;
+
+    if (difference <= 0) {
+      clearInterval(interval);
+      return;
+    }
+
+    setTimeLeft({
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / 1000 / 60) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
+    });
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, [safeEvent.date_text]);
 
   const changePage = (next: number) => {
     if (next < 0 || next >= SLIDES.length) return;
@@ -547,6 +579,7 @@ loading="lazy"
         {/* HERO */}
 {current === "hero" && (
   <div className="flex flex-col items-center justify-center text-center px-6">
+
     {/* Names */}
 <div className="flex flex-col items-center justify-center mb-6 leading-tight">
   {safeEvent.hero_names?.split("&")[0] && (
@@ -572,6 +605,20 @@ loading="lazy"
     <h2 className="text-white text-2xl font-medium">
       {safeEvent.hero_headline || "The wedding day has arrived!"}
     </h2>
+{/* ⏳ COUNTDOWN */}
+<div className="mt-6 flex gap-4 text-center">
+  {[
+    { label: "Days", value: timeLeft.days },
+    { label: "Hours", value: timeLeft.hours },
+    { label: "Min", value: timeLeft.minutes },
+    { label: "Sec", value: timeLeft.seconds },
+  ].map((item, i) => (
+    <div key={i} className="bg-white/10 px-4 py-2 rounded-lg">
+      <div className="text-xl font-bold">{item.value}</div>
+      <div className="text-xs text-white/70">{item.label}</div>
+    </div>
+  ))}
+</div>
   </div>
 )}
 
