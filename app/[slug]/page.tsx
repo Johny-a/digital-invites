@@ -23,8 +23,8 @@ export async function generateMetadata({ params }: Props) {
     .single();
 
   const heroNames = event?.hero_names || "The Wedding";
-  const endingPhoto =
-    event?.ending_photo?.replace("/object/public/", "/render/image/public/") || "";
+const endingPhoto = event?.ending_photo || "";
+
 
   return {
     title: `${heroNames}'s Wedding Invitation`,
