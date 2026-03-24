@@ -24,7 +24,8 @@ export async function generateMetadata({ params }: Props) {
     .single();
 
   const heroNames = event?.hero_names || "The Wedding";
-  const endingPhoto = event?.ending_photo || "";
+  const endingPhoto = event?.ending_photo
+  ?.replace("/object/public/", "/render/image/public/") || "";
 
   return {
     title: `${heroNames}'s Wedding Invitation`,
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: Props) {
       type: "website",
       images: [
         {
-          url: `https://digital-invites-xi.vercel.app/api/og/${name}?title=${encodeURIComponent(heroNames)}&img=${encodeURIComponent(endingPhoto)}`,
+          url: `https://digital-invites-xi.vercel.app/api/og/${name}?title=${encodeURIComponent(heroNames)}&img=${encodeURIComponent(endingPhoto)}`ngPhoto)}`,
           width: 1200,
           height: 630,
           alt: `${heroNames}'s Wedding Invitation`,
@@ -47,8 +48,8 @@ export async function generateMetadata({ params }: Props) {
       card: "summary_large_image",
       title: `${heroNames} - ${name}'s Invitation`,
       images: [
-        `https://digital-invites-xi.vercel.app/api/og/${name}?title=${encodeURIComponent(heroNames)}&img=${encodeURIComponent(endingPhoto)}`,
-      ],
+  `https://digital-invites-xi.vercel.app/api/og?name=${name}&title=${encodeURIComponent(heroNames)}&img=${encodeURIComponent(endingPhoto)}`
+]
     },
   };
 }
