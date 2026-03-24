@@ -81,7 +81,7 @@ export async function GET(
             textAlign: "center",
           }}
         >
-          <p style={{ fontSize: 36 }}>You're Invited 💍</p>
+          <p style={{ fontSize: 36 }}>You're Invitedd 💍</p>
           <h1 style={{ fontSize: 90 }}>{name}</h1>
           <p style={{ fontSize: 32 }}>to the wedding of</p>
           <p style={{ fontSize: 48, fontStyle: "italic" }}>
