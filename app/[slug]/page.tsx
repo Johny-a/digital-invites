@@ -11,7 +11,6 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const name = slug || "Guest";
 
-  // ✅ KEEP THIS (we still fetch ONCE here, not in OG route)
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -24,8 +23,8 @@ export async function generateMetadata({ params }: Props) {
     .single();
 
   const heroNames = event?.hero_names || "The Wedding";
-  const endingPhoto = event?.ending_photo
-  ?.replace("/object/public/", "/render/image/public/") || "";
+  const endingPhoto =
+    event?.ending_photo?.replace("/object/public/", "/render/image/public/") || "";
 
   return {
     title: `${heroNames}'s Wedding Invitation`,
@@ -37,7 +36,7 @@ export async function generateMetadata({ params }: Props) {
       type: "website",
       images: [
         {
-          url: `https://digital-invites-xi.vercel.app/api/og/${name}?title=${encodeURIComponent(heroNames)}&img=${encodeURIComponent(endingPhoto)}`ngPhoto)}`,
+          url: endingPhoto,
           width: 1200,
           height: 630,
           alt: `${heroNames}'s Wedding Invitation`,
@@ -47,9 +46,7 @@ export async function generateMetadata({ params }: Props) {
     twitter: {
       card: "summary_large_image",
       title: `${heroNames} - ${name}'s Invitation`,
-      images: [
-  `https://digital-invites-xi.vercel.app/api/og?name=${name}&title=${encodeURIComponent(heroNames)}&img=${encodeURIComponent(endingPhoto)}`,
-]
+      images: [endingPhoto],
     },
   };
 }
