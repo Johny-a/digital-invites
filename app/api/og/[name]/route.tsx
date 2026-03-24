@@ -5,9 +5,12 @@ export const runtime = "edge";
 
 export async function GET(
   request: Request,
-  { params }: { params: { name: string } }
+  context: { params: { name: string } }
 ) {
-  const { name } = params;
+  const { name } = context.params;
+
+  // your logic...
+}
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
