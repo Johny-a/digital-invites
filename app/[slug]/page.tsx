@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import WeddingClient from "./WeddingClient";
 
-export const dynamic = "force-static"; // ✅ GOOD
-
+export const dynamic = "force-dynamic"; // ✅ GOOD
+export const revalidate = 3600;
 type Props = {
   params: Promise<{ slug: string }>;
 };
