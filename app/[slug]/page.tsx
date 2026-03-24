@@ -12,6 +12,7 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const name = slug || "Guest";
 
+  // Fetch hero names from supabase
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -24,11 +25,8 @@ export async function generateMetadata({ params }: Props) {
 
   const heroNames = event?.hero_names || "The Wedding";
 
-  // ✅ ADD THIS RIGHT HERE (THIS WAS MISSING)
-  const imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/og-images/${name}.png`;
-
   return {
-    title: `${heroNames}'s Wedding Invitation`,
+    title: `${heroNames}'s Wedding Invitation`,  
     description: `You're invited to the wedding of ${heroNames} 💍`,
     openGraph: {
       title: `${heroNames}'s Wedding Invitation`,
@@ -36,8 +34,7 @@ export async function generateMetadata({ params }: Props) {
       url: `https://digital-invites-xi.vercel.app/${name}`,
       type: "website",
       images: [
-        {
-          url: imageUrl, // ✅ now defined
+        { url: `https://digital-invites-xi.vercel.app/api/og/${encodeURIComponent(name)}`,  // ✅ path not query
           width: 1200,
           height: 630,
           alt: `${heroNames}'s Wedding Invitation`,
@@ -47,7 +44,7 @@ export async function generateMetadata({ params }: Props) {
     twitter: {
       card: "summary_large_image",
       title: `${heroNames} - ${name}'s Invitation`,
-      images: [imageUrl],
+      images: [`https://digital-invites-xi.vercel.app/api/og/${encodeURIComponent(name)}`],  // ✅ same here
     },
   };
 }
