@@ -45,17 +45,3 @@ export default async function InvitePage({ params }: Props) {
     </main>
   );
 }
-```
-
----
-
-**Add this to your `.env.local`:**
-```
-NEXT_PUBLIC_SITE_URL=https://yourdomain.com
-```
-
----
-
-The URL people share on WhatsApp should be:
-```
-https://yourdomain.com/invite/John
