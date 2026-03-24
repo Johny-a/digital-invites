@@ -5,16 +5,15 @@ export const runtime = "edge";
 
 export async function GET(
   request: Request,
-  context: { params: { name: string } }
+  { params }: { params: { name: string } }
 ) {
-  const { name } = context.params;
+  const { name } = params;
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // ⚠️ server only
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  // Generate image
   const image = new ImageResponse(
     (
       <div
@@ -34,15 +33,11 @@ export async function GET(
     { width: 1200, height: 630 }
   );
 
-  // Convert to buffer
   const arrayBuffer = await image.arrayBuffer();
-
-  // Upload to Supabase
-  const filePath = `${name}.png`;
 
   await supabase.storage
     .from("og-images")
-    .upload(filePath, arrayBuffer, {
+    .upload(`${name}.png`, arrayBuffer, {
       contentType: "image/png",
       upsert: true,
     });
