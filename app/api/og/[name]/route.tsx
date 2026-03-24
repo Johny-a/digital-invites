@@ -3,11 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "edge";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { name: string } }
-) {
-  const { name } = params;
+export async function GET(request: Request, context: any) {
+  const { name } = context.params;
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
