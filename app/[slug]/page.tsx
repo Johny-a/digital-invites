@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props) {
       url: `https://digital-invites-xi.vercel.app/${name}`,
       type: "website",
       images: [
-        { url: `https://digital-invites-xi.vercel.app/api/og/${encodeURIComponent(name)}`,  // ✅ path not query
+        { url: imageUrl, // ✅ USE STATIC IMAGE HERE
           width: 1200,
           height: 630,
           alt: `${heroNames}'s Wedding Invitation`,
