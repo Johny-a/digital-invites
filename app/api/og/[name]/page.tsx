@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${decodedName} - Wedding Invitation 💍`,
+      title: `${decodedName} - Wedding Invitation  💍`,
       description: `You're invited to the wedding!`,
       images: [ogImageUrl],
     },
