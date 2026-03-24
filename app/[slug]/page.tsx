@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: Props) {
       card: "summary_large_image",
       title: `${heroNames} - ${name}'s Invitation`,
       images: [
-  `https://digital-invites-xi.vercel.app/api/og?name=${name}&title=${encodeURIComponent(heroNames)}&img=${encodeURIComponent(endingPhoto)}`
+  `https://digital-invites-xi.vercel.app/api/og?name=${name}&title=${encodeURIComponent(heroNames)}&img=${encodeURIComponent(endingPhoto)}`,
 ]
     },
   };
