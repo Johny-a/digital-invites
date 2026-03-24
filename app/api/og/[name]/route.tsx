@@ -9,18 +9,25 @@ export async function GET(
 ) {
   const { name } = context.params;
 
-  // your logic...
-}
-
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // ⚠️ use service key for upload
+    process.env.SUPABASE_SERVICE_ROLE_KEY! // ⚠️ server only
   );
 
   // Generate image
   const image = new ImageResponse(
     (
-      <div style={{ width: "1200px", height: "630px", display: "flex", alignItems: "center", justifyContent: "center", background: "black", color: "white" }}>
+      <div
+        style={{
+          width: "1200px",
+          height: "630px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "black",
+          color: "white",
+        }}
+      >
         <h1>{name}</h1>
       </div>
     ),
