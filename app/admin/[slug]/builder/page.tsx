@@ -29,7 +29,7 @@ cover_image?: string;
   date_text: string;
   time_text: string;
   location_text: string;
-event_date_iso: string;
+event_date_iso?: string;
 
   ceremony_place: string;
   ceremony_time: string;
@@ -340,7 +340,7 @@ const { error } = await supabase
   onChange={(e) => {
     const date = e.target.value;
 
-    const iso = new Date(`${date} ${event.time_text || "00:00"}`).toISOString();
+    const iso = `${date}T${event.time_text || "00:00"}`;
 
     updateEvent({
       date_text: date,
@@ -354,14 +354,11 @@ const { error } = await supabase
   placeholder="Time (e.g. 17:00)"
   value={event.time_text || ""}
 onChange={(e) => {
-  if (!e.target.value) return; // ✅ prevent crash
-
-  const date = new Date(e.target.value);
-
-  if (isNaN(date.getTime())) return; // ✅ prevent invalid date
+  const time = e.target.value;
 
   updateEvent({
-    event_date_iso: date.toISOString(),
+    time_text: time,
+    event_date_iso: `${event.date_text || ""}T${time}`,
   });
 }}
 />
@@ -372,17 +369,13 @@ onChange={(e) => {
 <input
   type="datetime-local"
   className="w-full bg-black/40 border rounded px-4 py-2"
-  value={
-    event.event_date_iso
-      ? new Date(event.event_date_iso).toISOString().slice(0, 16)
-      : ""
-  }
+  value={event.event_date_iso || ""}
   onChange={(e) => {
-const local = e.target.value; // "2026-04-26T17:00"
+    const local = e.target.value;
 
-updateEvent({
-  event_date_iso: local, // ✅ store as LOCAL, NOT ISO
-});
+    updateEvent({
+      event_date_iso: local,
+    });
   }}
 />
   </div>

@@ -19,7 +19,7 @@ type EventData = {
   id?: string;
 
   ending_photo: string;
-
+event_date_iso?: string;
   bg_mode?: "video" | "slideshow";
   bg_images?: string[];
   bg_video?: string;
@@ -303,18 +303,17 @@ init();
 
 // ⏳ COUNTDOWN EFFECT
 useEffect(() => {
-  if (!safeEvent.date_text) return;
-
-const targetDate = safeEvent.event_date_iso
-  ? new Date(safeEvent.event_date_iso)
-  : null;
+  if (!safeEvent.event_date_iso) return;
 
   const interval = setInterval(() => {
     const now = new Date().getTime();
+    const targetDate = new Date(safeEvent.event_date_iso!).getTime();
+
     const difference = targetDate - now;
 
     if (difference <= 0) {
       clearInterval(interval);
+      setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       return;
     }
 
@@ -327,7 +326,7 @@ const targetDate = safeEvent.event_date_iso
   }, 1000);
 
   return () => clearInterval(interval);
-}, [safeEvent.date_text]);
+}, [safeEvent.event_date_iso]);
 
   const changePage = (next: number) => {
     if (next < 0 || next >= SLIDES.length) return;
