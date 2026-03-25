@@ -63,6 +63,7 @@ gift_note: "",
   bg_images: [],
   bg_video: "",
   music_url: "",
+event_date_iso: "",
 
   ending_photo: "",
 
