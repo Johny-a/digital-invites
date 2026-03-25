@@ -54,8 +54,8 @@ type EventData = {
 
   gallery?: string[];
 
-  gifts?: { label: string; value: string }[];
-
+  gifts?: { label: string; value: string; logo?: string }[];
+gift_note?: string;
   ending_message?: string;
 
   template_id?: string;
@@ -305,7 +305,9 @@ init();
 useEffect(() => {
   if (!safeEvent.date_text) return;
 
-  const targetDate = new Date(safeEvent.date_text).getTime();
+const targetDate = safeEvent.event_date_iso
+  ? new Date(safeEvent.event_date_iso)
+  : null;
 
   const interval = setInterval(() => {
     const now = new Date().getTime();
@@ -336,7 +338,7 @@ useEffect(() => {
     }, 200);
   };
 const submitRSVP = async () => {
-  if (!mainName || attending === null || guestCount <= 0) {
+  if (!mainName || attending === null || guestCount < 0) {
   setError("Please fill all fields.");
   return;
 }
@@ -719,7 +721,9 @@ loading="lazy"
         {current === "rsvp" && (
   <div className="w-full max-w-sm bg-black/50 border border-white/20 rounded-2xl p-5 space-y-4">
     <h2 className="text-2xl font-bold">Be Our Guest</h2>
-    <p className="text-sm text-white/80">Please reply before the wedding</p>
+    <p className="text-sm text-white/80">
+  Kindly confirm your attendance and number of guests
+</p>
 
     {sent ? (
       <p className="text-green-400 font-semibold">Thank you! ❤️</p>
@@ -731,6 +735,24 @@ loading="lazy"
           value={mainName}
           onChange={(e) => setMainName(e.target.value)}
         />
+
+<div className="space-y-1">
+  <label className="text-sm text-white/80">
+    Number of guests
+  </label>
+
+  <input
+    type="number"
+    inputMode="numeric"
+    min="0"
+    className="w-full bg-black/40 border border-white/30 rounded px-3 py-2 appearance-none"
+    value={guestCount}
+    onChange={(e) => {
+      const val = Math.max(0, Number(e.target.value));
+      setGuestCount(val);
+    }}
+  />
+</div>
 
         <div className="flex gap-2">
           <button
@@ -750,29 +772,7 @@ loading="lazy"
             Regretfully Decline
           </button>
         </div>
-{attending !== null && (
-  <div className="space-y-1">
-    <label className="text-sm text-white/80">
-      {attending ? "Number of guests attending" : "Number of guests not attending"}
-    </label>
 
-    <input
-      type="number"
-      inputMode="numeric"
-      placeholder="Enter number"
-      className="w-full bg-black/40 border border-white/30 rounded px-3 py-2 appearance-none"
-      value={guestCount === 0 ? "" : guestCount}
-      onChange={(e) => {
-        const val = e.target.value;
-        if (val === "") {
-          setGuestCount(0);
-        } else {
-          setGuestCount(Number(val));
-        }
-      }}
-    />
-  </div>
-)}
 
 
         <textarea
@@ -855,38 +855,54 @@ loading="lazy"
       Your love and presence are the best gifts. For those who wish, a wedding list is available.
     </p>
 
+{safeEvent.gift_note && (
+  <p className="text-sm text-white/70 mt-2">
+    {safeEvent.gift_note}
+  </p>
+)}
+
     <div className="space-y-4 mt-4 max-h-64 overflow-y-auto pr-1">
 {safeEvent.gifts?.length === 0 && (
     <p className="text-white/60 text-sm">No gift methods added.</p>
   )}
 
   {safeEvent.gifts?.map((g, i) => (
-    <div
-      key={i}
-      className="border border-white/20 rounded-xl p-4 flex items-center justify-between gap-3 bg-black/30"
-    >
-      <div className="text-left">
-        <div className="text-lg font-semibold">{g.label || "Gift Method"}</div>
-        <div className="text-sm text-white/80 break-all">{g.value}</div>
-      </div>
-
-      <button
-        className="px-3 py-2 border border-white/30 rounded"
-        onClick={() => {
-          if (g.value) {
-            navigator.clipboard.writeText(g.value);
-            alert("Copied!");
-          }
-        }}
-        title="Copy"
-      >
-        📋
-      </button>
+<div
+  key={i}
+  className="border border-white/20 rounded-xl p-4 flex items-center justify-between gap-3 bg-black/30"
+>
+  {/* LEFT: TEXT */}
+  <div className="text-left">
+    <div className="text-lg font-semibold">
+      {g.label || "Gift Method"}
     </div>
-  ))}
-</div>
-
+    <div className="text-sm text-white/80 break-all">
+      {g.value}
+    </div>
   </div>
+
+  {/* RIGHT: LOGO (click = copy) */}
+  {g.logo && (
+    <div
+      onClick={() => {
+        if (g.value) {
+          navigator.clipboard.writeText(g.value);
+alert("Copied!");
+        }
+      }}
+      className="cursor-pointer border border-white/20 rounded-lg p-2 bg-white/10 hover:bg-white/20 transition"
+    >
+      <img
+        src={g.logo}
+        alt={g.label}
+        className="w-6 h-6 object-contain"
+      />
+    </div>
+  )}
+</div>
+))}
+</div>
+</div>
 )}
 {/* ENDING */}
 {current === "ending" && (

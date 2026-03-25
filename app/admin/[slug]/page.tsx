@@ -74,12 +74,12 @@ const stats = useMemo(() => {
   const total = rsvps.length;
 
   const attendingPeople = rsvps
-    .filter((r) => r.attending === true)
-    .reduce((sum, r) => sum + (Number(r.guest_count) || 0), 0);
+  .filter((r) => r.attending === true)
+  .reduce((sum, r) => sum + 1 + (Number(r.guest_count) || 0), 0);
 
   const notAttending = rsvps
-    .filter((r) => r.attending === false)
-    .reduce((sum, r) => sum + (Number(r.guest_count) || 0), 0);
+  .filter((r) => r.attending === false)
+  .reduce((sum, r) => sum + 1, 0);
 
   return { total, attending: attendingPeople, notAttending };
 }, [rsvps]);
@@ -352,7 +352,15 @@ const exportExcel = () => {
                       )}
                     </td>
 <td className="font-semibold">
-  {Number(r.guest_count) || "-"}
+  {r.attending ? (
+    Number(r.guest_count) > 0
+      ? `${r.main_name} + ${r.guest_count}`
+      : r.main_name
+  ) : (
+    Number(r.guest_count) > 0
+      ? `${r.main_name} + ${r.guest_count} (Not attending)`
+      : `${r.main_name} (Not attending)`
+  )}
 </td>
 
                     <td className="max-w-[200px] truncate">{r.note || "-"}</td>

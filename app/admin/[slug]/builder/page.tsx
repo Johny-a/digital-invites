@@ -29,6 +29,7 @@ cover_image?: string;
   date_text: string;
   time_text: string;
   location_text: string;
+event_date_iso: string;
 
   ceremony_place: string;
   ceremony_time: string;
@@ -46,8 +47,8 @@ cover_image?: string;
 
   gallery: string[];
 
-  gifts: { label: string; value: string }[];
-
+  gifts: { label: string; value: string; logo?: string }[];
+gift_note?: string;
   ending_message: string;
 
   template_id: string;
@@ -57,7 +58,7 @@ const EMPTY_EVENT: EventData = {
   hero_names: "",
   hero_tagline: "",
   hero_headline: "",
-
+gift_note: "",
   bg_mode: "slideshow",
   bg_images: [],
   bg_video: "",
@@ -331,19 +332,58 @@ const { error } = await supabase
       onChange={(e) => updateEvent({ invitation_request_line: e.target.value })}
     />
 
-    <input
-      className="w-full bg-black/40 border rounded px-4 py-2"
-      placeholder="Date (e.g. Saturday, July 5th, 2025)"
-      value={event.date_text || ""}
-      onChange={(e) => updateEvent({ date_text: e.target.value })}
-    />
+<input
+  className="w-full bg-black/40 border rounded px-4 py-2"
+  placeholder="Date (e.g. 2026-04-26)"
+  value={event.date_text || ""}
+  onChange={(e) => {
+    const date = e.target.value;
 
-    <input
-      className="w-full bg-black/40 border rounded px-4 py-2"
-      placeholder="Time (e.g. 5:30 PM)"
-      value={event.time_text || ""}
-      onChange={(e) => updateEvent({ time_text: e.target.value })}
-    />
+    const iso = new Date(`${date} ${event.time_text || "00:00"}`).toISOString();
+
+    updateEvent({
+      date_text: date,
+      event_date_iso: iso,
+    });
+  }}
+/>
+
+<input
+  className="w-full bg-black/40 border rounded px-4 py-2"
+  placeholder="Time (e.g. 17:00)"
+  value={event.time_text || ""}
+onChange={(e) => {
+  if (!e.target.value) return; // ✅ prevent crash
+
+  const date = new Date(e.target.value);
+
+  if (isNaN(date.getTime())) return; // ✅ prevent invalid date
+
+  updateEvent({
+    event_date_iso: date.toISOString(),
+  });
+}}
+/>
+<label className="text-xs text-white/50">
+  Countdown (exact date & time)
+</label>
+
+<input
+  type="datetime-local"
+  className="w-full bg-black/40 border rounded px-4 py-2"
+  value={
+    event.event_date_iso
+      ? new Date(event.event_date_iso).toISOString().slice(0, 16)
+      : ""
+  }
+  onChange={(e) => {
+const local = e.target.value; // "2026-04-26T17:00"
+
+updateEvent({
+  event_date_iso: local, // ✅ store as LOCAL, NOT ISO
+});
+  }}
+/>
   </div>
 )}
 
@@ -498,53 +538,105 @@ const { error } = await supabase
 
           {/* GIFTS */}
 {tab === "gifts" && (
-  <div className="space-y-3">
+  <div className="space-y-4">
+
+    {/* ✅ MESSAGE (TOP - FULL WIDTH) */}
+    <div className="space-y-2">
+      <label className="text-sm text-white/70">
+        Gift Section Message
+      </label>
+
+      <textarea
+        rows={3}
+        className="w-full bg-black/50 border border-white/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500"
+        placeholder="e.g. Please confirm your attendance before 10 April 2026 using your invitation code"
+        value={event.gift_note || ""}
+        onChange={(e) => updateEvent({ gift_note: e.target.value })}
+      />
+
+      <p className="text-xs text-white/40">
+        This text appears under the gift message
+      </p>
+    </div>
+
+    {/* ✅ GIFT METHODS */}
     {(event.gifts || []).map((g, i) => (
-      <div key={i} className="flex gap-2">
-        <input
-          className="flex-1 bg-black/40 border rounded px-3 py-2"
-          placeholder="Method (e.g. WHISH, Bank, OMT)"
-          value={g.label}
-          onChange={(e) => {
-            const arr = [...(event.gifts || [])];
-            arr[i] = { ...arr[i], label: e.target.value };
-            updateEvent({ gifts: arr });
-          }}
-        />
+    <div key={i} className="flex flex-col gap-2 border border-white/10 p-3 rounded-lg">
+ {/* Method + Value row */}
+<div className="flex gap-2">
+  <input
+    className="flex-1 bg-black/40 border rounded px-3 py-2"
+    placeholder="Method (e.g. Whish)"
+    value={g.label}
+    onChange={(e) => {
+      const arr = [...event.gifts];
+      arr[i].label = e.target.value;
+      updateEvent({ gifts: arr });
+    }}
+  />
 
-        <input
-          className="flex-1 bg-black/40 border rounded px-3 py-2"
-          placeholder="Account / Info"
-          value={g.value}
-          onChange={(e) => {
-            const arr = [...(event.gifts || [])];
-            arr[i] = { ...arr[i], value: e.target.value };
-            updateEvent({ gifts: arr });
-          }}
-        />
+  <input
+    className="flex-1 bg-black/40 border rounded px-3 py-2"
+    placeholder="Account / Number"
+    value={g.value}
+    onChange={(e) => {
+      const arr = [...event.gifts];
+      arr[i].value = e.target.value;
+      updateEvent({ gifts: arr });
+    }}
+  />
 
-        <button
-          className="px-3 border border-white/30 rounded"
-          onClick={() => {
-            const arr = (event.gifts || []).filter((_, idx) => idx !== i);
-            updateEvent({ gifts: arr });
-          }}
-        >
-          ✕
-        </button>
+  <button
+    className="px-3 border border-white/30 rounded"
+    onClick={() => {
+      const arr = event.gifts.filter((_, idx) => idx !== i);
+      updateEvent({ gifts: arr });
+    }}
+  >
+    ✕
+  </button>
+</div>
+
+{/* ✅ LOGO UPLOAD */}
+<input
+  type="file"
+  accept="image/*"
+  onChange={async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+
+    const url = await uploadFile(f, "gift-logo");
+
+    const arr = [...event.gifts];
+    arr[i] = { ...arr[i], logo: url };
+    updateEvent({ gifts: arr });
+  }}
+/>
+
+{/* Preview logo */}
+{g.logo && (
+  <img
+    src={g.logo}
+    alt="logo"
+    className="w-10 h-10 object-contain mt-1"
+  />
+)}
+
       </div>
     ))}
 
+    {/* ADD BUTTON */}
     <button
       className="w-full py-2 border border-white/30 rounded"
       onClick={() =>
         updateEvent({
-          gifts: [...(event.gifts || []), { label: "", value: "" }],
+          gifts: [...event.gifts, { label: "", value: "" }],
         })
       }
     >
       + Add Gift Method
     </button>
+
   </div>
 )}
 
