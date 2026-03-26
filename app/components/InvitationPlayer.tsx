@@ -21,7 +21,7 @@ type EventData = {
   ending_photo: string;
 event_date_iso?: string;
   bg_mode?: "video" | "slideshow";
-  bg_images?: string[];
+  bg_images?: Record<string, string>;
   bg_video?: string;
   music_url?: string;
 
@@ -126,7 +126,7 @@ export default function InvitationPlayer({
   const safeEvent: EventData = {
   ...event,
   gallery: Array.isArray(event?.gallery) ? event.gallery : [],
-  bg_images: Array.isArray(event?.bg_images) ? event.bg_images : [],
+  bg_images: event?.bg_images || {},
   gifts: Array.isArray(event?.gifts) ? event.gifts : [],
   text_positions: event?.text_positions || {},
 };
@@ -150,7 +150,7 @@ const dynamicSlides = [
 const SLIDES = gallery.length > 0
   ? [...dynamicSlides, "photos", "ending"]
   : [...dynamicSlides, "ending"];
-const bgImages = safeEvent.bg_images ?? [];
+const bgImages = safeEvent.bg_images || {};
 const [assetsReady, setAssetsReady] = useState(false);
 const [loadingProgress, setLoadingProgress] = useState(0);
 const [firstBgLoaded, setFirstBgLoaded] = useState(false);
@@ -200,7 +200,7 @@ useEffect(() => {
     // 👇 ONLY load 1–2 assets before enter
     const tasks: Promise<void>[] = [];
 
-safeEvent.bg_images?.forEach((src) => {
+Object.values(safeEvent.bg_images || {}).forEach((src) => {
   if (src) {
     tasks.push(loadImage(getOptimizedSrc(src)));
   }
@@ -258,7 +258,7 @@ const loadVideo = (src: string) =>
     const tasks: Promise<void>[] = [];
 
     // Background images
-safeEvent.bg_images?.forEach((src) => {
+Object.values(safeEvent.bg_images || {}).forEach((src) => {
   if (src) {
     tasks.push(loadImage(getOptimizedSrc(src)));
   }
@@ -299,10 +299,12 @@ safeEvent.gallery?.slice(0, 2).forEach((src) => {
     }
   };
 const init = async () => {
-  if (safeEvent.bg_images?.[0]) {
-    await loadImage(getOptimizedSrc(safeEvent.bg_images[0]));
-    if (isMounted) setFirstBgLoaded(true);
-  }
+  const firstBg = Object.values(safeEvent.bg_images || {})[0];
+
+if (firstBg) {
+  await loadImage(getOptimizedSrc(firstBg));
+  if (isMounted) setFirstBgLoaded(true);
+}
 
   await loadAll();
 };
@@ -389,7 +391,7 @@ const submitRSVP = async () => {
 
   const current = SLIDES[page];
 const totalAssets =
-  (safeEvent.bg_images?.filter(Boolean).length ?? 0) +
+  Object.values(safeEvent.bg_images || {}).filter(Boolean).length +
   (safeEvent.gallery?.length ?? 0) +
   (safeEvent.ending_photo ? 1 : 0) +
   (safeEvent.bg_video ? 1 : 0) +
@@ -450,18 +452,26 @@ setPhotoIndex((i) =>
   />
 )}
 
-{safeEvent.bg_mode === "slideshow" && bgImages.length > 0 && (
+{safeEvent.bg_mode === "slideshow" && (
   <div className="absolute inset-0">
-    <img
-      key={page}
-      src={getOptimizedSrc(bgImages[page] || bgImages[0])}
-      className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-700 ${
-        fade ? "opacity-0" : "opacity-100"
-      }`}
-    />
+    {(() => {
+      const currentKey = SLIDES[page];
+      const bg = safeEvent.bg_images?.[currentKey];
+
+      if (!bg) return null;
+
+      return (
+        <img
+          key={page}
+          src={getOptimizedSrc(bg)}
+          className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-700 ${
+            fade ? "opacity-0" : "opacity-100"
+          }`}
+        />
+      );
+    })()}
   </div>
 )}
-
       {/* Music */}
 {safeEvent.music_url && (
 <audio

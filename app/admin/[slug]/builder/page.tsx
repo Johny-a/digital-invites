@@ -23,7 +23,7 @@ after_note?: string;
   ending_photo: string;
 
   bg_mode?: "video" | "slideshow";
-  bg_images?: string[];
+  bg_images?: Record<string, string>;
   bg_video?: string;
   music_url?: string;
 
@@ -66,7 +66,7 @@ const EMPTY_EVENT: EventData = {
 gift_note: "",
 ceremony_note: "",
   bg_mode: "slideshow",
-  bg_images: [],
+  bg_images: {},
   bg_video: "",
   music_url: "",
 event_date_iso: "",
@@ -119,6 +119,9 @@ const BG_SLIDES = [
   "ceremony",
   "after",
   "celebration",
+  "gifts",
+  "rsvp",
+  "photos",
   "ending",
 ] as const;
 
@@ -138,6 +141,7 @@ export default function BuilderPage() {
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+const [bgTarget, setBgTarget] = useState("hero");
 
   useEffect(() => setMounted(true), []);
 
@@ -508,53 +512,65 @@ onChange={(e) => {
     {/* Upload images */}
     <div>
       <label className="text-sm">
-  Background for: 
-<span className="text-purple-400 capitalize">{tab}</span>
+  <select
+  className="w-full bg-black/40 border rounded px-3 py-2"
+value={bgTarget}
+onChange={(e) => setBgTarget(e.target.value)}
+>
+  {BG_SLIDES.map((s) => (
+    <option key={s} value={s}>
+      {s}
+    </option>
+  ))}
+</select>
 
-{!BG_SLIDES.includes(tab as any) && (
+{!BG_SLIDES.includes(bgTarget as any) && (
   <span className="text-red-400 text-xs ml-2">(no background)</span>
 )}
 </label>
       <input
         type="file"
         accept="image/*"
-        onChange={async (e) => {
+onChange={async (e) => {
   const f = e.target.files?.[0];
   if (!f) return;
 
   const url = await uploadFile(f, "bg-image");
 
-  const index = BG_SLIDES.indexOf(tab as any);
-if (index === -1) return; // skip tabs like photos, rsvp, media
-
-const newImages = [...(event.bg_images || [])];
-newImages[index] = url;
+  const newImages = {
+  ...(event.bg_images || {}),
+  [bgTarget]: url,
+};
 
 updateEvent({ bg_images: newImages });
-
-  updateEvent({ bg_images: newImages });
 }}
       />
     </div>
 
     <div className="grid grid-cols-3 gap-2">
-      {(event.bg_images || []).map((img, i) => (
-        <div key={i} className="relative group">
-          <img src={img} className="h-20 w-full object-cover rounded" />
-          <button
-            className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-1 rounded"
-            onClick={() => {
-              const arr = [...(event.bg_images || [])];
-arr[i] = ""; // keep index, just clear image
-updateEvent({ bg_images: arr });
-            }}
-          >
-            ✕
-          </button>
-        </div>
-      ))}
+      {Object.entries(event.bg_images || {}).map(([key, img]) => (
+  <div key={key} className="relative group">
+    {img && (
+  <img src={img} className="h-20 w-full object-cover rounded" />
+)}
+
+    <div className="absolute bottom-1 left-1 text-[10px] bg-black/60 px-1 rounded">
+      {key}
     </div>
 
+    <button
+      className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-1 rounded"
+      onClick={() => {
+        const copy = { ...(event.bg_images || {}) };
+        delete copy[key];
+        updateEvent({ bg_images: copy });
+      }}
+    >
+      ✕
+    </button>
+  </div>
+))}
+</div> 
     {/* Music */}
     <div>
       <label className="text-sm">Background Music</label>
