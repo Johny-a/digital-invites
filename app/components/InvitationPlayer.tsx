@@ -730,14 +730,11 @@ loading="lazy"
 {current === "after" && (
   <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-6">
 
-    <h2 className="text-3xl font-bold">After Wedding</h2>
+    <h2 className="text-3xl font-bold">
+  {safeEvent.after_note}
+</h2>
 
-    {/* NOTE */}
-    {safeEvent.after_note && (
-      <p className="text-sm text-white/80 max-w-xs">
-        {safeEvent.after_note}
-      </p>
-    )}
+ 
 
     {/* LOCATION */}
     {safeEvent.after_place && (
