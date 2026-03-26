@@ -12,8 +12,13 @@ const supabase = createClient(
 
 type EventData = {
   id?: string;
-
+ceremony_note?: string;
 cover_image?: string;
+
+after_place?: string;
+after_time?: string;
+after_map?: string;
+after_note?: string;
 
   ending_photo: string;
 
@@ -59,11 +64,16 @@ const EMPTY_EVENT: EventData = {
   hero_tagline: "",
   hero_headline: "",
 gift_note: "",
+ceremony_note: "",
   bg_mode: "slideshow",
   bg_images: [],
   bg_video: "",
   music_url: "",
 event_date_iso: "",
+after_place: "",
+after_time: "",
+after_map: "",
+after_note: "",
 
   ending_photo: "",
 
@@ -95,6 +105,7 @@ const SLIDES = [
   "hero",
   "invitation",
   "ceremony",
+  "after", 
   "celebration",
   "gifts",      
   "rsvp",
@@ -384,27 +395,77 @@ onChange={(e) => {
 
           {/* CEREMONY */}
           {tab === "ceremony" && (
-            <>
-              <input className="w-full bg-black/40 border rounded px-4 py-2" placeholder="Place"
-                value={event.ceremony_place} onChange={(e) => updateEvent({ ceremony_place: e.target.value })} />
-              <input className="w-full bg-black/40 border rounded px-4 py-2" placeholder="Time"
-                value={event.ceremony_time} onChange={(e) => updateEvent({ ceremony_time: e.target.value })} />
-              <input className="w-full bg-black/40 border rounded px-4 py-2" placeholder="Map link"
-                value={event.ceremony_map} onChange={(e) => updateEvent({ ceremony_map: e.target.value })} />
-            </>
-          )}
+  <>
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Place"
+      value={event.ceremony_place}
+      onChange={(e) => updateEvent({ ceremony_place: e.target.value })}
+    />
 
-          {/* CELEBRATION */}
-          {tab === "celebration" && (
-            <>
-              <input className="w-full bg-black/40 border rounded px-4 py-2" placeholder="Place"
-                value={event.celebration_place} onChange={(e) => updateEvent({ celebration_place: e.target.value })} />
-              <input className="w-full bg-black/40 border rounded px-4 py-2" placeholder="Time"
-                value={event.celebration_time} onChange={(e) => updateEvent({ celebration_time: e.target.value })} />
-              <input className="w-full bg-black/40 border rounded px-4 py-2" placeholder="Map link"
-                value={event.celebration_map} onChange={(e) => updateEvent({ celebration_map: e.target.value })} />
-            </>
-          )}
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Time"
+      value={event.ceremony_time}
+      onChange={(e) => updateEvent({ ceremony_time: e.target.value })}
+    />
+
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Map link"
+      value={event.ceremony_map}
+      onChange={(e) => updateEvent({ ceremony_map: e.target.value })}
+    />
+
+    {/* ✅ NEW FIELD */}
+    <textarea
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Extra text under title (e.g. Dear family and friends...)"
+      value={event.ceremony_note || ""}
+      onChange={(e) => updateEvent({ ceremony_note: e.target.value })}
+    />
+  </>
+)}
+
+
+
+
+
+{tab === "after" && (
+  <>
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="After Wedding Place"
+      value={event.after_place || ""}
+      onChange={(e) => updateEvent({ after_place: e.target.value })}
+    />
+
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="After Wedding Time"
+      value={event.after_time || ""}
+      onChange={(e) => updateEvent({ after_time: e.target.value })}
+    />
+
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Map link"
+      value={event.after_map || ""}
+      onChange={(e) => updateEvent({ after_map: e.target.value })}
+    />
+
+    <textarea
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Note (text above location/time)"
+      value={event.after_note || ""}
+      onChange={(e) => updateEvent({ after_note: e.target.value })}
+    />
+  </>
+)}
+
+
+
+
 
           {/* MEDIA */}
 {tab === "media" && (

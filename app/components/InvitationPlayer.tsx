@@ -42,7 +42,13 @@ event_date_iso?: string;
   invitation_parents_right?: string;
   invitation_request_line?: string;
 
+after_place?: string;
+after_time?: string;
+after_map?: string;
+after_note?: string;
+
   ceremony_place?: string;
+ceremony_note?: string;
   ceremony_time?: string;
   ceremony_map?: string;
 
@@ -125,9 +131,25 @@ export default function InvitationPlayer({
   text_positions: event?.text_positions || {},
 };
 const gallery = safeEvent.gallery ?? [];
+const hasAfter =
+  safeEvent.after_place ||
+  safeEvent.after_time ||
+  safeEvent.after_map ||
+  safeEvent.after_note;
+
+const dynamicSlides = [
+  "hero",
+  "invitation",
+  "ceremony",
+  ...(hasAfter ? ["after"] : []), // ✅ ONLY SHOW IF FILLED
+  "celebration",
+  "gifts",
+  "rsvp",
+];
+
 const SLIDES = gallery.length > 0
-  ? [...BASE_SLIDES.slice(0, 6), "photos", "ending"]
-  : BASE_SLIDES;
+  ? [...dynamicSlides, "photos", "ending"]
+  : [...dynamicSlides, "ending"];
 const bgImages = safeEvent.bg_images ?? [];
 const [assetsReady, setAssetsReady] = useState(false);
 const [loadingProgress, setLoadingProgress] = useState(0);
@@ -679,14 +701,58 @@ loading="lazy"
 
 {current === "ceremony" && (
   <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-6">
+
     <h2 className="text-3xl font-bold">Wedding Ceremony</h2>
+
+    {/* ✅ NEW TEXT */}
+    {safeEvent.ceremony_note && (
+      <p className="text-sm text-white/80 max-w-xs">
+        {safeEvent.ceremony_note}
+      </p>
+    )}
 
     <div className="text-lg">📍 {safeEvent.ceremony_place}</div>
     <div className="text-lg">{safeEvent.ceremony_time}</div>
-
     {safeEvent.ceremony_map && (
       <a
         href={safeEvent.ceremony_map}
+        target="_blank"
+        className="inline-block mt-2 border border-white px-6 py-2 rounded"
+      >
+        Map
+      </a>
+    )}
+  </div>
+)}
+
+
+
+{current === "after" && (
+  <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-6">
+
+    <h2 className="text-3xl font-bold">After Wedding</h2>
+
+    {/* NOTE */}
+    {safeEvent.after_note && (
+      <p className="text-sm text-white/80 max-w-xs">
+        {safeEvent.after_note}
+      </p>
+    )}
+
+    {/* LOCATION */}
+    {safeEvent.after_place && (
+      <div className="text-lg">📍 {safeEvent.after_place}</div>
+    )}
+
+    {/* TIME */}
+    {safeEvent.after_time && (
+      <div className="text-lg">{safeEvent.after_time}</div>
+    )}
+
+    {/* MAP */}
+    {safeEvent.after_map && (
+      <a
+        href={safeEvent.after_map}
         target="_blank"
         className="inline-block mt-2 border border-white px-6 py-2 rounded"
       >
