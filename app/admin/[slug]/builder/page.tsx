@@ -113,6 +113,14 @@ const SLIDES = [
   "ending",
   "media",
 ] as const;
+const BG_SLIDES = [
+  "hero",
+  "invitation",
+  "ceremony",
+  "after",
+  "celebration",
+  "ending",
+] as const;
 
 
 type Tab = (typeof SLIDES)[number];
@@ -500,7 +508,12 @@ onChange={(e) => {
     {/* Upload images */}
     <div>
       <label className="text-sm">
-  Background for: <span className="text-purple-400">{tab}</span>
+  Background for: 
+<span className="text-purple-400 capitalize">{tab}</span>
+
+{!BG_SLIDES.includes(tab as any) && (
+  <span className="text-red-400 text-xs ml-2">(no background)</span>
+)}
 </label>
       <input
         type="file"
@@ -511,10 +524,13 @@ onChange={(e) => {
 
   const url = await uploadFile(f, "bg-image");
 
-  const index = SLIDES.indexOf(tab); // 🔥 current page
+  const index = BG_SLIDES.indexOf(tab as any);
+if (index === -1) return; // skip tabs like photos, rsvp, media
 
-  const newImages = [...(event.bg_images || [])];
-  newImages[index] = url;
+const newImages = [...(event.bg_images || [])];
+newImages[index] = url;
+
+updateEvent({ bg_images: newImages });
 
   updateEvent({ bg_images: newImages });
 }}
@@ -528,8 +544,9 @@ onChange={(e) => {
           <button
             className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-1 rounded"
             onClick={() => {
-              const arr = (event.bg_images || []).filter((_, idx) => idx !== i);
-              updateEvent({ bg_images: arr });
+              const arr = [...(event.bg_images || [])];
+arr[i] = ""; // keep index, just clear image
+updateEvent({ bg_images: arr });
             }}
           >
             ✕
