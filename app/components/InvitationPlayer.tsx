@@ -161,7 +161,7 @@ const [note, setNote] = useState("");
 const [sending, setSending] = useState(false);
 const [sent, setSent] = useState(false);
 const [error, setError] = useState<string | null>(null);
-const [guestCount, setGuestCount] = useState(0);
+const [guestCount, setGuestCount] = useState<number | "">("");
 
 // ⏳ COUNTDOWN STATE
 const [timeLeft, setTimeLeft] = useState({
@@ -361,11 +361,10 @@ useEffect(() => {
     }, 200);
   };
 const submitRSVP = async () => {
-  if (!mainName || attending === null || guestCount < 0) {
-  setError("Please fill all fields.");
-  return;
-}
-  
+  if (!mainName || attending === null || guestCount === "" || Number(guestCount) < 1) {
+    setError("Guest count must be at least 1.");
+    return;
+  }
 
   setSending(true);
   setError(null);
@@ -373,7 +372,7 @@ const submitRSVP = async () => {
   const { error: dbError } = await supabase.from("rsvps").insert({
     event_id: event.id,
     main_name: mainName,
-  guest_count: guestCount,
+    guest_count: Number(guestCount) || 0,
     attending,
     note,
   });
@@ -791,9 +790,9 @@ loading="lazy"
         {/* RSVP */}
         {current === "rsvp" && (
   <div className="w-full max-w-sm bg-black/50 border border-white/20 rounded-2xl p-5 space-y-4">
-    <h2 className="text-2xl font-bold">Be Our Guest</h2>
+    <h2 className="text-2xl font-bold">Submitted!</h2>
     <p className="text-sm text-white/80">
-  Kindly confirm your attendance and number of guests
+
 </p>
 
     {sent ? (
@@ -812,17 +811,23 @@ loading="lazy"
     Number of guests
   </label>
 
-  <input
-    type="number"
-    inputMode="numeric"
-    min="0"
-    className="w-full bg-black/40 border border-white/30 rounded px-3 py-2 appearance-none"
-    value={guestCount}
-    onChange={(e) => {
-      const val = Math.max(0, Number(e.target.value));
-      setGuestCount(val);
-    }}
-  />
+ <input
+  type="number"
+  inputMode="numeric"
+  min="1"
+  className="w-full bg-black/40 border border-white/30 rounded px-3 py-2 appearance-none"
+  value={guestCount}
+  placeholder="Enter number of guests"
+  onChange={(e) => {
+    const val = e.target.value;
+
+    if (val === "") {
+      setGuestCount("");
+    } else {
+      setGuestCount(Math.max(1, Number(val)));
+    }
+  }}
+/>
 </div>
 
         <div className="flex gap-2">
