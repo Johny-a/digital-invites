@@ -730,10 +730,9 @@ loading="lazy"
 {current === "after" && (
   <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-6">
 
-    <h2 className="text-3xl font-bold">
+<h2 className="text-2xl font-bold leading-snug max-w-xs">
   {safeEvent.after_note}
 </h2>
-
  
 
     {/* LOCATION */}
