@@ -190,6 +190,11 @@ const [sending, setSending] = useState(false);
 const [sent, setSent] = useState(false);
 const [error, setError] = useState<string | null>(null);
 const [guestCount, setGuestCount] = useState<number | "">("");
+const normalizeNumber = (val: string) => {
+  return val
+    .replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d).toString())
+    .replace(/[^\d]/g, "");
+};
 
 // ⏳ COUNTDOWN STATE
 const [timeLeft, setTimeLeft] = useState({
@@ -403,7 +408,7 @@ const submitRSVP = async () => {
   const { error: dbError } = await supabase.from("rsvps").insert({
     event_id: event.id,
     main_name: mainName,
-    guest_count: Number(guestCount) || 0,
+    guest_count: Number(normalizeNumber(String(guestCount))) || 1,
     attending,
     note,
   });
@@ -972,14 +977,16 @@ loading="lazy"
   value={guestCount}
   placeholder={language === "ar" ? "عدد الضيوف" : "Enter number of guests"}
   onChange={(e) => {
-    const val = e.target.value;
+  const raw = e.target.value;
+  const normalized = normalizeNumber(raw);
 
-    if (val === "") {
-      setGuestCount("");
-    } else {
-      setGuestCount(Math.max(1, Number(val)));
-    }
-  }}
+  if (normalized === "") {
+    setGuestCount("");
+  } else {
+    const num = Number(normalized);
+    setGuestCount(num < 1 ? 1 : num);
+  }
+}}
 />
 </div>
 
