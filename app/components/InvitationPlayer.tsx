@@ -397,7 +397,7 @@ useEffect(() => {
     }, 200);
   };
 const submitRSVP = async () => {
-  if (!mainName || attending === null || guestCount === "" || Number(guestCount) < 1) {
+  if (!mainName || attending === null || guestCount === "" || Number(normalizeNumber(String(guestCount))) < 1) {
     setError("Guest count must be at least 1.");
     return;
   }
@@ -970,7 +970,7 @@ loading="lazy"
   </label>
 
  <input
-  type="number"
+  type="text"
   inputMode="numeric"
   min="1"
   className="w-full bg-black/40 border border-white/30 rounded px-3 py-2 appearance-none"
