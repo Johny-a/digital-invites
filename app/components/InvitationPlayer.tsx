@@ -67,6 +67,11 @@ after_time?: string;
 after_map?: string;
 after_note?: string;
 
+
+after_place_ar?: string;
+after_time_ar?: string;
+after_note_ar?: string;
+
   ceremony_place?: string;
 ceremony_note?: string;
   ceremony_time?: string;
