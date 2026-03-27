@@ -204,7 +204,9 @@ const [timeLeft, setTimeLeft] = useState({
 const template = TEMPLATES[templateId] || TEMPLATES.classic;
 
 const [page, setPage] = useState(0);
-const language: "en" | "ar" = externalLang || "en";
+const [language, setLanguage] = useState<"en" | "ar" | null>(
+  externalLang || null
+);
 const [started, setStarted] = useState(editorMode);
 const [muted, setMuted] = useState(editorMode ? true : false);
 const [fade, setFade] = useState(false);
@@ -629,9 +631,32 @@ loading="lazy"
 
   {/* 🌍 LANGUAGE SELECT */}
   
+<div className="flex gap-4">
+  <button
+    onClick={() => setLanguage("en")}
+    className={`px-4 py-2 rounded border ${
+      language === "en"
+        ? "bg-white text-black"
+        : "border-white/40 text-white"
+    }`}
+  >
+    English
+  </button>
+
+  <button
+    onClick={() => setLanguage("ar")}
+    className={`px-4 py-2 rounded border ${
+      language === "ar"
+        ? "bg-white text-black"
+        : "border-white/40 text-white"
+    }`}
+  >
+    العربية
+  </button>
+</div>
 
   {/* 🚀 START BUTTON */}
-  {language && (
+  {language !== null && (
     <>
       <button
         onClick={() => {
