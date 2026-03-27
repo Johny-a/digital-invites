@@ -87,6 +87,7 @@ ceremony_note?: string;
 
   gifts?: { label: string; value: string; logo?: string }[];
 gift_note?: string;
+gift_note_ar?: string;
   ending_message?: string;
 
   template_id?: string;
