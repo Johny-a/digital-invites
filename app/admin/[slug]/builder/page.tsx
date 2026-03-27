@@ -20,6 +20,11 @@ after_time?: string;
 after_map?: string;
 after_note?: string;
 
+after_place_ar?: string;
+after_time_ar?: string;
+after_note_ar?: string;
+gift_note_ar?: string;
+
   ending_photo: string;
 
   bg_mode?: "video" | "slideshow";
@@ -28,11 +33,31 @@ after_note?: string;
   music_url?: string;
 
   hero_names: string;
+hero_names_ar?: string;
+hero_tagline_ar?: string;
+hero_headline_ar?: string;
+
+invitation_quote_ar?: string;
+invitation_parents_left_ar?: string;
+invitation_parents_right_ar?: string;
+invitation_request_line_ar?: string;
+
+ceremony_note_ar?: string;
+ceremony_place_ar?: string;
+ceremony_time_ar?: string;
+
+celebration_place_ar?: string;
+celebration_time_ar?: string;
+
+ending_message_ar?: string;
   hero_tagline: string;
   hero_headline: string;
 
   date_text: string;
-  time_text: string;
+date_text_ar?: string;
+
+time_text: string;
+time_text_ar?: string;
   location_text: string;
 event_date_iso?: string;
 
@@ -135,6 +160,7 @@ export default function BuilderPage() {
 
   const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState<Tab>("hero");
+const [adminLang, setAdminLang] = useState<"en" | "ar">("en");
   const [previewSlide, setPreviewSlide] = useState(0);
   const [event, setEvent] = useState<EventData>(EMPTY_EVENT);
   const [loading, setLoading] = useState(true);
@@ -269,6 +295,25 @@ const { error } = await supabase
         <div className="bg-[#111118] rounded-2xl p-6 space-y-4 overflow-y-auto max-h-[85vh]">
           {/* Tabs */}
           <div className="flex gap-2 flex-wrap">
+<div className="flex gap-2 mt-4">
+  <button
+    onClick={() => setAdminLang("en")}
+    className={`px-3 py-1 rounded ${
+      adminLang === "en" ? "bg-blue-600" : "bg-white/10"
+    }`}
+  >
+    English
+  </button>
+
+  <button
+    onClick={() => setAdminLang("ar")}
+    className={`px-3 py-1 rounded ${
+      adminLang === "ar" ? "bg-blue-600" : "bg-white/10"
+    }`}
+  >
+    العربية
+  </button>
+</div>
             {SLIDES.map((t) => (
               <button
                 key={t}
@@ -304,22 +349,52 @@ const { error } = await supabase
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Names (e.g. Joe & Dayane)"
-      value={event.hero_names || ""}
-      onChange={(e) => updateEvent({ hero_names: e.target.value })}
+value={
+  adminLang === "ar"
+    ? event.hero_names_ar || ""
+    : event.hero_names || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { hero_names_ar: e.target.value }
+      : { hero_names: e.target.value }
+  )
+}
     />
 
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Tagline (e.g. Together in Christ, Forever in Love)"
-      value={event.hero_tagline || ""}
-      onChange={(e) => updateEvent({ hero_tagline: e.target.value })}
+value={
+  adminLang === "ar"
+    ? event.hero_tagline_ar || ""
+    : event.hero_tagline || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { hero_tagline_ar: e.target.value }
+      : { hero_tagline: e.target.value }
+  )
+}
     />
 
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Headline (e.g. The wedding day has arrived!)"
-      value={event.hero_headline || ""}
-      onChange={(e) => updateEvent({ hero_headline: e.target.value })}
+value={
+  adminLang === "ar"
+    ? event.hero_headline_ar || ""
+    : event.hero_headline || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { hero_headline_ar: e.target.value }
+      : { hero_headline: e.target.value }
+  )
+}
     />
   </>
 )}
@@ -331,59 +406,119 @@ const { error } = await supabase
     <textarea
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Quote (top text)"
-      value={event.invitation_quote || ""}
-      onChange={(e) => updateEvent({ invitation_quote: e.target.value })}
+value={
+  adminLang === "ar"
+    ? event.invitation_quote_ar || ""
+    : event.invitation_quote || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { invitation_quote_ar: e.target.value }
+      : { invitation_quote: e.target.value }
+  )
+}
     />
 
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Left parents block"
-      value={event.invitation_parents_left || ""}
-      onChange={(e) => updateEvent({ invitation_parents_left: e.target.value })}
+      value={
+  adminLang === "ar"
+    ? event.invitation_parents_left_ar || ""
+    : event.invitation_parents_left || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { invitation_parents_left_ar: e.target.value }
+      : { invitation_parents_left: e.target.value }
+  )
+}
     />
 
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Right parents block"
-      value={event.invitation_parents_right || ""}
-      onChange={(e) => updateEvent({ invitation_parents_right: e.target.value })}
+      value={
+  adminLang === "ar"
+    ? event.invitation_parents_right_ar || ""
+    : event.invitation_parents_right || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { invitation_parents_right_ar: e.target.value }
+      : { invitation_parents_right: e.target.value }
+  )
+}
     />
 
     <textarea
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Request line"
-      value={event.invitation_request_line || ""}
-      onChange={(e) => updateEvent({ invitation_request_line: e.target.value })}
+value={
+  adminLang === "ar"
+    ? event.invitation_request_line_ar || ""
+    : event.invitation_request_line || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { invitation_request_line_ar: e.target.value }
+      : { invitation_request_line: e.target.value }
+  )
+}
     />
 
 <input
   className="w-full bg-black/40 border rounded px-4 py-2"
   placeholder="Date (e.g. 2026-04-26)"
-  value={event.date_text || ""}
+  value={
+    adminLang === "ar"
+      ? event.date_text_ar || ""
+      : event.date_text || ""
+  }
   onChange={(e) => {
     const date = e.target.value;
 
-    const iso = `${date}T${event.time_text || "00:00"}`;
+    if (adminLang === "ar") {
+      updateEvent({
+        date_text_ar: date,
+      });
+    } else {
+      const iso = `${date}T${event.time_text || "00:00"}`;
 
-    updateEvent({
-      date_text: date,
-      event_date_iso: iso,
-    });
+      updateEvent({
+        date_text: date,
+        event_date_iso: iso,
+      });
+    }
   }}
 />
 
 <input
   className="w-full bg-black/40 border rounded px-4 py-2"
   placeholder="Time (e.g. 17:00)"
-  value={event.time_text || ""}
-onChange={(e) => {
-  const time = e.target.value;
+  value={
+    adminLang === "ar"
+      ? event.time_text_ar || ""
+      : event.time_text || ""
+  }
+  onChange={(e) => {
+    const time = e.target.value;
 
-  updateEvent({
-    time_text: time,
-    event_date_iso: `${event.date_text || ""}T${time}`,
-  });
-}}
+    if (adminLang === "ar") {
+      updateEvent({
+        time_text_ar: time,
+      });
+    } else {
+      updateEvent({
+        time_text: time,
+        event_date_iso: `${event.date_text || ""}T${time}`,
+      });
+    }
+  }}
 />
 <label className="text-xs text-white/50">
   Countdown (exact date & time)
@@ -411,15 +546,35 @@ onChange={(e) => {
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Place"
-      value={event.ceremony_place}
-      onChange={(e) => updateEvent({ ceremony_place: e.target.value })}
+      value={
+  adminLang === "ar"
+    ? event.ceremony_place_ar || ""
+    : event.ceremony_place
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { ceremony_place_ar: e.target.value }
+      : { ceremony_place: e.target.value }
+  )
+}
     />
 
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Time"
-      value={event.ceremony_time}
-      onChange={(e) => updateEvent({ ceremony_time: e.target.value })}
+value={
+  adminLang === "ar"
+    ? event.ceremony_time_ar || ""
+    : event.ceremony_time
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { ceremony_time_ar: e.target.value }
+      : { ceremony_time: e.target.value }
+  )
+}
     />
 
     <input
@@ -433,8 +588,18 @@ onChange={(e) => {
     <textarea
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Extra text under title (e.g. Dear family and friends...)"
-      value={event.ceremony_note || ""}
-      onChange={(e) => updateEvent({ ceremony_note: e.target.value })}
+value={
+  adminLang === "ar"
+    ? event.ceremony_note_ar || ""
+    : event.ceremony_note || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { ceremony_note_ar: e.target.value }
+      : { ceremony_note: e.target.value }
+  )
+}
     />
   </>
 )}
@@ -448,15 +613,35 @@ onChange={(e) => {
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="After Wedding Place"
-      value={event.after_place || ""}
-      onChange={(e) => updateEvent({ after_place: e.target.value })}
+value={
+  adminLang === "ar"
+    ? event.after_place_ar || ""
+    : event.after_place || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { after_place_ar: e.target.value }
+      : { after_place: e.target.value }
+  )
+}
     />
 
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="After Wedding Time"
-      value={event.after_time || ""}
-      onChange={(e) => updateEvent({ after_time: e.target.value })}
+value={
+  adminLang === "ar"
+    ? event.after_time_ar || ""
+    : event.after_time || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { after_time_ar: e.target.value }
+      : { after_time: e.target.value }
+  )
+}
     />
 
     <input
@@ -469,13 +654,69 @@ onChange={(e) => {
     <textarea
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Note (text above location/time)"
-      value={event.after_note || ""}
-      onChange={(e) => updateEvent({ after_note: e.target.value })}
+value={
+  adminLang === "ar"
+    ? event.after_note_ar || ""
+    : event.after_note || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { after_note_ar: e.target.value }
+      : { after_note: e.target.value }
+  )
+}
     />
   </>
 )}
 
 
+{tab === "celebration" && (
+  <>
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Celebration Place"
+      value={
+        adminLang === "ar"
+          ? event.celebration_place_ar || ""
+          : event.celebration_place || ""
+      }
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { celebration_place_ar: e.target.value }
+            : { celebration_place: e.target.value }
+        )
+      }
+    />
+
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Celebration Time"
+      value={
+        adminLang === "ar"
+          ? event.celebration_time_ar || ""
+          : event.celebration_time || ""
+      }
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { celebration_time_ar: e.target.value }
+            : { celebration_time: e.target.value }
+        )
+      }
+    />
+
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Map link"
+      value={event.celebration_map || ""}
+      onChange={(e) =>
+        updateEvent({ celebration_map: e.target.value })
+      }
+    />
+  </>
+)}
 
 
 
@@ -638,8 +879,18 @@ updateEvent({ bg_images: newImages });
         rows={3}
         className="w-full bg-black/50 border border-white/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500"
         placeholder="e.g. Please confirm your attendance before 10 April 2026 using your invitation code"
-        value={event.gift_note || ""}
-        onChange={(e) => updateEvent({ gift_note: e.target.value })}
+        value={
+  adminLang === "ar"
+    ? event.gift_note_ar || ""
+    : event.gift_note || ""
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { gift_note_ar: e.target.value }
+      : { gift_note: e.target.value }
+  )
+}
       />
 
       <p className="text-xs text-white/40">
@@ -734,8 +985,18 @@ updateEvent({ bg_images: newImages });
     <textarea
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Ending message"
-      value={event.ending_message}
-      onChange={(e) => updateEvent({ ending_message: e.target.value })}
+      value={
+  adminLang === "ar"
+    ? event.ending_message_ar || ""
+    : event.ending_message
+}
+onChange={(e) =>
+  updateEvent(
+    adminLang === "ar"
+      ? { ending_message_ar: e.target.value }
+      : { ending_message: e.target.value }
+  )
+}
     />
 
     <input
@@ -766,11 +1027,12 @@ updateEvent({ bg_images: newImages });
         <div className="flex justify-center">
           <div className="relative bg-black rounded-[2rem] overflow-hidden aspect-[9/16] max-h-[80vh] w-full max-w-[360px] shadow-2xl border border-white/10">
             <InvitationPlayer
-              event={event}
-              templateId={event.template_id}
-              editorMode
-              forcedPage={previewSlide}
-            />
+  event={event}
+  templateId={event.template_id}
+  editorMode
+  forcedPage={previewSlide}
+  language={adminLang}
+/>
           </div>
         </div>
       </div>

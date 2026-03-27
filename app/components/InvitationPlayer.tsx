@@ -29,10 +29,30 @@ event_date_iso?: string;
   subtitle?: string;
 
   date_text?: string;
-  time_text?: string;
+date_text_ar?: string;
+
+time_text?: string;
+time_text_ar?: string;
   location_text?: string;
 
   hero_names: string;
+hero_names_ar?: string;
+hero_tagline_ar?: string;
+hero_headline_ar?: string;
+
+invitation_quote_ar?: string;
+invitation_parents_left_ar?: string;
+invitation_parents_right_ar?: string;
+invitation_request_line_ar?: string;
+
+ceremony_note_ar?: string;
+ceremony_place_ar?: string;
+ceremony_time_ar?: string;
+
+celebration_place_ar?: string;
+celebration_time_ar?: string;
+
+ending_message_ar?: string;
   hero_tagline: string;
   hero_headline: string;
 
@@ -107,11 +127,13 @@ export default function InvitationPlayer({
   templateId = "classic",
   editorMode = false,
   forcedPage,
+  language: externalLang,
 }: {
   event: EventData;
   templateId?: string;
   editorMode?: boolean;
   forcedPage?: number;
+  language?: "en" | "ar"; // 🔥 ADD THIS
 }) {
 
   // ✅ ADD HERE
@@ -176,6 +198,7 @@ const [timeLeft, setTimeLeft] = useState({
 const template = TEMPLATES[templateId] || TEMPLATES.classic;
 
 const [page, setPage] = useState(0);
+const language: "en" | "ar" = externalLang || "en";
 const [started, setStarted] = useState(editorMode);
 const [muted, setMuted] = useState(editorMode ? true : false);
 const [fade, setFade] = useState(false);
@@ -389,6 +412,7 @@ const submitRSVP = async () => {
 
 
   const current = SLIDES[page];
+
 const totalAssets =
   Object.values(safeEvent.bg_images || {}).filter(Boolean).length +
   (safeEvent.gallery?.length ?? 0) +
@@ -410,6 +434,51 @@ const onPhotoTouchMove = (e: React.TouchEvent) => {
   setPhotoOffset(diff);
 };
 
+const translations = {
+  en: {
+    enter: "✦ Enter Invitation ✦",
+    tap: "Tap to begin",
+    preparing: "Preparing your experience...",
+    weddingInvitation: "Wedding Invitation",
+    days: "Days",
+    hours: "Hours",
+    min: "Min",
+    sec: "Sec",
+    ceremony: "Wedding Ceremony",
+    celebration: "The Celebration",
+    giftRegistry: "Gift Registry",
+    submit: "Submit",
+  },
+
+  ar: {
+    enter: "✦ دخول الدعوة ✦",
+    tap: "اضغط للبدء",
+    preparing: "جارٍ تجهيز التجربة...",
+    weddingInvitation: "دعوة زفاف",
+    days: "أيام",
+    hours: "ساعات",
+    min: "دقائق",
+    sec: "ثواني",
+    ceremony: "مراسم الزفاف",
+    celebration: "الاحتفال",
+    giftRegistry: "قائمة الهدايا",
+    submit: "إرسال",
+  },
+};
+const getText = (en?: string, ar?: string) => {
+  if (language === "ar") return ar || en || "";
+  return en || "";
+};
+const heroNames = getText(
+  safeEvent.hero_names,
+  safeEvent.hero_names_ar
+);
+
+const t = (key: keyof typeof translations.en) => {
+
+  if (!language) return translations.en[key];
+  return translations[language][key];
+};
 const onPhotoTouchEnd = () => {
   if (touchStartX.current === null) return;
 
@@ -434,7 +503,15 @@ setPhotoIndex((i) =>
 
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-black text-white">
+    <div
+  dir={language === "ar" ? "rtl" : "ltr"}
+className={`relative w-full h-full overflow-hidden bg-black text-white ${
+  language === "ar"
+    ? "font-[Amiri] tracking-normal leading-relaxed"
+    : ""
+}`}
+
+>
       {/* BACKGROUND */}
 
 {safeEvent.bg_mode === "video" && safeEvent.bg_video && (
@@ -513,12 +590,12 @@ loading="lazy"
 
       {/* Logo / Names */}
       <div className="text-white/80 text-xs tracking-[0.4em] uppercase">
-        Wedding Invitation
+        {t("weddingInvitation")}
       </div>
 
       {/* Main Title */}
       <div className="text-white text-3xl font-serif tracking-wide">
-        {safeEvent.hero_names || "You're Invited"}
+        {getText(safeEvent.hero_names, safeEvent.hero_names_ar) || "You're Invited"}
       </div>
 
       {/* Loader OR Enter */}
@@ -534,7 +611,7 @@ loading="lazy"
           </div>
 
           <div className="text-white/60 text-xs tracking-widest">
-            Preparing your experience...
+            {t("preparing")}
           </div>
 
           {/* subtle spinner */}
@@ -544,35 +621,44 @@ loading="lazy"
       ) : (
         <div className="flex flex-col items-center gap-6 animate-fadeIn">
 
-          <button
-            onClick={() => {
-              setStarted(true);
-              setMuted(false);
+  {/* 🌍 LANGUAGE SELECT */}
+  
 
-              if (videoRef.current) {
-                videoRef.current.play().catch(() => {});
-              }
+  {/* 🚀 START BUTTON */}
+  {language && (
+    <>
+      <button
+        onClick={() => {
+          setStarted(true);
+          setMuted(false);
 
-              if (audioRef.current) {
-                audioRef.current.volume = 0;
-                audioRef.current.play().catch(() => {});
-                let v = 0;
-                const fade = setInterval(() => {
-                  v += 0.05;
-                  if (audioRef.current)
-                    audioRef.current.volume = Math.min(v, 1);
-                  if (v >= 1) clearInterval(fade);
-                }, 100);
-              }
-            }}
-            className="px-10 py-4 rounded-full border border-white/40 text-white text-lg tracking-wide hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-md"
-          >
-            ✦ Enter Invitation ✦
-          </button>
+          if (videoRef.current) {
+            videoRef.current.play().catch(() => {});
+          }
 
-          <div className="text-white/50 text-xs tracking-widest">
-            Tap to begin
-          </div>
+          if (audioRef.current) {
+            audioRef.current.volume = 0;
+            audioRef.current.play().catch(() => {});
+            let v = 0;
+            const fade = setInterval(() => {
+              v += 0.05;
+              if (audioRef.current)
+                audioRef.current.volume = Math.min(v, 1);
+              if (v >= 1) clearInterval(fade);
+            }, 100);
+          }
+        }}
+        className="px-10 py-4 rounded-full border border-white/40 text-white text-lg tracking-wide hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-md"
+      >
+        {t("enter")}
+      </button>
+
+      <div className="text-white/50 text-xs tracking-widest">
+        {t("tap")}
+      </div>
+    </>
+  )}
+
 
         </div>
       )}
@@ -614,36 +700,45 @@ loading="lazy"
 
     {/* Names */}
 <div className="flex flex-col items-center justify-center mb-6 leading-tight">
-  {safeEvent.hero_names?.split("&")[0] && (
-    <div className="text-white text-5xl font-semibold text-center font-[cursive]">
-      {safeEvent.hero_names.split("&")[0].trim()}
-    </div>
-  )}
+  
+  {heroNames?.split("&")[0] && (
+  <div className={`text-white text-5xl font-semibold text-center ${
+    language === "ar" ? "font-[Amiri]" : "font-[cursive]"
+  }`}>
+    {heroNames.split("&")[0].trim()}
+  </div>
+)}
 
-  <div className="text-white text-4xl font-light my-2">&</div>
+<div className={`text-white my-2 ${
+  language === "ar" ? "text-3xl" : "text-4xl"
+}`}>
+  {language === "ar" ? "و" : "&"}
+</div>
 
-  {safeEvent.hero_names?.split("&")[1] && (
-    <div className="text-white text-5xl font-semibold text-center font-[cursive]">
-      {safeEvent.hero_names.split("&")[1].trim()}
-    </div>
-  )}
+{heroNames?.split("&")[1] && (
+  <div className={`text-white text-5xl font-semibold text-center ${
+    language === "ar" ? "font-[Amiri]" : "font-[cursive]"
+  }`}>
+    {heroNames.split("&")[1].trim()}
+  </div>
+)}
 </div>
     {/* Tagline */}
     <p className="text-white/90 text-lg mb-6">
-      {safeEvent.hero_tagline || "Together in Christ, Forever in Love"}
+      {getText(safeEvent.hero_tagline, safeEvent.hero_tagline_ar) || "Together in Christ, Forever in Love"}
     </p>
 
     {/* Headline */}
     <h2 className="text-white text-2xl font-medium">
-      {safeEvent.hero_headline || "The wedding day has arrived!"}
+      {getText(safeEvent.hero_headline, safeEvent.hero_headline_ar) || "The wedding day has arrived!"}
     </h2>
 {/* ⏳ COUNTDOWN */}
 <div className="mt-6 flex gap-4 text-center">
   {[
-    { label: "Days", value: timeLeft.days },
-    { label: "Hours", value: timeLeft.hours },
-    { label: "Min", value: timeLeft.minutes },
-    { label: "Sec", value: timeLeft.seconds },
+    { label: t("days"), value: timeLeft.days },
+{ label: t("hours"), value: timeLeft.hours },
+{ label: t("min"), value: timeLeft.minutes },
+    { label: t("sec"), value: timeLeft.seconds },
   ].map((item, i) => (
     <div key={i} className="bg-white/10 px-4 py-2 rounded-lg">
       <div className="text-xl font-bold">{item.value}</div>
@@ -657,53 +752,67 @@ loading="lazy"
 
         {/* INVITATION */}
 {current === "invitation" && (
-  <div className="text-center space-y-4 px-4">
+  <div className="space-y-6 px-6 text-center max-w-md mx-auto">
     {/* Quote */}
-    <p className="text-sm italic text-white/90">
-      {safeEvent.invitation_quote}
-    </p>
+<p
+  className={`italic text-white/90 leading-loose tracking-wide ${
+    language === "ar" ? "text-xl md:text-2xl" : "text-lg md:text-xl"
+  }`}
+>
+  {getText(safeEvent.invitation_quote, safeEvent.invitation_quote_ar)}
+</p>
 
     {/* Parents */}
-    <div className="flex justify-between text-sm mt-4">
-      <div className="whitespace-pre-line text-left">
-        {safeEvent.invitation_parents_left}
-      </div>
-      <div className="whitespace-pre-line text-right">
-        {safeEvent.invitation_parents_right}
-      </div>
+    {/* Parents */}
+<div className="grid grid-cols-2 gap-6 mt-4 text-center">
+
+  {/* LEFT */}
+  <div className="space-y-1">
+    <div className="text-sm uppercase tracking-widest text-white/70">
+      {language === "ar" ? "السيد والسيدة" : "Mr & Mrs"}
     </div>
 
+    <div className="text-lg font-medium whitespace-pre-line">
+      {getText(
+        safeEvent.invitation_parents_left,
+        safeEvent.invitation_parents_left_ar
+      )}
+    </div>
+  </div>
+
+  {/* RIGHT */}
+  <div className="space-y-1">
+    <div className="text-sm uppercase tracking-widest text-white/70">
+      {language === "ar" ? "السيد والسيدة" : "Mr & Mrs"}
+    </div>
+
+    <div className="text-lg font-medium whitespace-pre-line">
+      {getText(
+        safeEvent.invitation_parents_right,
+        safeEvent.invitation_parents_right_ar
+      )}
+    </div>
+  </div>
+
+</div>
+      
+
+
     {/* Request line */}
-    <p className="text-sm mt-4">
-      {safeEvent.invitation_request_line}
+    <p className="text-base md:text-lg mt-6 leading-relaxed">
+      {getText(safeEvent.invitation_request_line, safeEvent.invitation_request_line_ar)}
     </p>
 
 {/* Names */}
-<div className="flex flex-col items-center justify-center mt-6 leading-tight">
-  {safeEvent.hero_names?.split("&")[0] && (
-    <div className="text-3xl font-bold text-center">
-      {safeEvent.hero_names.split("&")[0].trim()}
-    </div>
-  )}
-
-  <div className="text-2xl font-light my-1">&</div>
-
-  {safeEvent.hero_names?.split("&")[1] && (
-    <div className="text-3xl font-bold text-center">
-      {safeEvent.hero_names.split("&")[1].trim()}
-    </div>
-  )}
-</div>
 
     {/* Date */}
-    <p className="text-lg mt-2">
-      {safeEvent.date_text}
-    </p>
+    <p className="text-xl font-semibold mt-6">
+  {getText(safeEvent.date_text, safeEvent.date_text_ar)}
+</p>
 
-    {/* Time */}
-    <p className="text-lg">
-      {safeEvent.time_text}
-    </p>
+<p className="text-xl">
+  {getText(safeEvent.time_text, safeEvent.time_text_ar)}
+</p>
   </div>
 )}
 
@@ -711,24 +820,24 @@ loading="lazy"
 {current === "ceremony" && (
   <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-6">
 
-    <h2 className="text-3xl font-bold">Wedding Ceremony</h2>
+    <h2 className="text-3xl font-bold">{t("ceremony")}</h2>
 
     {/* ✅ NEW TEXT */}
     {safeEvent.ceremony_note && (
       <p className="text-sm text-white/80 max-w-xs">
-        {safeEvent.ceremony_note}
+        {getText(safeEvent.ceremony_note, safeEvent.ceremony_note_ar)}
       </p>
     )}
 
-    <div className="text-lg">📍 {safeEvent.ceremony_place}</div>
-    <div className="text-lg">{safeEvent.ceremony_time}</div>
+    <div className="text-lg">📍 {getText(safeEvent.ceremony_place, safeEvent.ceremony_place_ar)}</div>
+    <div className="text-lg">{getText(safeEvent.ceremony_time, safeEvent.ceremony_time_ar)}</div>
     {safeEvent.ceremony_map && (
       <a
         href={safeEvent.ceremony_map}
         target="_blank"
         className="inline-block mt-2 border border-white px-6 py-2 rounded"
       >
-        Map
+        {language === "ar" ? "الخريطة" : "Map"}
       </a>
     )}
   </div>
@@ -739,19 +848,26 @@ loading="lazy"
 {current === "after" && (
   <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-6">
 
-<h2 className="text-2xl font-bold leading-snug max-w-xs">
-  {safeEvent.after_note}
-</h2>
- 
+    {/* TITLE */}
+    <h2 className="text-2xl md:text-3xl font-semibold leading-snug max-w-xs">
+      {getText(
+        safeEvent.after_note,
+        safeEvent.after_note_ar
+      )}
+    </h2>
 
     {/* LOCATION */}
     {safeEvent.after_place && (
-      <div className="text-lg">📍 {safeEvent.after_place}</div>
+      <div className="text-lg">
+        📍 {getText(safeEvent.after_place, safeEvent.after_place_ar)}
+      </div>
     )}
 
     {/* TIME */}
     {safeEvent.after_time && (
-      <div className="text-lg">{safeEvent.after_time}</div>
+      <div className="text-lg">
+        {getText(safeEvent.after_time, safeEvent.after_time_ar)}
+      </div>
     )}
 
     {/* MAP */}
@@ -761,7 +877,7 @@ loading="lazy"
         target="_blank"
         className="inline-block mt-2 border border-white px-6 py-2 rounded"
       >
-        Map
+        {language === "ar" ? "الخريطة" : "Map"}
       </a>
     )}
   </div>
@@ -769,10 +885,10 @@ loading="lazy"
 
 {current === "celebration" && (
   <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-6">
-    <h2 className="text-3xl font-bold">The Celebration</h2>
+    <h2 className="text-3xl font-bold">{t("celebration")}</h2>
 
-    <div className="text-lg">📍 {safeEvent.celebration_place}</div>
-    <div className="text-lg">{safeEvent.celebration_time}</div>
+    <div className="text-lg">📍 {getText(safeEvent.celebration_place, safeEvent.celebration_place_ar)}</div>
+    <div className="text-lg">{getText(safeEvent.celebration_time, safeEvent.celebration_time_ar)}</div>
 
     {safeEvent.celebration_map && (
       <a
@@ -780,7 +896,7 @@ loading="lazy"
         target="_blank"
         className="inline-block mt-2 border border-white px-6 py-2 rounded"
       >
-        Map
+        {language === "ar" ? "الخريطة" : "Map"}
       </a>
     )}
   </div>
@@ -790,25 +906,31 @@ loading="lazy"
         {/* RSVP */}
         {current === "rsvp" && (
   <div className="w-full max-w-sm bg-black/50 border border-white/20 rounded-2xl p-5 space-y-4">
-    <h2 className="text-2xl font-bold">Submitted!</h2>
+    <h2 className={`leading-snug max-w-xs ${
+  language === "ar"
+    ? "text-3xl font-[Amiri]"
+    : "text-2xl font-serif"
+}`}>
+  {language === "ar" ? "تأكيد الحضور" : "RSVP"}
+</h2>
     <p className="text-sm text-white/80">
 
 </p>
 
     {sent ? (
-      <p className="text-green-400 font-semibold">Thank you! ❤️</p>
+      <p className="text-green-400 font-semibold">{language === "ar" ? "شكراً لك ❤️" : "Thank you! ❤️"}️</p>
     ) : (
       <>
         <input
           className="w-full bg-black/40 border border-white/30 rounded px-3 py-2"
-          placeholder="Your name"
+          placeholder={language === "ar" ? "اسمك" : "Your name"}
           value={mainName}
           onChange={(e) => setMainName(e.target.value)}
         />
 
 <div className="space-y-1">
   <label className="text-sm text-white/80">
-    Number of guests
+    {language === "ar" ? "عدد الضيوف" : "Number of guests"}
   </label>
 
  <input
@@ -817,7 +939,7 @@ loading="lazy"
   min="1"
   className="w-full bg-black/40 border border-white/30 rounded px-3 py-2 appearance-none"
   value={guestCount}
-  placeholder="Enter number of guests"
+  placeholder={language === "ar" ? "عدد الضيوف" : "Enter number of guests"}
   onChange={(e) => {
     const val = e.target.value;
 
@@ -837,7 +959,7 @@ loading="lazy"
             }`}
             onClick={() => setAttending(true)}
           >
-            Joyfully Accept
+            {language === "ar" ? "سأحضر" : "Joyfully Accept"}
           </button>
           <button
             className={`flex-1 py-2 rounded border ${
@@ -845,7 +967,7 @@ loading="lazy"
             }`}
             onClick={() => setAttending(false)}
           >
-            Regretfully Decline
+            {language === "ar" ? "لن أحضر" : "Regretfully Decline"}
           </button>
         </div>
 
@@ -853,7 +975,7 @@ loading="lazy"
 
         <textarea
           className="w-full bg-black/40 border border-white/30 rounded px-3 py-2"
-          placeholder="Optional note"
+          placeholder={language === "ar" ? "ملاحظة (اختياري)" : "Optional note"}
           value={note}
           onChange={(e) => setNote(e.target.value)}
         />
@@ -865,7 +987,7 @@ loading="lazy"
           disabled={sending}
           className="w-full py-2 bg-white text-black rounded font-semibold"
         >
-          {sending ? "Sending..." : "Submit"}
+          {sending ? "Sending..." : t("submit")}
         </button>
       </>
     )}
@@ -925,21 +1047,23 @@ loading="lazy"
         {/* GIFTS */}
 {current === "gifts" && (
   <div className="w-full max-w-sm bg-black/40 border border-white/20 rounded-2xl p-6 text-center space-y-4 backdrop-blur">
-    <h2 className="text-3xl font-bold">Gift Registry</h2>
+    <h2 className="text-3xl font-bold">{t("giftRegistry")}</h2>
 
     <p className="text-sm text-white/80">
-      Your love and presence are the best gifts. For those who wish, a wedding list is available.
+      {language === "ar"
+  ? "وجودكم معنا هو أعظم هدية، ولمن يرغب، توجد قائمة هدايا."
+  : "Your love and presence are the best gifts. For those who wish, a wedding list is available."}
     </p>
 
 {safeEvent.gift_note && (
-  <p className="text-sm text-white/70 mt-2">
-    {safeEvent.gift_note}
-  </p>
+<p className="text-center text-sm md:text-base text-white/90">
+  {getText(safeEvent.gift_note, safeEvent.gift_note_ar)}
+</p>
 )}
 
     <div className="space-y-4 mt-4 max-h-64 overflow-y-auto pr-1">
 {safeEvent.gifts?.length === 0 && (
-    <p className="text-white/60 text-sm">No gift methods added.</p>
+    <p className="text-white/60 text-sm">{language === "ar" ? "لا توجد وسائل هدايا" : "No gift methods added."}</p>
   )}
 
   {safeEvent.gifts?.map((g, i) => (
@@ -950,7 +1074,7 @@ loading="lazy"
   {/* LEFT: TEXT */}
   <div className="text-left">
     <div className="text-lg font-semibold">
-      {g.label || "Gift Method"}
+      {g.label || (language === "ar" ? "طريقة الهدية" : "Gift Method")}
     </div>
     <div className="text-sm text-white/80 break-all">
       {g.value}
@@ -963,7 +1087,7 @@ loading="lazy"
       onClick={() => {
         if (g.value) {
           navigator.clipboard.writeText(g.value);
-alert("Copied!");
+alert(language === "ar" ? "تم النسخ!" : "Copied!");
         }
       }}
       className="cursor-pointer border border-white/20 rounded-lg p-2 bg-white/10 hover:bg-white/20 transition"
@@ -998,7 +1122,10 @@ loading="lazy"
     )}
 
     <div className="text-center text-white font-serif text-2xl px-6">
-      {safeEvent.ending_message || "Happily ever after"}
+      {getText(
+  safeEvent.ending_message || "Happily ever after",
+  safeEvent.ending_message_ar || "وعاشوا بسعادة للأبد"
+)}
     </div>
 
     {/* Subtle brand / footer */}
