@@ -20,6 +20,9 @@ after_time?: string;
 after_map?: string;
 after_note?: string;
 
+celebration_note?: string;
+celebration_note_ar?: string;
+
 after_place_ar?: string;
 after_time_ar?: string;
 after_note_ar?: string;
@@ -68,6 +71,9 @@ event_date_iso?: string;
   celebration_place: string;
   celebration_time: string;
   celebration_map: string;
+
+celebration_note_bottom?: string;
+celebration_note_bottom_ar?: string;
 
   // 👇 ADD THESE
   invitation_quote?: string;
@@ -689,6 +695,22 @@ onChange={(e) =>
         )
       }
     />
+<textarea
+  className="w-full bg-black/40 border rounded px-4 py-2"
+  placeholder="Extra text under title (e.g. Join us for dinner...)"
+  value={
+    adminLang === "ar"
+      ? event.celebration_note_ar || ""
+      : event.celebration_note || ""
+  }
+  onChange={(e) =>
+    updateEvent(
+      adminLang === "ar"
+        ? { celebration_note_ar: e.target.value }
+        : { celebration_note: e.target.value }
+    )
+  }
+/>
 
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
@@ -715,6 +737,22 @@ onChange={(e) =>
         updateEvent({ celebration_map: e.target.value })
       }
     />
+<textarea
+  className="w-full bg-black/40 border rounded px-4 py-2"
+  placeholder="Bottom note (shown under map)"
+  value={
+    adminLang === "ar"
+      ? event.celebration_note_bottom_ar || ""
+      : event.celebration_note_bottom || ""
+  }
+  onChange={(e) =>
+    updateEvent(
+      adminLang === "ar"
+        ? { celebration_note_bottom_ar: e.target.value }
+        : { celebration_note_bottom: e.target.value }
+    )
+  }
+/>
   </>
 )}
 

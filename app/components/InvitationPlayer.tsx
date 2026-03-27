@@ -28,6 +28,12 @@ event_date_iso?: string;
   title?: string;
   subtitle?: string;
 
+celebration_note_bottom?: string;
+celebration_note_bottom_ar?: string;
+
+celebration_note?: string;
+celebration_note_ar?: string;
+
   date_text?: string;
 date_text_ar?: string;
 
@@ -212,6 +218,11 @@ const [page, setPage] = useState(0);
 const [language, setLanguage] = useState<"en" | "ar" | null>(
   externalLang || null
 );
+useEffect(() => {
+  if (editorMode && externalLang) {
+    setLanguage(externalLang);
+  }
+}, [externalLang, editorMode]);
 const [started, setStarted] = useState(editorMode);
 const [muted, setMuted] = useState(editorMode ? true : false);
 const [fade, setFade] = useState(false);
@@ -856,17 +867,25 @@ loading="lazy"
 {current === "ceremony" && (
   <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-6">
 
-    <h2 className="text-3xl font-bold">{t("ceremony")}</h2>
+ <h2 className="text-3xl font-bold">{t("ceremony")}</h2>
 
-    {/* ✅ NEW TEXT */}
-    {safeEvent.ceremony_note && (
-      <p className="text-sm text-white/80 max-w-xs">
-        {getText(safeEvent.ceremony_note, safeEvent.ceremony_note_ar)}
-      </p>
+<div className="text-lg">
+  📍 {getText(safeEvent.ceremony_place, safeEvent.ceremony_place_ar)}
+</div>
+
+<div className="text-lg">
+  {getText(safeEvent.ceremony_time, safeEvent.ceremony_time_ar)}
+</div>
+
+{/* ✅ MOVE NOTE HERE */}
+{safeEvent.ceremony_note && (
+  <p className="text-sm text-white/80 max-w-xs">
+    {getText(
+      safeEvent.ceremony_note,
+      safeEvent.ceremony_note_ar
     )}
-
-    <div className="text-lg">📍 {getText(safeEvent.ceremony_place, safeEvent.ceremony_place_ar)}</div>
-    <div className="text-lg">{getText(safeEvent.ceremony_time, safeEvent.ceremony_time_ar)}</div>
+  </p>
+)}
     {safeEvent.ceremony_map && (
       <a
         href={safeEvent.ceremony_map}
@@ -921,10 +940,26 @@ loading="lazy"
 
 {current === "celebration" && (
   <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-6">
+
     <h2 className="text-3xl font-bold">{t("celebration")}</h2>
 
-    <div className="text-lg">📍 {getText(safeEvent.celebration_place, safeEvent.celebration_place_ar)}</div>
-    <div className="text-lg">{getText(safeEvent.celebration_time, safeEvent.celebration_time_ar)}</div>
+    {/* ✅ NOTE (FIXED POSITION) */}
+    {safeEvent.celebration_note && (
+      <p className="text-sm text-white/80 max-w-xs">
+        {getText(
+          safeEvent.celebration_note,
+          safeEvent.celebration_note_ar
+        )}
+      </p>
+    )}
+
+    <div className="text-lg">
+      📍 {getText(safeEvent.celebration_place, safeEvent.celebration_place_ar)}
+    </div>
+
+    <div className="text-lg">
+      {getText(safeEvent.celebration_time, safeEvent.celebration_time_ar)}
+    </div>
 
     {safeEvent.celebration_map && (
       <a
@@ -935,9 +970,17 @@ loading="lazy"
         {language === "ar" ? "الخريطة" : "Map"}
       </a>
     )}
-  </div>
+{safeEvent.celebration_note_bottom && (
+  <p className="text-sm text-white/70 max-w-xs mt-4">
+    {getText(
+      safeEvent.celebration_note_bottom,
+      safeEvent.celebration_note_bottom_ar
+    )}
+  </p>
 )}
 
+  </div>
+)}
 
         {/* RSVP */}
         {current === "rsvp" && (
