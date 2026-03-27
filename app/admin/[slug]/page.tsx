@@ -352,18 +352,14 @@ const exportExcel = () => {
                       )}
                     </td>
 <td className="font-semibold">
-  {r.attending ? (
-    Number(r.guest_count) > 0
-      ? <td className="font-semibold">
-  {r.attending ? (Number(r.guest_count) || "") : ""}
-</td>
-      : r.main_name
-  ) : (
-    Number(r.guest_count) > 0
+  {r.attending
+    ? Number(r.guest_count) || ""
+    : Number(r.guest_count) > 0
       ? `${r.main_name} + ${r.guest_count} (Not attending)`
       : `${r.main_name} (Not attending)`
-  )}
+  }
 </td>
+      
 
                     <td className="max-w-[200px] truncate">{r.note || "-"}</td>
                     <td className="text-xs text-white/60">

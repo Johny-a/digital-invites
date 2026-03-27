@@ -613,10 +613,15 @@ loading="lazy"
     <div className="relative flex flex-col items-center gap-8 text-center px-6">
 
       {/* Logo / Names */}
-      <div className="text-white/80 text-xs tracking-[0.4em] uppercase">
-        {t("weddingInvitation")}
-      </div>
-
+      <div
+  className={`text-white text-2xl md:text-3xl tracking-[0.2em] ${
+    language === "ar"
+      ? "font-[Amiri] font-semibold"
+      : "uppercase"
+  }`}
+>
+  {t("weddingInvitation")}
+</div>
       {/* Main Title */}
       <div className="text-white text-3xl font-serif tracking-wide">
         {getText(safeEvent.hero_names, safeEvent.hero_names_ar) || "You're Invited"}
@@ -815,10 +820,15 @@ loading="lazy"
 
   {/* LEFT */}
   <div className="space-y-1">
-    <div className="text-sm uppercase tracking-widest text-white/70">
-      {language === "ar" ? "السيد والسيدة" : "Mr & Mrs"}
-    </div>
-
+<div
+  className={`${
+    language === "ar"
+      ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
+      : "text-sm uppercase tracking-widest text-white/70"
+  }`}
+>
+  {language === "ar" ? "السيد والسيدة" : "Mr & Mrs"}
+</div>
     <div className="text-lg font-medium whitespace-pre-line">
       {getText(
         safeEvent.invitation_parents_left,
@@ -829,10 +839,15 @@ loading="lazy"
 
   {/* RIGHT */}
   <div className="space-y-1">
-    <div className="text-sm uppercase tracking-widest text-white/70">
-      {language === "ar" ? "السيد والسيدة" : "Mr & Mrs"}
-    </div>
-
+<div
+  className={`${
+    language === "ar"
+      ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
+      : "text-sm uppercase tracking-widest text-white/70"
+  }`}
+>
+  {language === "ar" ? "السيد والسيدة" : "Mr & Mrs"}
+</div>
     <div className="text-lg font-medium whitespace-pre-line">
       {getText(
         safeEvent.invitation_parents_right,
@@ -879,7 +894,13 @@ loading="lazy"
 
 {/* ✅ MOVE NOTE HERE */}
 {safeEvent.ceremony_note && (
-  <p className="text-sm text-white/80 max-w-xs">
+  <p
+  className={`max-w-xs ${
+    language === "ar"
+      ? "text-lg font-[Amiri] font-semibold text-white leading-relaxed"
+      : "text-sm text-white/80"
+  }`}
+>
     {getText(
       safeEvent.ceremony_note,
       safeEvent.ceremony_note_ar
@@ -945,7 +966,13 @@ loading="lazy"
 
     {/* ✅ NOTE (FIXED POSITION) */}
     {safeEvent.celebration_note && (
-      <p className="text-sm text-white/80 max-w-xs">
+      <p
+  className={`max-w-xs ${
+    language === "ar"
+      ? "text-lg font-[Amiri] text-white leading-relaxed"
+      : "text-sm text-white/80"
+  }`}
+>
         {getText(
           safeEvent.celebration_note,
           safeEvent.celebration_note_ar
@@ -971,7 +998,13 @@ loading="lazy"
       </a>
     )}
 {safeEvent.celebration_note_bottom && (
-  <p className="text-sm text-white/70 max-w-xs mt-4">
+  <p
+  className={`max-w-xs mt-4 ${
+    language === "ar"
+      ? "text-xl font-[Amiri] font-bold text-white underline leading-loose"
+      : "text-sm text-white/70"
+  }`}
+>
     {getText(
       safeEvent.celebration_note_bottom,
       safeEvent.celebration_note_bottom_ar
@@ -1128,11 +1161,25 @@ loading="lazy"
         {/* GIFTS */}
 {current === "gifts" && (
   <div className="w-full max-w-sm bg-black/40 border border-white/20 rounded-2xl p-6 text-center space-y-4 backdrop-blur">
-    <h2 className="text-3xl font-bold">{t("giftRegistry")}</h2>
+    <h2
+  className={`${
+    language === "ar"
+      ? "text-4xl font-[Amiri] font-bold"
+      : "text-3xl font-bold"
+  }`}
+>
+  {t("giftRegistry")}
+</h2>
 
-    <p className="text-sm text-white/80 whitespace-pre-line">
+    <p
+  className={`whitespace-pre-line ${
+    language === "ar"
+      ? "text-base font-[Amiri] text-white/90 leading-relaxed"
+      : "text-sm text-white/80"
+  }`}
+>
       {language === "ar"
-  ? "وجودكم معنا هو أعظم هدية.\n ولمن يرغب، توجد قائمة هدايا."
+  ? "وجودكم معنا هو أعظم هدية.\n لمن يرغب لائحة الهدايا."
   : "Your love and presence are the best gifts. For those who wish, a wedding list is available."}
     </p>
 
