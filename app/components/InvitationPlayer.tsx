@@ -1130,9 +1130,9 @@ loading="lazy"
   <div className="w-full max-w-sm bg-black/40 border border-white/20 rounded-2xl p-6 text-center space-y-4 backdrop-blur">
     <h2 className="text-3xl font-bold">{t("giftRegistry")}</h2>
 
-    <p className="text-sm text-white/80">
+    <p className="text-sm text-white/80 whitespace-pre-line">
       {language === "ar"
-  ? "وجودكم معنا هو أعظم هدية، ولمن يرغب، توجد قائمة هدايا."
+  ? "وجودكم معنا هو أعظم هدية.\n ولمن يرغب، توجد قائمة هدايا."
   : "Your love and presence are the best gifts. For those who wish, a wedding list is available."}
     </p>
 
