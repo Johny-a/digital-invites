@@ -215,6 +215,9 @@ const [timeLeft, setTimeLeft] = useState({
 const template = TEMPLATES[templateId] || TEMPLATES.classic;
 
 const [page, setPage] = useState(0);
+
+const current = SLIDES[page];
+
 const [language, setLanguage] = useState<"en" | "ar" | null>(
   externalLang || null
 );
@@ -226,6 +229,26 @@ useEffect(() => {
 const [started, setStarted] = useState(editorMode);
 const [muted, setMuted] = useState(editorMode ? true : false);
 const [fade, setFade] = useState(false);
+useEffect(() => {
+  if (!started) return;
+
+  // 🛑 STOP on RSVP until user submits
+  if (current === "rsvp" && !sent) return;
+
+  const delay =
+    current === "rsvp" && sent
+      ? 5000 // ✅ after submit → wait 5 sec
+      : 10000; // normal slides
+
+  const interval = setInterval(() => {
+    setPage((prev) => {
+      if (prev >= SLIDES.length - 1) return 0;
+      return prev + 1;
+    });
+  }, delay);
+
+  return () => clearInterval(interval);
+}, [started, current, sent, SLIDES.length]);
 
 // Photos slider state
 const [photoIndex, setPhotoIndex] = useState(0);
@@ -435,7 +458,7 @@ const submitRSVP = async () => {
 
 
 
-  const current = SLIDES[page];
+  
 
 const totalAssets =
   Object.values(safeEvent.bg_images || {}).filter(Boolean).length +
@@ -863,7 +886,42 @@ loading="lazy"
     {/* Request line */}
     <p className="text-base md:text-lg mt-6 leading-relaxed">
       {getText(safeEvent.invitation_request_line, safeEvent.invitation_request_line_ar)}
-    </p>
+    </p>{/* 👰🤵 HERO NAMES (BIG + STACKED) */}
+<div className="flex flex-col items-center mt-6 leading-tight">
+
+  {heroNames?.split("&")[0] && (
+    <div
+      className={`${
+        language === "ar"
+          ? "text-4xl md:text-5xl font-[Amiri] font-bold"
+          : "text-3xl md:text-4xl font-serif font-bold"
+      }`}
+    >
+      {heroNames.split("&")[0].trim()}
+    </div>
+  )}
+
+  <div
+    className={`my-1 ${
+      language === "ar" ? "text-3xl" : "text-3xl"
+    }`}
+  >
+    {language === "ar" ? "و" : "&"}
+  </div>
+
+  {heroNames?.split("&")[1] && (
+    <div
+      className={`${
+        language === "ar"
+          ? "text-4xl md:text-5xl font-[Amiri] font-bold"
+          : "text-3xl md:text-4xl font-serif font-bold"
+      }`}
+    >
+      {heroNames.split("&")[1].trim()}
+    </div>
+  )}
+
+</div>
 
 {/* Names */}
 
