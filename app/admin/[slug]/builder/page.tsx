@@ -23,6 +23,11 @@ after_note?: string;
 celebration_note?: string;
 celebration_note_ar?: string;
 
+parents_label_left_en?: string;
+parents_label_left_ar?: string;
+parents_label_right_en?: string;
+parents_label_right_ar?: string;
+
 after_place_ar?: string;
 after_time_ar?: string;
 after_note_ar?: string;
@@ -219,27 +224,31 @@ const [bgTarget, setBgTarget] = useState("hero");
     setDirty(true);
   };
 
-  const saveEvent = async () => {
-    if (!event.id || saving) return;
-    setSaving(true);
+const saveEvent = async () => {
+  if (!event.id || saving) return;
+  setSaving(true);
 
-const { error } = await supabase
-  .from("events")
-  .update({
-    ...event,
-    cover_image: event.ending_photo
-  })
-  .eq("id", event.id);
+  const { id, ...rest } = event;
 
-    setSaving(false);
+  const { error } = await supabase
+    .from("events")
+    .update({
+      ...rest,
+      cover_image: event.ending_photo,
+    })
+    .eq("id", id);
 
-    if (error) {
-      alert("Save failed: " + error.message);
-    } else {
-      setDirty(false);
-      setLastSaved(new Date());
-    }
-  };
+  setSaving(false);
+
+  if (error) {
+    console.error(error);
+    alert("Save failed: " + error.message);
+  } else {
+    console.log("✅ SAVED TO DB", rest);
+    setDirty(false);
+    setLastSaved(new Date());
+  }
+};
 
   // Autosave
   useEffect(() => {
@@ -409,142 +418,184 @@ onChange={(e) =>
           {/* INVITATION */}
           {tab === "invitation" && (
   <div className="space-y-3">
+
+    {/* QUOTE */}
     <textarea
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Quote (top text)"
-value={
-  adminLang === "ar"
-    ? event.invitation_quote_ar || ""
-    : event.invitation_quote || ""
-}
-onChange={(e) =>
-  updateEvent(
-    adminLang === "ar"
-      ? { invitation_quote_ar: e.target.value }
-      : { invitation_quote: e.target.value }
-  )
-}
+      value={
+        adminLang === "ar"
+          ? event.invitation_quote_ar || ""
+          : event.invitation_quote || ""
+      }
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { invitation_quote_ar: e.target.value }
+            : { invitation_quote: e.target.value }
+        )
+      }
     />
 
+    {/* ✅ LEFT LABEL */}
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
-      placeholder="Left parents block"
+      placeholder="Left label (e.g. Mr & Mrs)"
       value={
-  adminLang === "ar"
-    ? event.invitation_parents_left_ar || ""
-    : event.invitation_parents_left || ""
-}
-onChange={(e) =>
-  updateEvent(
-    adminLang === "ar"
-      ? { invitation_parents_left_ar: e.target.value }
-      : { invitation_parents_left: e.target.value }
-  )
-}
+        adminLang === "ar"
+          ? event.parents_label_left_ar || ""
+          : event.parents_label_left_en || ""
+      }
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { parents_label_left_ar: e.target.value }
+            : { parents_label_left_en: e.target.value }
+        )
+      }
     />
 
+    {/* ✅ RIGHT LABEL */}
     <input
       className="w-full bg-black/40 border rounded px-4 py-2"
-      placeholder="Right parents block"
+      placeholder="Right label (e.g. Mr & Mrs)"
       value={
-  adminLang === "ar"
-    ? event.invitation_parents_right_ar || ""
-    : event.invitation_parents_right || ""
-}
-onChange={(e) =>
-  updateEvent(
-    adminLang === "ar"
-      ? { invitation_parents_right_ar: e.target.value }
-      : { invitation_parents_right: e.target.value }
-  )
-}
+        adminLang === "ar"
+          ? event.parents_label_right_ar || ""
+          : event.parents_label_right_en || ""
+      }
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { parents_label_right_ar: e.target.value }
+            : { parents_label_right_en: e.target.value }
+        )
+      }
     />
 
+    {/* ✅ LEFT PARENTS NAMES */}
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Left parents names"
+      value={
+        adminLang === "ar"
+          ? event.invitation_parents_left_ar || ""
+          : event.invitation_parents_left || ""
+      }
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { invitation_parents_left_ar: e.target.value }
+            : { invitation_parents_left: e.target.value }
+        )
+      }
+    />
+
+    {/* ✅ RIGHT PARENTS NAMES */}
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Right parents names"
+      value={
+        adminLang === "ar"
+          ? event.invitation_parents_right_ar || ""
+          : event.invitation_parents_right || ""
+      }
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { invitation_parents_right_ar: e.target.value }
+            : { invitation_parents_right: e.target.value }
+        )
+      }
+    />
+
+    {/* REQUEST LINE */}
     <textarea
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Request line"
-value={
-  adminLang === "ar"
-    ? event.invitation_request_line_ar || ""
-    : event.invitation_request_line || ""
-}
-onChange={(e) =>
-  updateEvent(
-    adminLang === "ar"
-      ? { invitation_request_line_ar: e.target.value }
-      : { invitation_request_line: e.target.value }
-  )
-}
+      value={
+        adminLang === "ar"
+          ? event.invitation_request_line_ar || ""
+          : event.invitation_request_line || ""
+      }
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { invitation_request_line_ar: e.target.value }
+            : { invitation_request_line: e.target.value }
+        )
+      }
     />
 
-<input
-  className="w-full bg-black/40 border rounded px-4 py-2"
-  placeholder="Date (e.g. 2026-04-26)"
-  value={
-    adminLang === "ar"
-      ? event.date_text_ar || ""
-      : event.date_text || ""
-  }
-  onChange={(e) => {
-    const date = e.target.value;
+    {/* DATE */}
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Date (e.g. 2026-04-26)"
+      value={
+        adminLang === "ar"
+          ? event.date_text_ar || ""
+          : event.date_text || ""
+      }
+      onChange={(e) => {
+        const date = e.target.value;
 
-    if (adminLang === "ar") {
-      updateEvent({
-        date_text_ar: date,
-      });
-    } else {
-      const iso = `${date}T${event.time_text || "00:00"}`;
+        if (adminLang === "ar") {
+          updateEvent({
+            date_text_ar: date,
+          });
+        } else {
+          const iso = `${date}T${event.time_text || "00:00"}`;
+          updateEvent({
+            date_text: date,
+            event_date_iso: iso,
+          });
+        }
+      }}
+    />
 
-      updateEvent({
-        date_text: date,
-        event_date_iso: iso,
-      });
-    }
-  }}
-/>
+    {/* TIME */}
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Time (e.g. 17:00)"
+      value={
+        adminLang === "ar"
+          ? event.time_text_ar || ""
+          : event.time_text || ""
+      }
+      onChange={(e) => {
+        const time = e.target.value;
 
-<input
-  className="w-full bg-black/40 border rounded px-4 py-2"
-  placeholder="Time (e.g. 17:00)"
-  value={
-    adminLang === "ar"
-      ? event.time_text_ar || ""
-      : event.time_text || ""
-  }
-  onChange={(e) => {
-    const time = e.target.value;
+        if (adminLang === "ar") {
+          updateEvent({
+            time_text_ar: time,
+          });
+        } else {
+          updateEvent({
+            time_text: time,
+            event_date_iso: `${event.date_text || ""}T${time}`,
+          });
+        }
+      }}
+    />
 
-    if (adminLang === "ar") {
-      updateEvent({
-        time_text_ar: time,
-      });
-    } else {
-      updateEvent({
-        time_text: time,
-        event_date_iso: `${event.date_text || ""}T${time}`,
-      });
-    }
-  }}
-/>
-<label className="text-xs text-white/50">
-  Countdown (exact date & time)
-</label>
+    {/* COUNTDOWN */}
+    <label className="text-xs text-white/50">
+      Countdown (exact date & time)
+    </label>
 
-<input
-  type="datetime-local"
-  className="w-full bg-black/40 border rounded px-4 py-2"
-  value={event.event_date_iso || ""}
-  onChange={(e) => {
-    const local = e.target.value;
+    <input
+      type="datetime-local"
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      value={event.event_date_iso || ""}
+      onChange={(e) =>
+        updateEvent({
+          event_date_iso: e.target.value,
+        })
+      }
+    />
 
-    updateEvent({
-      event_date_iso: local,
-    });
-  }}
-/>
   </div>
 )}
-
 
           {/* CEREMONY */}
           {tab === "ceremony" && (

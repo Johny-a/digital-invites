@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const isMobile =
@@ -17,6 +17,9 @@ const supabase = createClient(
 
 type EventData = {
   id?: string;
+parents_label_en?: string;
+parents_label_ar?: string;
+
 
   ending_photo: string;
 event_date_iso?: string;
@@ -45,6 +48,11 @@ time_text_ar?: string;
 hero_names_ar?: string;
 hero_tagline_ar?: string;
 hero_headline_ar?: string;
+
+parents_label_left_en?: string;
+parents_label_left_ar?: string;
+parents_label_right_en?: string;
+parents_label_right_ar?: string;
 
 invitation_quote_ar?: string;
 invitation_parents_left_ar?: string;
@@ -157,13 +165,13 @@ export default function InvitationPlayer({
       img.onerror = () => resolve();
     });
 
-  const safeEvent: EventData = {
+  const safeEvent = useMemo(() => ({
   ...event,
   gallery: Array.isArray(event?.gallery) ? event.gallery : [],
   bg_images: event?.bg_images || {},
   gifts: Array.isArray(event?.gifts) ? event.gifts : [],
   text_positions: event?.text_positions || {},
-};
+}), [event]);
 const gallery = safeEvent.gallery ?? [];
 const hasAfter =
   safeEvent.after_place ||
@@ -232,13 +240,16 @@ const [fade, setFade] = useState(false);
 useEffect(() => {
   if (!started) return;
 
+  // ✅ 🚫 IMPORTANT: disable autoplay in editor
+  if (editorMode) return;
+
   // 🛑 STOP on RSVP until user submits
   if (current === "rsvp" && !sent) return;
 
   const delay =
     current === "rsvp" && sent
-      ? 5000 // ✅ after submit → wait 5 sec
-      : 10000; // normal slides
+      ? 5000
+      : 10000;
 
   const interval = setInterval(() => {
     setPage((prev) => {
@@ -248,7 +259,7 @@ useEffect(() => {
   }, delay);
 
   return () => clearInterval(interval);
-}, [started, current, sent, SLIDES.length]);
+}, [started, current, sent, SLIDES.length, editorMode]);
 
 // Photos slider state
 const [photoIndex, setPhotoIndex] = useState(0);
@@ -387,13 +398,16 @@ init();
 }, [started]);
 
 
+useEffect(() => {
+  if (typeof forcedPage === "number") {
+    setPage(forcedPage);
 
-  useEffect(() => {
-    if (typeof forcedPage === "number") {
-      setPage(forcedPage);
+    // ✅ only start in editor without triggering full flow
+    if (editorMode) {
       setStarted(true);
     }
-  }, [forcedPage]);
+  }
+}, [forcedPage, editorMode]);
 
 // ⏳ COUNTDOWN EFFECT
 useEffect(() => {
@@ -850,7 +864,10 @@ loading="lazy"
       : "text-sm uppercase tracking-widest text-white/70"
   }`}
 >
-  {language === "ar" ? "السيد والسيدة" : "Mr & Mrs"}
+{getText(
+  safeEvent.parents_label_left_en || "Mr & Mrs",
+  safeEvent.parents_label_left_ar || "السيد والسيدة"
+)}
 </div>
     <div className="text-lg font-medium whitespace-pre-line">
       {getText(
@@ -869,7 +886,10 @@ loading="lazy"
       : "text-sm uppercase tracking-widest text-white/70"
   }`}
 >
-  {language === "ar" ? "السيد والسيدة" : "Mr & Mrs"}
+{getText(
+  safeEvent.parents_label_right_en || "Mr & Mrs",
+  safeEvent.parents_label_right_ar || "السيد والسيدة"
+)}
 </div>
     <div className="text-lg font-medium whitespace-pre-line">
       {getText(
