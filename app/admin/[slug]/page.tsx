@@ -127,10 +127,9 @@ const exportCSV = () => {
     ];
   });
 
-  const totalPeople = rsvps.reduce((sum, r) => {
-    return sum + (r.attending ? 1 + (Number(r.guest_count) || 0) : 0);
-  }, 0);
-
+  const totalPeople = rsvps
+  .filter((r) => r.attending === true)
+  .reduce((sum, r) => sum + (Number(r.guest_count) || 0), 0);
   rows.push([]);
   rows.push(["TOTAL", "", totalPeople, "", ""]);
 
@@ -163,7 +162,9 @@ const exportExcel = () => {
   if (!rsvps.length) return alert("No RSVPs to export");
 
   const data = rsvps.map((r) => {
-    const peopleComing = r.attending ? 1 + (Number(r.guest_count) || 0) : 0;
+    const peopleComing = r.attending
+  ? (Number(r.guest_count) || 0)
+  : 0;
 
     return {
       "Inviter Name": r.main_name || "",
@@ -189,9 +190,9 @@ const exportExcel = () => {
   });
 
   // Totals
-  const totalPeople = rsvps.reduce((sum, r) => {
-    return sum + (r.attending ? 1 + (Number(r.guest_count) || 0) : 0);
-  }, 0);
+  const totalPeople = rsvps
+  .filter((r) => r.attending === true)
+  .reduce((sum, r) => sum + (Number(r.guest_count) || 0), 0);
 
   const endRow = data.length + 6;
   XLSX.utils.sheet_add_aoa(
