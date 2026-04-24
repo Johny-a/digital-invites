@@ -15,10 +15,34 @@ type EventData = {
 ceremony_note?: string;
 cover_image?: string;
 
+groom_title?: string;
+groom_title_ar?: string;
+groom_note?: string;
+groom_note_ar?: string;
+
+bride_title?: string;
+bride_title_ar?: string;
+bride_note?: string;
+bride_note_ar?: string;
+
+houses_footer?: string;
+houses_footer_ar?: string;
+
 after_place?: string;
 after_time?: string;
 after_map?: string;
 after_note?: string;
+
+groom_place?: string;
+groom_place_ar?: string;
+groom_map?: string;
+
+bride_place?: string;
+bride_place_ar?: string;
+bride_map?: string;
+
+houses_title?: string;
+houses_title_ar?: string;
 
 celebration_note?: string;
 celebration_note_ar?: string;
@@ -140,10 +164,11 @@ after_note: "",
 const SLIDES = [
   "hero",
   "invitation",
+  "houses", // ✅ ADD HERE
   "ceremony",
-  "after", 
+  "after",
   "celebration",
-  "gifts",      
+  "gifts",
   "rsvp",
   "photos",
   "ending",
@@ -152,6 +177,7 @@ const SLIDES = [
 const BG_SLIDES = [
   "hero",
   "invitation",
+  "houses", 
   "ceremony",
   "after",
   "celebration",
@@ -662,7 +688,130 @@ onChange={(e) =>
 )}
 
 
+{tab === "houses" && (
+  <>
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Page Title"
+      value={adminLang === "ar" ? event.houses_title_ar || "" : event.houses_title || ""}
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { houses_title_ar: e.target.value }
+            : { houses_title: e.target.value }
+        )
+      }
+    />
 
+    {/* GROOM */}
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Groom Title"
+      value={adminLang === "ar" ? event.groom_title_ar || "" : event.groom_title || ""}
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { groom_title_ar: e.target.value }
+            : { groom_title: e.target.value }
+        )
+      }
+    />
+
+    <textarea
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Groom Note"
+      value={adminLang === "ar" ? event.groom_note_ar || "" : event.groom_note || ""}
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { groom_note_ar: e.target.value }
+            : { groom_note: e.target.value }
+        )
+      }
+    />
+
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Groom Location"
+      value={adminLang === "ar" ? event.groom_place_ar || "" : event.groom_place || ""}
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { groom_place_ar: e.target.value }
+            : { groom_place: e.target.value }
+        )
+      }
+    />
+
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Groom Map"
+      value={event.groom_map || ""}
+      onChange={(e) => updateEvent({ groom_map: e.target.value })}
+    />
+
+    {/* BRIDE */}
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Bride Title"
+      value={adminLang === "ar" ? event.bride_title_ar || "" : event.bride_title || ""}
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { bride_title_ar: e.target.value }
+            : { bride_title: e.target.value }
+        )
+      }
+    />
+
+    <textarea
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Bride Note"
+      value={adminLang === "ar" ? event.bride_note_ar || "" : event.bride_note || ""}
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { bride_note_ar: e.target.value }
+            : { bride_note: e.target.value }
+        )
+      }
+    />
+
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Bride Location"
+      value={adminLang === "ar" ? event.bride_place_ar || "" : event.bride_place || ""}
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { bride_place_ar: e.target.value }
+            : { bride_place: e.target.value }
+        )
+      }
+    />
+
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Bride Map"
+      value={event.bride_map || ""}
+      onChange={(e) => updateEvent({ bride_map: e.target.value })}
+    />
+
+    {/* FOOTER */}
+    <input
+      className="w-full bg-black/40 border rounded px-4 py-2"
+      placeholder="Bottom Text"
+      value={adminLang === "ar" ? event.houses_footer_ar || "" : event.houses_footer || ""}
+      onChange={(e) =>
+        updateEvent(
+          adminLang === "ar"
+            ? { houses_footer_ar: e.target.value }
+            : { houses_footer: e.target.value }
+        )
+      }
+    />
+  </>
+)}
 
 
 {tab === "after" && (

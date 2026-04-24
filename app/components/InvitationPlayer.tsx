@@ -28,6 +28,30 @@ event_date_iso?: string;
   bg_video?: string;
   music_url?: string;
 
+groom_title?: string;
+groom_title_ar?: string;
+groom_note?: string;
+groom_note_ar?: string;
+
+bride_title?: string;
+bride_title_ar?: string;
+bride_note?: string;
+bride_note_ar?: string;
+
+houses_footer?: string;
+houses_footer_ar?: string;
+
+groom_place?: string;
+groom_place_ar?: string;
+groom_map?: string;
+
+bride_place?: string;
+bride_place_ar?: string;
+bride_map?: string;
+
+houses_title?: string;
+houses_title_ar?: string;
+
   title?: string;
   subtitle?: string;
 
@@ -179,11 +203,16 @@ const hasAfter =
   safeEvent.after_map ||
   safeEvent.after_note;
 
+const hasHouses =
+  safeEvent.groom_place ||
+  safeEvent.bride_place;
+
 const dynamicSlides = [
   "hero",
   "invitation",
+  ...(hasHouses ? ["houses"] : []), // ✅ NEW PAGE HERE
   "ceremony",
-  ...(hasAfter ? ["after"] : []), // ✅ ONLY SHOW IF FILLED
+  ...(hasAfter ? ["after"] : []),
   "celebration",
   "gifts",
   "rsvp",
@@ -955,6 +984,98 @@ loading="lazy"
 </p>
   </div>
 )}
+
+
+{current === "houses" && (
+  <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-4">
+
+    {/* TITLE */}
+    <h2 className={`text-3xl md:text-4xl ${
+      language === "ar" ? "font-[Amiri]" : "font-serif"
+    }`}>
+      {getText(
+        safeEvent.houses_title || "Before the Ceremony",
+        safeEvent.houses_title_ar || "قبل المراسم"
+      )}
+    </h2>
+
+    {/* HOUSES */}
+    <div className="flex flex-col gap-6 w-full max-w-md">
+
+      {/* GROOM */}
+      {safeEvent.groom_place && (
+        <div className="space-y-2 border border-white/20 rounded-xl p-4 bg-black/30 max-h-[38vh] overflow-hidden">
+
+          <h3 className="text-lg font-semibold">
+            {getText(
+              safeEvent.groom_title || "The Groom’s House",
+              safeEvent.groom_title_ar || "منزل العريس"
+            )}
+          </h3>
+
+          <p className="text-white/70 text-xs leading-snug">
+            {getText(
+              safeEvent.groom_note || "Join us at the groom’s home to begin the celebration.",
+              safeEvent.groom_note_ar || "يسرّنا دعوتكم لبداية الاحتفال في منزل العريس"
+            )}
+          </p>
+
+          <div className="text-sm">
+            📍 {getText(safeEvent.groom_place, safeEvent.groom_place_ar)}
+          </div>
+
+          {safeEvent.groom_map && (
+            <a href={safeEvent.groom_map} target="_blank"
+              className="inline-block border border-white px-3 py-1.5 text-sm rounded">
+              {language === "ar" ? "الخريطة" : "Map"}
+            </a>
+          )}
+        </div>
+      )}
+
+      {/* BRIDE */}
+      {safeEvent.bride_place && (
+        <div className="space-y-4 border border-white/20 rounded-xl p-6 bg-black/30">
+
+          <h3 className="text-xl font-semibold">
+            {getText(
+              safeEvent.bride_title || "The Bride’s House",
+              safeEvent.bride_title_ar || "منزل العروس"
+            )}
+          </h3>
+
+          <p className="text-white/80 text-sm">
+            {getText(
+              safeEvent.bride_note || "Join us at the bride’s home where beautiful moments begin.",
+              safeEvent.bride_note_ar || "ندعوكم لمشاركتنا اللحظات الجميلة في منزل العروس"
+            )}
+          </p>
+
+          <div className="text-lg">
+            📍 {getText(safeEvent.bride_place, safeEvent.bride_place_ar)}
+          </div>
+
+          {safeEvent.bride_map && (
+            <a href={safeEvent.bride_map} target="_blank"
+              className="inline-block border border-white px-4 py-2 rounded">
+              {language === "ar" ? "الخريطة" : "Map"}
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+
+    {/* BOTTOM TEXT */}
+    <p className="text-white/70 italic">
+      {getText(
+        safeEvent.houses_footer || "Two homes… one beautiful beginning",
+        safeEvent.houses_footer_ar || "منزلان… وبداية واحدة جميلة"
+      )}
+    </p>
+
+  </div>
+)}
+
 
 
 {current === "ceremony" && (
