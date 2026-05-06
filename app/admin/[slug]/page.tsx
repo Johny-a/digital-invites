@@ -20,6 +20,12 @@ export default function AdminEventPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 const [publicLink, setPublicLink] = useState("");
+const [editingRSVP, setEditingRSVP] = useState<any | null>(null);
+
+const [editName, setEditName] = useState("");
+const [editGuests, setEditGuests] = useState(1);
+const [editNote, setEditNote] = useState("");
+const [editAttending, setEditAttending] = useState(true);
 
 
   useEffect(() => {
@@ -97,6 +103,40 @@ const deleteRSVP = async (id: string) => {
   } else {
     setRsvps((prev) => prev.filter((r) => r.id !== id));
   }
+};
+const updateRSVP = async () => {
+  if (!editingRSVP) return;
+
+  const { error } = await supabase
+    .from("rsvps")
+    .update({
+      main_name: editName,
+      guest_count: editGuests,
+      note: editNote,
+      attending: editAttending,
+    })
+    .eq("id", editingRSVP.id);
+
+  if (error) {
+    alert("Failed to update RSVP");
+    return;
+  }
+
+  setRsvps((prev) =>
+    prev.map((r) =>
+      r.id === editingRSVP.id
+        ? {
+            ...r,
+            main_name: editName,
+            guest_count: editGuests,
+            note: editNote,
+            attending: editAttending,
+          }
+        : r
+    )
+  );
+
+  setEditingRSVP(null);
 };
 
   const copyLink = async () => {
@@ -366,7 +406,22 @@ const exportExcel = () => {
                     <td className="text-xs text-white/60">
                       {new Date(r.created_at).toLocaleString()}
                     </td>
-<td>
+<td className="flex gap-3 items-center">
+  <button
+    onClick={() => {
+      setEditingRSVP(r);
+
+      setEditName(r.main_name || "");
+      setEditGuests(Number(r.guest_count) || 1);
+      setEditNote(r.note || "");
+      setEditAttending(r.attending);
+    }}
+    className="text-blue-400 hover:text-blue-600 font-bold"
+    title="Edit RSVP"
+  >
+    ✎
+  </button>
+
   <button
     onClick={() => deleteRSVP(r.id)}
     className="text-red-400 hover:text-red-600 font-bold"
@@ -383,6 +438,76 @@ const exportExcel = () => {
           )}
         </div>
       </div>
+{editingRSVP && (
+  <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+    <div className="bg-[#111] border border-white/10 rounded-2xl p-6 w-full max-w-md space-y-4">
+
+      <h2 className="text-2xl font-bold">Edit RSVP</h2>
+
+      <input
+        value={editName}
+        onChange={(e) => setEditName(e.target.value)}
+        placeholder="Guest Name"
+        className="w-full bg-black border border-white/20 rounded px-4 py-2"
+      />
+
+      <input
+        type="number"
+        value={editGuests}
+        onChange={(e) => setEditGuests(Number(e.target.value))}
+        min={1}
+        className="w-full bg-black border border-white/20 rounded px-4 py-2"
+      />
+
+      <textarea
+        value={editNote}
+        onChange={(e) => setEditNote(e.target.value)}
+        placeholder="Note"
+        className="w-full bg-black border border-white/20 rounded px-4 py-2"
+      />
+
+      <div className="flex gap-2">
+        <button
+          onClick={() => setEditAttending(true)}
+          className={`flex-1 py-2 rounded ${
+            editAttending
+              ? "bg-green-500 text-black"
+              : "bg-white/10"
+          }`}
+        >
+          Yes
+        </button>
+
+        <button
+          onClick={() => setEditAttending(false)}
+          className={`flex-1 py-2 rounded ${
+            !editAttending
+              ? "bg-red-500 text-black"
+              : "bg-white/10"
+          }`}
+        >
+          No
+        </button>
+      </div>
+
+      <div className="flex gap-2 pt-2">
+        <button
+          onClick={updateRSVP}
+          className="flex-1 bg-blue-500 text-black py-2 rounded font-semibold"
+        >
+          Save Changes
+        </button>
+
+        <button
+          onClick={() => setEditingRSVP(null)}
+          className="flex-1 bg-white/10 py-2 rounded"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }

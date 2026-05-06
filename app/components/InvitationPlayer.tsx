@@ -232,6 +232,15 @@ const [note, setNote] = useState("");
 const [sending, setSending] = useState(false);
 const [sent, setSent] = useState(false);
 const [error, setError] = useState<string | null>(null);
+// MAX GUESTS FROM URL
+const searchParams =
+  typeof window !== "undefined"
+    ? new URLSearchParams(window.location.search)
+    : null;
+
+const invParam = searchParams?.get("inv");
+
+const maxInvites = invParam ? Number(invParam) : null;
 const [guestCount, setGuestCount] = useState<number | "">("");
 const normalizeNumber = (val: string) => {
   return val
@@ -474,6 +483,10 @@ useEffect(() => {
     }, 200);
   };
 const submitRSVP = async () => {
+if (maxInvites && Number(guestCount) > maxInvites) {
+  setError(`Maximum allowed guests is ${maxInvites}`);
+  return;
+}
   if (!mainName || attending === null || guestCount === "" || Number(normalizeNumber(String(guestCount))) < 1) {
     setError("Guest count must be at least 1.");
     return;
@@ -1245,25 +1258,53 @@ wasPlayingRef.current = true;
     {language === "ar" ? "عدد الضيوف" : "Number of guests"}
   </label>
 
- <input
-  type="text"
-  inputMode="numeric"
-  min="1"
-  className="w-full bg-black/40 border border-white/30 rounded px-3 py-2 appearance-none"
-  value={guestCount}
-  placeholder={language === "ar" ? "عدد الضيوف" : "Enter number of guests"}
-  onChange={(e) => {
-  const raw = e.target.value;
-  const normalized = normalizeNumber(raw);
+  {/* LIMITED MODE → SELECT */}
+  {maxInvites ? (
+    <select
+      className="w-full bg-black/40 border border-white/30 rounded px-3 py-2"
+      value={guestCount}
+      onChange={(e) => setGuestCount(Number(e.target.value))}
+    >
+      <option value="">
+        {language === "ar"
+          ? "اختر عدد الضيوف"
+          : "Select number of guests"}
+      </option>
 
-  if (normalized === "") {
-    setGuestCount("");
-  } else {
-    const num = Number(normalized);
-    setGuestCount(num < 1 ? 1 : num);
-  }
-}}
-/>
+      {Array.from({ length: maxInvites }, (_, i) => i + 1).map((num) => (
+        <option key={num} value={num}>
+          {language === "ar"
+            ? `${num} ضيف`
+            : `${num} Guest${num > 1 ? "s" : ""}`}
+        </option>
+      ))}
+    </select>
+  ) : (
+    /* UNLIMITED MODE → INPUT */
+    <input
+      type="text"
+      inputMode="numeric"
+      min="1"
+      className="w-full bg-black/40 border border-white/30 rounded px-3 py-2 appearance-none"
+      value={guestCount}
+      placeholder={
+        language === "ar"
+          ? "أدخل عدد الضيوف"
+          : "Enter number of guests"
+      }
+      onChange={(e) => {
+        const raw = e.target.value;
+        const normalized = normalizeNumber(raw);
+
+        if (normalized === "") {
+          setGuestCount("");
+        } else {
+          const num = Number(normalized);
+          setGuestCount(num < 1 ? 1 : num);
+        }
+      }}
+    />
+  )}
 </div>
 
         <div className="flex gap-2">
