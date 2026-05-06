@@ -265,6 +265,7 @@ useEffect(() => {
 }, [externalLang, editorMode]);
 const [started, setStarted] = useState(editorMode);
 const [muted, setMuted] = useState(editorMode ? true : false);
+const wasPlayingRef = useRef(false);
 const [fade, setFade] = useState(false);
 useEffect(() => {
   if (!started) return;
@@ -445,7 +446,6 @@ useEffect(() => {
   const interval = setInterval(() => {
     const now = new Date().getTime();
     const targetDate = new Date(safeEvent.event_date_iso!).getTime();
-
     const difference = targetDate - now;
 
     if (difference <= 0) {
@@ -749,6 +749,7 @@ loading="lazy"
         onClick={() => {
           setStarted(true);
           setMuted(false);
+wasPlayingRef.current = true;
 
           if (videoRef.current) {
             videoRef.current.play().catch(() => {});
@@ -987,10 +988,10 @@ loading="lazy"
 
 
 {current === "houses" && (
-  <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 space-y-4">
+  <div className="w-full h-full flex flex-col items-center justify-center text-center px-4 space-y-2">
 
     {/* TITLE */}
-    <h2 className={`text-3xl md:text-4xl ${
+    <h2 className={`text-2xl md:text-3xl ${
       language === "ar" ? "font-[Amiri]" : "font-serif"
     }`}>
       {getText(
@@ -1000,11 +1001,11 @@ loading="lazy"
     </h2>
 
     {/* HOUSES */}
-    <div className="flex flex-col gap-6 w-full max-w-md">
+    <div className="flex flex-col gap-3 w-full max-w-sm">
 
       {/* GROOM */}
       {safeEvent.groom_place && (
-        <div className="space-y-2 border border-white/20 rounded-xl p-4 bg-black/30 max-h-[38vh] overflow-hidden">
+        <div className="space-y-1 border border-white/20 rounded-xl p-3 bg-black/30 max-h-[28vh] overflow-hidden">
 
           <h3 className="text-lg font-semibold">
             {getText(
@@ -1035,23 +1036,23 @@ loading="lazy"
 
       {/* BRIDE */}
       {safeEvent.bride_place && (
-        <div className="space-y-4 border border-white/20 rounded-xl p-6 bg-black/30">
+        <div className="space-y-2 border border-white/20 rounded-xl p-3 bg-black/30 max-h-[28vh] overflow-hidden">
 
-          <h3 className="text-xl font-semibold">
+          <h3 className="text-base font-semibold">
             {getText(
               safeEvent.bride_title || "The Bride’s House",
               safeEvent.bride_title_ar || "منزل العروس"
             )}
           </h3>
 
-          <p className="text-white/80 text-sm">
+          <p className="text-white/70 text-xs">
             {getText(
               safeEvent.bride_note || "Join us at the bride’s home where beautiful moments begin.",
               safeEvent.bride_note_ar || "ندعوكم لمشاركتنا اللحظات الجميلة في منزل العروس"
             )}
           </p>
 
-          <div className="text-lg">
+          <div className="text-sm">
             📍 {getText(safeEvent.bride_place, safeEvent.bride_place_ar)}
           </div>
 
@@ -1471,12 +1472,16 @@ loading="lazy"
   <button
 onClick={() => {
   setMuted((m) => {
-    const next = !m;
-    if (audioRef.current) {
-      audioRef.current.muted = next;
-    }
-    return next;
-  });
+  const next = !m;
+
+  if (audioRef.current) {
+    audioRef.current.muted = next;
+  }
+
+  wasPlayingRef.current = !next; // 👈 IMPORTANT
+
+  return next;
+});
 }}
 
     className="absolute top-4 right-4 z-30 bg-black/50 backdrop-blur px-3 py-2 rounded-full text-white text-sm border border-white/30"
