@@ -499,23 +499,43 @@ onChange={(e) =>
       }
     />
 
-    {/* ✅ LEFT PARENTS NAMES */}
-    <input
-      className="w-full bg-black/40 border rounded px-4 py-2"
-      placeholder="Left parents names"
-      value={
-        adminLang === "ar"
-          ? event.invitation_parents_left_ar || ""
-          : event.invitation_parents_left || ""
-      }
-      onChange={(e) =>
-        updateEvent(
-          adminLang === "ar"
-            ? { invitation_parents_left_ar: e.target.value }
-            : { invitation_parents_left: e.target.value }
-        )
-      }
-    />
+{/* ✅ LEFT PARENTS NAMES */}
+<textarea
+  rows={4}
+  className="w-full bg-black/40 border rounded px-4 py-2"
+  placeholder="Left parents names"
+  value={
+    adminLang === "ar"
+      ? event.invitation_parents_left_ar || ""
+      : event.invitation_parents_left || ""
+  }
+  onChange={(e) =>
+    updateEvent(
+      adminLang === "ar"
+        ? { invitation_parents_left_ar: e.target.value }
+        : { invitation_parents_left: e.target.value }
+    )
+  }
+/>
+
+{/* ✅ RIGHT PARENTS NAMES */}
+<textarea
+  rows={4}
+  className="w-full bg-black/40 border rounded px-4 py-2"
+  placeholder="Right parents names"
+  value={
+    adminLang === "ar"
+      ? event.invitation_parents_right_ar || ""
+      : event.invitation_parents_right || ""
+  }
+  onChange={(e) =>
+    updateEvent(
+      adminLang === "ar"
+        ? { invitation_parents_right_ar: e.target.value }
+        : { invitation_parents_right: e.target.value }
+    )
+  }
+/>
 
     {/* ✅ RIGHT PARENTS NAMES */}
     <input

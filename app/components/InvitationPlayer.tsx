@@ -896,51 +896,59 @@ wasPlayingRef.current = true;
 
     {/* Parents */}
     {/* Parents */}
-<div className="grid grid-cols-2 gap-6 mt-4 text-center">
+<div className="grid grid-cols-2 gap-4 mt-4 w-full max-w-md mx-auto">
 
   {/* LEFT */}
-  <div className="space-y-1">
-<div
-  className={`${
-    language === "ar"
-      ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
-      : "text-sm uppercase tracking-widest text-white/70"
-  }`}
->
-{getText(
-  safeEvent.parents_label_left_en || "Mr & Mrs",
-  safeEvent.parents_label_left_ar || "السيد والسيدة"
-)}
-</div>
-    <div className="text-lg font-medium whitespace-pre-line">
-      {getText(
-        safeEvent.invitation_parents_left,
-        safeEvent.invitation_parents_left_ar
-      )}
-    </div>
+<div className="flex flex-col items-center text-center">
+
+  {/* LABEL */}
+  <div
+    className={`min-h-[70px] flex items-center justify-center ${
+      language === "ar"
+        ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
+        : "text-sm uppercase tracking-widest text-white/70"
+    }`}
+  >
+    {getText(
+      safeEvent.parents_label_left_en || "Mr & Mrs",
+      safeEvent.parents_label_left_ar || "السيد والسيدة"
+    )}
   </div>
 
-  {/* RIGHT */}
-  <div className="space-y-1">
-<div
-  className={`${
-    language === "ar"
-      ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
-      : "text-sm uppercase tracking-widest text-white/70"
-  }`}
->
-{getText(
-  safeEvent.parents_label_right_en || "Mr & Mrs",
-  safeEvent.parents_label_right_ar || "السيد والسيدة"
-)}
-</div>
-    <div className="text-lg font-medium whitespace-pre-line">
-      {getText(
-        safeEvent.invitation_parents_right,
-        safeEvent.invitation_parents_right_ar
-      )}
-    </div>
+  {/* NAMES */}
+  <div className="text-lg font-medium whitespace-pre-line">
+    {getText(
+      safeEvent.invitation_parents_left,
+      safeEvent.invitation_parents_left_ar
+    )}
   </div>
+</div>
+
+{/* RIGHT */}
+<div className="flex flex-col items-center text-center">
+
+  {/* LABEL */}
+  <div
+    className={`min-h-[70px] flex items-center justify-center ${
+      language === "ar"
+        ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
+        : "text-sm uppercase tracking-widest text-white/70"
+    }`}
+  >
+    {getText(
+      safeEvent.parents_label_right_en || "Mr & Mrs",
+      safeEvent.parents_label_right_ar || "السيد والسيدة"
+    )}
+  </div>
+
+  {/* NAMES */}
+  <div className="text-lg font-medium whitespace-pre-line">
+    {getText(
+      safeEvent.invitation_parents_right,
+      safeEvent.invitation_parents_right_ar
+    )}
+  </div>
+</div>
 
 </div>
       
