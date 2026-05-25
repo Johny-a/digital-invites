@@ -464,7 +464,8 @@ onChange={(e) =>
     />
 
     {/* ✅ LEFT LABEL */}
-    <input
+<textarea
+  rows={3}
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Left label (e.g. Mr & Mrs)"
       value={
@@ -482,7 +483,8 @@ onChange={(e) =>
     />
 
     {/* ✅ RIGHT LABEL */}
-    <input
+<textarea
+  rows={3}
       className="w-full bg-black/40 border rounded px-4 py-2"
       placeholder="Right label (e.g. Mr & Mrs)"
       value={

@@ -895,18 +895,18 @@ wasPlayingRef.current = true;
 </p>
 
     {/* Parents */}
-    {/* Parents */}
-<div className="grid grid-cols-2 gap-4 mt-4 w-full max-w-md mx-auto">
+<div className="grid grid-cols-2 gap-3 mt-4 w-full max-w-2xl mx-auto">
 
   {/* LEFT */}
 <div className="flex flex-col items-center text-center">
 
   {/* LABEL */}
+
   <div
-    className={`min-h-[70px] flex items-center justify-center ${
+  className={`min-h-[80px] min-w-0 w-full flex items-center justify-center text-center px-3 whitespace-pre-line ${
       language === "ar"
         ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
-        : "text-sm uppercase tracking-widest text-white/70"
+      : "text-sm font-bold uppercase tracking-tight text-white/80 leading-tight whitespace-pre-line"
     }`}
   >
     {getText(
@@ -928,11 +928,11 @@ wasPlayingRef.current = true;
 <div className="flex flex-col items-center text-center">
 
   {/* LABEL */}
-  <div
-    className={`min-h-[70px] flex items-center justify-center ${
+<div
+  className={`min-h-[80px] min-w-0 w-full flex items-center justify-center text-center px-3 whitespace-pre-line ${
       language === "ar"
         ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
-        : "text-sm uppercase tracking-widest text-white/70"
+        : "text-sm font-bold uppercase tracking-tight text-white/80 leading-tight whitespace-pre-line"
     }`}
   >
     {getText(
