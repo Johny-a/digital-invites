@@ -163,7 +163,9 @@ const exportCSV = () => {
       r.attending ? "Yes" : "No",
       peopleComing,
       r.note || "",
-      new Date(r.created_at).toLocaleString(),
+      new Date(
+  new Date(r.created_at).getTime() + 3 * 60 * 60 * 1000
+).toLocaleString(),
     ];
   });
 
@@ -211,7 +213,9 @@ const exportExcel = () => {
       Attending: r.attending ? "Yes" : "No",
       "People Coming": peopleComing,
       Note: r.note || "",
-      "Submitted At": new Date(r.created_at).toLocaleString(),
+      "Submitted At": new Date(
+  new Date(r.created_at).getTime() + 3 * 60 * 60 * 1000
+).toLocaleString(),
     };
   });
 
@@ -404,7 +408,9 @@ const exportExcel = () => {
 
                     <td className="max-w-[200px] truncate">{r.note || "-"}</td>
                     <td className="text-xs text-white/60">
-                      {new Date(r.created_at).toLocaleString()}
+                      {new Date(
+  new Date(r.created_at).getTime() + 3 * 60 * 60 * 1000
+).toLocaleString()}
                     </td>
 <td className="flex gap-3 items-center">
   <button
