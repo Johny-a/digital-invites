@@ -898,12 +898,12 @@ wasPlayingRef.current = true;
 <div className="grid grid-cols-2 gap-3 mt-4 w-full max-w-2xl mx-auto">
 
   {/* LEFT */}
-<div className="flex flex-col items-center text-center">
+<div className="flex flex-col items-center text-center gap-1">
 
   {/* LABEL */}
 
   <div
-  className={`min-h-[80px] min-w-0 w-full flex items-center justify-center text-center px-3 whitespace-pre-line ${
+  className={`h-auto min-w-0 w-full flex items-center justify-center text-center px-3 ${
       language === "ar"
         ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
       : "text-sm font-bold uppercase tracking-tight text-white/80 leading-tight whitespace-pre-line"
@@ -925,11 +925,11 @@ wasPlayingRef.current = true;
 </div>
 
 {/* RIGHT */}
-<div className="flex flex-col items-center text-center">
+<div className="flex flex-col items-center text-center gap-1">
 
   {/* LABEL */}
 <div
-  className={`min-h-[80px] min-w-0 w-full flex items-center justify-center text-center px-3 whitespace-pre-line ${
+  className={`h-auto min-w-0 w-full flex items-center justify-center text-center px-3 ${
       language === "ar"
         ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
         : "text-sm font-bold uppercase tracking-tight text-white/80 leading-tight whitespace-pre-line"
