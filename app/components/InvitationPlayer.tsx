@@ -887,9 +887,11 @@ wasPlayingRef.current = true;
   <div className="space-y-6 px-6 text-center max-w-md mx-auto">
     {/* Quote */}
 <p
-  className={`italic text-white/90 leading-loose tracking-wide ${
-    language === "ar" ? "text-xl md:text-2xl" : "text-lg md:text-xl"
-  }`}
+  className={`text-white/95 max-w-[280px] mx-auto ${
+  language === "ar"
+    ? "text-lg md:text-xl font-[Amiri] italic"
+    : "text-sm md:text-base font-serif italic font-bold leading-[1.8] tracking-[0.02em]"
+}`}
 >
   {getText(safeEvent.invitation_quote, safeEvent.invitation_quote_ar)}
 </p>
@@ -902,21 +904,22 @@ wasPlayingRef.current = true;
 
   {/* LABEL */}
 
+
   <div
   className={`h-auto min-w-0 w-full flex items-center justify-center text-center px-3 ${
-      language === "ar"
-        ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
-      : "text-sm font-bold uppercase tracking-tight text-white/80 leading-tight whitespace-pre-line"
-    }`}
-  >
-    {getText(
-      safeEvent.parents_label_left_en || "Mr & Mrs",
-      safeEvent.parents_label_left_ar || "السيد والسيدة"
-    )}
-  </div>
+    language === "ar"
+      ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
+      : "text-lg font-serif font-black uppercase tracking-[0.2em] text-white"
+  }`}
+>
+  {getText(
+    safeEvent.parents_label_left_en || "Mr & Mrs",
+    safeEvent.parents_label_left_ar || "السيد والسيدة"
+  )}
+</div>
 
   {/* NAMES */}
-  <div className="text-lg font-medium whitespace-pre-line">
+  <div className="text-xl font-semibold whitespace-pre-line text-white">
     {getText(
       safeEvent.invitation_parents_left,
       safeEvent.invitation_parents_left_ar
@@ -928,21 +931,22 @@ wasPlayingRef.current = true;
 <div className="flex flex-col items-center text-center gap-1">
 
   {/* LABEL */}
+
 <div
   className={`h-auto min-w-0 w-full flex items-center justify-center text-center px-3 ${
-      language === "ar"
-        ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
-        : "text-sm font-bold uppercase tracking-tight text-white/80 leading-tight whitespace-pre-line"
-    }`}
-  >
-    {getText(
-      safeEvent.parents_label_right_en || "Mr & Mrs",
-      safeEvent.parents_label_right_ar || "السيد والسيدة"
-    )}
-  </div>
+    language === "ar"
+      ? "text-lg font-[Amiri] font-bold text-white tracking-normal"
+      : "text-lg font-serif font-black uppercase tracking-[0.2em] text-white"
+  }`}
+>
+  {getText(
+    safeEvent.parents_label_right_en || "Family Of",
+    safeEvent.parents_label_right_ar || "السيد والسيدة"
+  )}
+</div>
 
   {/* NAMES */}
-  <div className="text-lg font-medium whitespace-pre-line">
+  <div className="text-xl font-semibold whitespace-pre-line text-white">
     {getText(
       safeEvent.invitation_parents_right,
       safeEvent.invitation_parents_right_ar
