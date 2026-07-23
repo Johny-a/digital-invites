@@ -617,7 +617,7 @@ setTimeout(() => {
 
     
 const templateProps = {
-started,
+
   safeEvent,
   language,
   started,
