@@ -26,6 +26,7 @@ parents_label_ar?: string;
 
 
   ending_photo: string;
+cover_image?: string;
 event_date_iso?: string;
   bg_mode?: "video" | "slideshow";
   bg_images?: Record<string, string>;
