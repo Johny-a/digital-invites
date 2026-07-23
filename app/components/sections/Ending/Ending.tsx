@@ -34,11 +34,7 @@ export default function Ending({ event }: Props) {
 
                 <div className="ending-divider"></div>
 
-                <img
-                    src="/logo-black.png"
-                    className="ending-logo"
-                    alt=""
-                />
+
 
             </div>
 
