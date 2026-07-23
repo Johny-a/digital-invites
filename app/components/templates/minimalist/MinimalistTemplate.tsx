@@ -17,8 +17,8 @@ import Ending from "@/app/components/sections/Ending/Ending";
 import React, { useMemo } from "react";
 
 export default function MinimalistTemplate({
-
     safeEvent,
+    started,
     timeLeft,
 
     mainName,
@@ -58,6 +58,7 @@ return (
     mode={safeEvent.bg_mode}
     video={safeEvent.bg_video}
     images={bgImages}
+    startSlideshow={started}
 />
 <Spacer h={90} />
 

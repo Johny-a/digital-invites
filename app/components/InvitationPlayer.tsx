@@ -229,6 +229,9 @@ const SLIDES = gallery.length > 0
 const bgImages = safeEvent.bg_images || {};
 const [assetsReady, setAssetsReady] = useState(false);
 const [loadingProgress, setLoadingProgress] = useState(0);
+const [photoIndex, setPhotoIndex] = useState(0);
+const [photoOffset, setPhotoOffset] = useState(0);
+const [isDragging, setIsDragging] = useState(false);
 const [firstBgLoaded, setFirstBgLoaded] = useState(false);
 
 const [mainName, setMainName] = useState("");
@@ -283,174 +286,82 @@ const [showOverlay, setShowOverlay] = useState(!editorMode);
 const [muted, setMuted] = useState(editorMode ? true : false);
 const wasPlayingRef = useRef(false);
 const [fade, setFade] = useState(false);
-useEffect(() => {
-  if (!started) return;
-
-  // ✅ 🚫 IMPORTANT: disable autoplay in editor
-  if (editorMode) return;
-
-  // 🛑 STOP on RSVP until user submits
-  if (current === "rsvp" && !sent) return;
-
-  const delay =
-    current === "rsvp" && sent
-      ? 5000
-      : 10000;
-
-  const interval = setInterval(() => {
-    setPage((prev) => {
-      if (prev >= SLIDES.length - 1) return 0;
-      return prev + 1;
-    });
-  }, delay);
-
-  return () => clearInterval(interval);
-}, [started, current, sent, SLIDES.length, editorMode]);
-
-// Photos slider state
-const [photoIndex, setPhotoIndex] = useState(0);
-const [photoOffset, setPhotoOffset] = useState(0);
-const [isDragging, setIsDragging] = useState(false);
+const videoRef = useRef<HTMLVideoElement>(null);
+const audioRef = useRef<HTMLAudioElement>(null);
 const touchStartX = useRef<number | null>(null);
-
-
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-// PRELOAD ALL MEDIA AND WAIT UNTIL FINISHED
-useEffect(() => {
-  let isMounted = true;
-
-  
-
-  const loadInitial = async () => {
-    // 👇 ONLY load 1–2 assets before enter
-    const tasks: Promise<void>[] = [];
-
-Object.values(safeEvent.bg_images || {}).forEach((src) => {
-  if (src) {
-    tasks.push(loadImage(getOptimizedSrc(src)));
-  }
-});
-    if (safeEvent.ending_photo) {
-      tasks.push(loadImage(getOptimizedSrc(safeEvent.ending_photo)));
-    }
-
-if (safeEvent.cover_image) {
-    tasks.push(loadImage(getOptimizedSrc(safeEvent.cover_image)));
-}
-
-
-
-
-
-    await Promise.all(tasks);
-
-    if (isMounted) {
-      setAssetsReady(true); // ✅ THIS unlocks button
-    }
-  };
-
-  loadInitial();
-
-  return () => {
-    isMounted = false;
-  };
-}, []);
-
-useEffect(() => {
-  if (!started) return;
-
-  let isMounted = true;
+const [initialLoading, setInitialLoading] = useState(true);
 
 const loadVideo = (src: string) =>
-  new Promise<void>((resolve) => {
-    const video = document.createElement("video");
-    video.src = src;
-    video.preload = "auto";
-
-    const checkReady = () => {
-      if (video.readyState >= 4) {
-        resolve();
-      }
-    };
-
-    video.addEventListener("canplaythrough", checkReady);
-    video.onerror = () => resolve();
-  });
-
-  const loadAudio = (src: string) =>
     new Promise<void>((resolve) => {
-      const audio = document.createElement("audio");
-      audio.src = src;
-      audio.preload = "auto";
+        const video = document.createElement("video");
+        video.preload = "auto";
+        video.src = src;
 
-      audio.oncanplaythrough = () => resolve();
-      audio.onerror = () => resolve();
+        video.oncanplaythrough = () => resolve();
+        video.onerror = () => resolve();
     });
 
-  const loadAll = async () => {
-    const tasks: Promise<void>[] = [];
+const loadAudio = (src: string) =>
+    new Promise<void>((resolve) => {
+        const audio = document.createElement("audio");
+        audio.preload = "auto";
+        audio.src = src;
 
-    // Background images
-Object.values(safeEvent.bg_images || {}).forEach((src) => {
-  if (src) {
-    tasks.push(loadImage(getOptimizedSrc(src)));
-  }
-});
-    // Gallery images
-    // only preload first 2 images
-safeEvent.gallery?.slice(0, 2).forEach((src) => {
-  tasks.push(loadImage(getOptimizedSrc(src)));
-});
+        audio.oncanplaythrough = () => resolve();
+        audio.onerror = () => resolve();
+    });
 
-    // Ending photo
-    if (safeEvent.ending_photo) {
-      tasks.push(loadImage(getOptimizedSrc(safeEvent.ending_photo)));
-    }
+useEffect(() => {
+    let mounted = true;
 
+    const preload = async () => {
 
-    
+        const tasks: Promise<void>[] = [];
 
-    // Music
-    if (safeEvent.music_url) {
-      tasks.push(loadAudio(safeEvent.music_url));
-    }
+        Object.values(safeEvent.bg_images || {}).forEach((src) => {
+            if (src) tasks.push(loadImage(getOptimizedSrc(src)));
+        });
 
-    let loaded = 0;
-    tasks.forEach((p) =>
-      p.then(() => {
-        loaded++;
-        if (isMounted) {
-          setLoadingProgress(loaded);
+        safeEvent.gallery?.forEach((src) => {
+            tasks.push(loadImage(getOptimizedSrc(src)));
+        });
+
+        if (safeEvent.cover_image)
+            tasks.push(loadImage(getOptimizedSrc(safeEvent.cover_image)));
+
+        if (safeEvent.ending_photo)
+            tasks.push(loadImage(getOptimizedSrc(safeEvent.ending_photo)));
+
+        if (safeEvent.bg_video)
+            tasks.push(loadVideo(safeEvent.bg_video));
+
+        if (safeEvent.music_url)
+            tasks.push(loadAudio(safeEvent.music_url));
+
+        let loaded = 0;
+
+        tasks.forEach((p) =>
+            p.then(() => {
+                loaded++;
+                if (mounted)
+                    setLoadingProgress(loaded);
+            })
+        );
+
+        await Promise.all(tasks);
+
+        if (mounted) {
+            setAssetsReady(true);
+            setInitialLoading(false);
         }
-      })
-    );
+    };
 
-    await Promise.all(tasks);
+    preload();
 
-    if (isMounted) {
-      setAssetsReady(true);
-    }
-  };
-const init = async () => {
-  const firstBg = Object.values(safeEvent.bg_images || {})[0];
-
-if (firstBg) {
-  await loadImage(getOptimizedSrc(firstBg));
-  if (isMounted) setFirstBgLoaded(true);
-}
-
-  await loadAll();
-};
-
-init();
-
-  return () => {
-    isMounted = false;
-  };
-}, [started]);
-
+    return () => {
+        mounted = false;
+    };
+}, []);
 
 useEffect(() => {
   if (typeof forcedPage === "number") {
@@ -706,6 +617,7 @@ setTimeout(() => {
 
     
 const templateProps = {
+started,
   safeEvent,
   language,
   started,
@@ -769,6 +681,17 @@ const templateProps = {
 
 return (
     <>
+{initialLoading && (
+    <div className="loading-screen">
+        <div className="loading-spinner" />
+        <div className="loading-title">
+            Preparing your experience...
+        </div>
+        <div className="loading-progress">
+            {Math.round(progressPercent)}%
+        </div>
+    </div>
+)}
         <audio
             ref={audioRef}
             src={safeEvent.music_url}
@@ -777,13 +700,15 @@ return (
             playsInline
         />
 
-        <ThemeProvider event={safeEvent}>
-            <MinimalistTemplate
-                {...templateProps}
-            />
-        </ThemeProvider>
+        {started && (
+    <ThemeProvider event={safeEvent}>
+        <MinimalistTemplate
+            {...templateProps}
+        />
+    </ThemeProvider>
+)}
 
-        {showOverlay && (
+        {!initialLoading && showOverlay && (
             <OpeningOverlay
                 coverImage={
                     safeEvent.cover_image ||

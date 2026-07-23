@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import "./opening.css";
 import Envelope from "./Envelope";
 
@@ -19,19 +20,46 @@ export default function OpeningOverlay({
     onOpen,
 }: Props) {
 
+    const [coverReady, setCoverReady] = useState(false);
+
+    useEffect(() => {
+
+        if (!coverImage) {
+            setCoverReady(true);
+            return;
+        }
+
+        const img = new Image();
+
+        img.src = coverImage;
+
+        img.onload = () => setCoverReady(true);
+        img.onerror = () => setCoverReady(true);
+
+    }, [coverImage]);
+
     return (
         <div className={`opening-overlay ${opening ? "opening" : ""}`}>
 
             <div
                 className="opening-background"
                 style={{
-                    backgroundImage: `url(${coverImage})`,
+                    backgroundImage: coverReady
+                        ? `url(${coverImage})`
+                        : "none",
                 }}
             />
 
             <div className="opening-content">
 
-                {!opening ? (
+                {!coverReady ? (
+
+                    <div className="opening-loading">
+                        Preparing...
+                    </div>
+
+                ) : !opening ? (
+
                     <>
                         <div className="opening-logo">
 
@@ -50,8 +78,11 @@ export default function OpeningOverlay({
                             Open Invitation
                         </button>
                     </>
+
                 ) : (
+
                     <Envelope />
+
                 )}
 
             </div>

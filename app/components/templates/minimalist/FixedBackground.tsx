@@ -6,12 +6,14 @@ interface Props {
   mode?: "video" | "slideshow";
   video?: string;
   images?: string[];
+  startSlideshow?: boolean;
 }
 
 export default function FixedBackground({
   mode = "slideshow",
   video,
   images = [],
+  startSlideshow = true,
 }: Props) {
 
   const [index, setIndex] = useState(0);
@@ -20,6 +22,8 @@ export default function FixedBackground({
 
     if (mode !== "slideshow") return;
 
+    if (!startSlideshow) return;
+
     if (images.length <= 1) return;
 
     const interval = setInterval(() => {
@@ -27,12 +31,10 @@ export default function FixedBackground({
       setIndex((i) => (i + 1) % images.length);
 
     }, 3000);
-console.log("BG MODE:", mode);
-console.log("BG IMAGES:", images);
 
     return () => clearInterval(interval);
 
-  }, [mode, images.join("|")]);
+  }, [mode, startSlideshow, images.join("|")]);
 
   return (
 
