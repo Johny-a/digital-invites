@@ -292,25 +292,50 @@ const touchStartX = useRef<number | null>(null);
 const [initialLoading, setInitialLoading] = useState(true);
 
 const loadVideo = (src: string) =>
-    new Promise<void>((resolve) => {
-        const video = document.createElement("video");
-        video.preload = "auto";
-        video.src = src;
+  new Promise<void>((resolve) => {
+    const video = document.createElement("video");
 
-        video.oncanplaythrough = () => resolve();
-        video.onerror = () => resolve();
-    });
+    video.preload = "metadata";
+    video.src = src;
+
+    let done = false;
+
+    const finish = () => {
+      if (done) return;
+      done = true;
+      resolve();
+    };
+
+    video.onloadeddata = finish;
+    video.oncanplay = finish;
+    video.onerror = finish;
+
+    // Safari fallback
+    setTimeout(finish, 5000);
+  });
 
 const loadAudio = (src: string) =>
-    new Promise<void>((resolve) => {
-        const audio = document.createElement("audio");
-        audio.preload = "auto";
-        audio.src = src;
+  new Promise<void>((resolve) => {
+    const audio = document.createElement("audio");
 
-        audio.oncanplaythrough = () => resolve();
-        audio.onerror = () => resolve();
-    });
+    audio.preload = "metadata";
+    audio.src = src;
 
+    let done = false;
+
+    const finish = () => {
+      if (done) return;
+      done = true;
+      resolve();
+    };
+
+    audio.onloadeddata = finish;
+    audio.oncanplay = finish;
+    audio.onerror = finish;
+
+    // Safari fallback
+    setTimeout(finish, 5000);
+  });
 useEffect(() => {
     let mounted = true;
 
