@@ -991,7 +991,7 @@ loading="lazy"
 {safeEvent.music_url && started && (
   <button
 onClick={() => {
-  setMuted((m) => {
+  setMuted((m: boolean) => {
   const next = !m;
 
   if (audioRef.current) {
