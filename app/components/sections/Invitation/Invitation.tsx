@@ -26,7 +26,7 @@ const firstInitial = heroNames.charAt(0).toUpperCase();
 const secondInitial =
   heroNames
     .split(/\s+/)
-    .filter(word => word !== "&" && word.toLowerCase() !== "and")
+    .filter((word: string) => word !== "&" && word.toLowerCase() !== "and")
     .pop()
     ?.charAt(0)
     .toUpperCase() || "";
