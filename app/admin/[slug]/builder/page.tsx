@@ -419,11 +419,17 @@ const applyPreset = (preset: any) => {
                 ...event.design?.opening,
                 ...preset.opening,
             },
+animations: {
+    ...event.design?.animations,
+    ...preset.animations,
+},
 
-            animations: {
-                ...event.design?.animations,
-                ...preset.animations,
-            },
+music: {
+    ...(event.design?.music ?? {
+        autoplay: true,
+        volume: 0.6,
+    }),
+},
 
         },
 
