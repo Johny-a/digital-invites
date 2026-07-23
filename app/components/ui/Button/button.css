@@ -1,0 +1,77 @@
+/* =======================================================
+   BUTTON
+======================================================= */
+
+.ui-button{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    padding:14px 28px;
+
+    border-radius:999px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    border:none;
+
+    text-decoration:none;
+
+    font-family:var(--body-font), serif;
+
+    font-size:15px;
+
+}
+
+/* ---------- Full Width ---------- */
+
+.ui-button--full{
+
+    width:100%;
+
+}
+
+/* ---------- Primary ---------- */
+
+.ui-button--primary{
+
+    background:var(--accent-color);
+
+    color:white;
+
+}
+
+.ui-button--primary:hover{
+
+    opacity:.92;
+
+}
+
+/* ---------- Secondary ---------- */
+
+.ui-button--secondary{
+
+    background:white;
+
+    color:var(--text-color);
+
+    border:1px solid var(--border-color);
+
+}
+
+/* ---------- Ghost ---------- */
+
+.ui-button--ghost{
+
+    background:transparent;
+
+    color:var(--text-color);
+
+}

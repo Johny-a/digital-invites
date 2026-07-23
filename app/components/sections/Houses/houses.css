@@ -1,0 +1,68 @@
+/* =======================================================
+   HOUSES
+======================================================= */
+
+.houses{
+
+    text-align:center;
+
+    padding:40px 0;
+
+}
+
+.house-block{
+
+    margin-bottom:60px;
+
+}
+
+.house-block:last-child{
+
+    margin-bottom:0;
+
+}
+
+.houses-footer{
+
+    margin-top:40px;
+
+    font-family:var(--body-font), serif;
+
+    color:var(--text-light);
+
+    font-size:15px;
+
+    line-height:1.8;
+
+}
+/* ----------------------------------------------------------
+   Decorative Divider
+---------------------------------------------------------- */
+
+.section-divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin:-45px 0 24px;
+}
+
+.section-divider span{
+    width:80px;
+    height:2px;
+    background:rgba(199,165,106,.35);
+}
+
+.section-divider-icon{
+    color:var(--accent-color);
+    font-size:11px;
+    line-height:1;
+}
+
+@media (max-width:480px){
+
+    .section-divider span{
+        width:58px;
+    }
+
+}

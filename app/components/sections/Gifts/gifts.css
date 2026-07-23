@@ -1,0 +1,185 @@
+/* ==========================================================
+   GIFTS SECTION
+========================================================== */
+
+.gifts{
+
+    text-align:center;
+
+    padding:25px 0 0;
+
+}
+
+/* ----------------------------------------------------------
+   Divider under title
+---------------------------------------------------------- */
+
+.gift-divider{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:14px;
+
+    margin:-45px 0 5px;
+
+}
+
+.gift-divider span{
+
+    width:80px;
+
+    height:2px;
+
+    background:rgba(199,165,106,.35);
+
+}
+
+.gift-divider-icon{
+
+    color:var(--accent-color);
+
+    font-size:11px;
+
+    line-height:1;
+
+}
+
+/* ----------------------------------------------------------
+   Message
+---------------------------------------------------------- */
+
+.gifts-note{
+
+    max-width:340px;
+
+    margin:0 auto;
+
+    font-family:var(--body-font);
+
+    color:var(--text-light);
+
+    font-size:17px;
+
+    line-height:1.9;
+
+}
+
+/* ----------------------------------------------------------
+   Heart
+---------------------------------------------------------- */
+
+.gift-heart{
+
+    margin:1px 0 26px;
+
+    font-size:18px;
+
+    color:var(--accent-color);
+
+    line-height:1;
+
+}
+
+/* ----------------------------------------------------------
+   Cards
+---------------------------------------------------------- */
+
+.gift-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:0;
+
+}
+
+/* Elegant separator between cards */
+
+.gift-list > * + *{
+
+    position:relative;
+
+    margin-top:18px;
+
+    padding-top:18px;
+
+}
+
+.gift-list > * + *::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+
+    top:0;
+
+    transform:translateX(-50%);
+
+    width:90px;
+
+    height:1px;
+
+    background:rgba(199,165,106,.22);
+
+}
+
+.gift-list > * + *::after{
+
+    content:"✦";
+
+    position:absolute;
+
+    left:50%;
+
+    top:-7px;
+
+    transform:translateX(-50%);
+
+    width:16px;
+
+    height:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#fff;
+
+    color:var(--accent-color);
+
+    font-size:9px;
+
+}
+
+/* ----------------------------------------------------------
+   Mobile
+---------------------------------------------------------- */
+
+@media (max-width:480px){
+
+    .gift-divider span{
+
+        width:58px;
+
+    }
+
+    .gifts-note{
+
+        max-width:300px;
+
+        font-size:16px;
+
+        line-height:1.8;
+
+    }
+
+}

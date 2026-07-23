@@ -1,0 +1,224 @@
+/* ==========================================================
+   GIFT CARD
+========================================================== */
+
+.gift-card{
+
+    display:grid;
+    grid-template-columns:52px 1fr;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:20px 22px;
+
+    border:1px solid rgba(199,165,106,.22);
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,.08);
+
+    transition:.25s ease;
+
+}
+
+.gift-card:hover{
+
+    border-color:rgba(199,165,106,.45);
+
+    transform:translateY(-2px);
+
+}
+
+.gift-left{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:flex-start;
+
+    padding-top:4px;
+
+}
+
+.gift-logo{
+
+    width:34px;
+
+    height:34px;
+
+    object-fit:contain;
+
+}
+
+.gift-icon{
+
+    font-size:26px;
+
+}
+
+.gift-right{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+}
+
+.gift-title{
+
+    margin:0;
+
+    font-family:var(--heading-font);
+
+    font-size:26px;
+
+    font-weight:400;
+
+    line-height:1;
+
+    color:var(--text-color);
+
+}
+
+.gift-value{
+
+    margin:6px 0 14px;
+
+    font-family:var(--body-font);
+
+    font-size:16px;
+
+    color:var(--text-light);
+
+    letter-spacing:.3px;
+
+    word-break:break-word;
+
+}
+
+/* ==========================================================
+   COPY BUTTON
+========================================================== */
+
+.gift-right .btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    min-width:165px;
+
+    height:38px;
+
+    padding:0 20px;
+
+    border-radius:999px;
+
+    font-size:14px;
+
+    transition:.25s;
+
+}
+
+.gift-copy-icon{
+
+    font-size:15px;
+
+    line-height:1;
+
+}
+
+/* ==========================================================
+   TOAST
+========================================================== */
+
+.gift-toast{
+
+    position:fixed;
+
+    left:50%;
+
+    bottom:34px;
+
+    transform:translateX(-50%) translateY(20px);
+
+    padding:12px 18px;
+
+    border-radius:999px;
+
+    background:rgba(35,35,35,.94);
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-family:var(--body-font);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:.28s;
+
+    z-index:9999;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.18);
+
+}
+
+.gift-toast.show{
+
+    opacity:1;
+
+    transform:translateX(-50%) translateY(0);
+
+}
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width:480px){
+
+    .gift-card{
+
+        grid-template-columns:46px 1fr;
+
+        gap:14px;
+
+        padding:18px;
+
+    }
+
+    .gift-title{
+
+        font-size:23px;
+
+    }
+
+    .gift-value{
+
+        font-size:15px;
+
+    }
+
+    .gift-right .btn{
+
+        min-width:150px;
+
+        height:36px;
+
+        font-size:13px;
+
+    }
+
+}

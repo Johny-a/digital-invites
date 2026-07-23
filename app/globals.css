@@ -19,6 +19,11 @@
   }
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -60,4 +65,16 @@ input[type="number"]::-webkit-inner-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.preview-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.preview-scroll::-webkit-scrollbar {
+    display: none;
+}
+:root{
+    --arabic-font: "IBM Plex Sans Arabic", sans-serif;
 }

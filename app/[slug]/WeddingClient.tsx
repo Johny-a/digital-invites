@@ -52,14 +52,16 @@ export default function WeddingPage({ slug }: { slug: string }) {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-[#0b0b0f] flex items-center justify-center p-4">
-      <div className="relative bg-black rounded-[2rem] overflow-hidden aspect-[9/16] w-full max-w-[390px] max-h-[85vh] shadow-2xl border border-white/10">
-        <InvitationPlayer
-          event={event}
-          templateId={event.template_id || "classic-01"}
-        />
-      </div>
-    </div>
-  );
+return (
+  <div className="min-h-screen bg-[#f4f4f4] flex justify-center">
+<div
+  className="relative w-full max-w-[480px] h-dvh overflow-y-auto overflow-x-hidden preview-scroll"
+>
+  <InvitationPlayer
+    event={event}
+    templateId={event.template_id || "classic-01"}
+  />
+</div>
+  </div>
+);
 }

@@ -1,0 +1,85 @@
+/* =======================================================
+   SECTION TITLE
+======================================================= */
+
+.section-title{
+
+    margin:0 auto 60px;
+
+}
+
+.section-title--center{
+
+    text-align:center;
+
+}
+
+.section-title--left{
+
+    text-align:left;
+
+}
+
+.section-title--right{
+
+    text-align:right;
+
+}
+
+/* ---------- Heading ---------- */
+
+.section-title__heading{
+
+    font-family:var(--heading-font), serif;
+
+    color:var(--text-color);
+
+    font-size:36px;
+
+    font-weight:500;
+
+    line-height:1.2;
+
+    margin:0;
+
+}
+
+/* ---------- Subtitle ---------- */
+
+.section-title__subtitle{
+
+    margin-top:12px;
+
+    color:var(--text-light);
+
+    font-family:var(--body-font), serif;
+
+    font-size:16px;
+
+    line-height:1.7;
+
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width:768px){
+
+    .section-title{
+
+        margin-bottom:45px;
+
+    }
+
+    .section-title__heading{
+
+        font-size:30px;
+
+    }
+
+    .section-title__subtitle{
+
+        font-size:15px;
+
+    }
+
+}

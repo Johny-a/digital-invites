@@ -1,0 +1,95 @@
+"use client";
+
+import "./celebration.css";
+
+import SectionTitle from "@/app/components/ui/SectionTitle/SectionTitle";
+import InfoBlock from "@/app/components/ui/InfoBlock/InfoBlock";
+import Button from "@/app/components/ui/Button/Button";
+
+type Props = {
+    title?: string;
+    venue?: string;
+    time?: string;
+    address?: string;
+    mapUrl?: string;
+};
+
+export default function Celebration({
+    title = "Celebration",
+    venue,
+    time,
+    address,
+    mapUrl,
+}: Props) {
+
+    return (
+
+        <section className="celebration">
+
+    <SectionTitle>
+        {title}
+    </SectionTitle>
+
+    <div className="section-divider">
+        <span></span>
+        <div className="section-divider-icon">✦</div>
+        <span></span>
+    </div>
+<InfoBlock
+
+    icon={
+        <svg
+            className="celebration-icon"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+        >
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/>
+        </svg>
+    }
+
+    title=""
+
+    description={
+        <>
+
+            {venue && (
+                <div className="celebration-place-wrap">
+
+                    <div className="celebration-place">
+                        {venue}
+                    </div>
+
+                </div>
+            )}
+
+{address && (
+    <div className="celebration-address">
+        {address}
+    </div>
+)}
+
+{time && (
+    <div className="celebration-time">
+        {time}
+    </div>
+)}
+        </>
+    }
+/>
+
+    {mapUrl && (
+        <Button
+            variant="secondary"
+            onClick={() => window.open(mapUrl, "_blank")}
+        >
+            View Map
+        </Button>
+    )}
+
+    
+
+</section>
+
+    );
+
+}

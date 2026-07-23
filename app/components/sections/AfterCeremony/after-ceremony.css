@@ -1,0 +1,30 @@
+/* =======================================================
+   AFTER CEREMONY
+======================================================= */
+
+.after-ceremony{
+
+    text-align:center;
+
+    padding:40px 0 30px;
+
+}
+.gift-divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin:-45px 0 5px;
+}
+
+.gift-divider span{
+    width:80px;
+    height:2px;
+    background:rgba(199,165,106,.35);
+}
+
+.gift-divider-icon{
+    color:var(--accent-color);
+    font-size:11px;
+    line-height:1;
+}

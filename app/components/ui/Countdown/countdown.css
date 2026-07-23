@@ -1,0 +1,77 @@
+.countdown{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:14px;
+
+    flex-wrap:wrap;
+
+}
+
+.countdown div{
+
+    width:58px;
+
+    text-align:center;
+
+}
+
+.countdown strong{
+
+    display:block;
+
+    font-family:var(--heading-font), serif;
+
+    font-size:24px;
+
+    font-weight:600;
+
+    color:var(--text-color);
+
+}
+
+.countdown span{
+
+    display:block;
+
+    margin-top:4px;
+
+    font-size:10px;
+
+    letter-spacing:.15em;
+
+    text-transform:uppercase;
+
+    color:var(--text-light);
+
+}
+
+@media (max-width:768px){
+
+    .countdown{
+
+        gap:10px;
+
+    }
+
+    .countdown div{
+
+        width:52px;
+
+    }
+
+    .countdown strong{
+
+        font-size:22px;
+
+    }
+
+    .countdown span{
+
+        font-size:9px;
+
+    }
+
+}

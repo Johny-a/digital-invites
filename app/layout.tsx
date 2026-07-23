@@ -44,9 +44,25 @@ export default function RootLayout({
 
         {/* Arabic font */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Amiri&display=swap"
-          rel="stylesheet"
-        />
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Cinzel:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Lora:wght@400;500;600;700&family=Great+Vibes&family=Parisienne&family=Marhey:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+
+<link
+  rel="preconnect"
+  href="https://fonts.googleapis.com"
+/>
+
+<link
+  rel="preconnect"
+  href="https://fonts.gstatic.com"
+  crossOrigin="anonymous"
+/>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Cinzel:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Lora:wght@400;500;600;700&family=Great+Vibes&family=Parisienne&family=Amiri:wght@400;700&display=swap"
+  rel="stylesheet"
+/>
       </head>
 
       <body

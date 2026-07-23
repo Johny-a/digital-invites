@@ -1,0 +1,281 @@
+/* =======================================================
+   OPENING OVERLAY
+======================================================= */
+
+.opening-overlay{
+
+    position:fixed;
+    inset:0;
+
+    z-index:9999;
+
+    overflow:hidden;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#000;
+
+    opacity:1;
+    visibility:visible;
+
+    transition:
+        opacity .7s ease,
+        visibility .7s ease;
+}
+.opening-overlay.opening{
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition-delay:2.2s;
+
+    pointer-events:none;
+
+}
+
+/* =======================================================
+   BACKGROUND
+======================================================= */
+
+.opening-background{
+
+    position:absolute;
+    inset:0;
+
+    background-size:cover;
+    background-position:center;
+
+    transform:scale(1.05);
+
+    transition:transform 6s ease;
+
+}
+
+.opening-overlay.opening .opening-background{
+
+    transform:scale(1.12);
+
+}
+
+/* Dark overlay */
+
+.opening-background::after{
+
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    background:rgba(0,0,0,.38);
+
+    backdrop-filter:blur(2px);
+}
+
+/* =======================================================
+   CONTENT
+======================================================= */
+
+.opening-content{
+
+    position:relative;
+
+    z-index:5;
+
+    text-align:center;
+
+    color:white;
+
+    width:min(90%,420px);
+
+    transition:
+        transform .5s ease,
+        opacity .5s ease;
+
+}
+.opening-overlay.opening .opening-content{
+
+    transform:scale(.97);
+
+}
+
+.opening-logo h1{
+
+    font-family:var(--accent-font);
+
+    font-size:3rem;
+
+    font-weight:400;
+
+    margin-bottom:16px;
+}
+
+.opening-logo p{
+
+    font-family:var(--body-font);
+
+    opacity:.92;
+
+    line-height:1.8;
+
+    margin-bottom:45px;
+}
+
+.opening-button{
+
+    padding:18px 54px;
+
+    border-radius:999px;
+
+    border:none;
+
+    background:white;
+
+    color:#222;
+
+    cursor:pointer;
+
+    font-size:1rem;
+
+    transition:.35s;
+}
+
+.opening-button:hover{
+
+    transform:translateY(-3px);
+
+}
+
+/* =======================================================
+   ENVELOPE
+======================================================= */
+
+.envelope{
+
+    position:relative;
+
+    width:320px;
+
+    height:210px;
+
+    margin:auto;
+}
+
+/* Body */
+
+.envelope-body{
+
+    position:absolute;
+
+    inset:0;
+
+    background:#f8f5ef;
+
+    border-radius:8px;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.28);
+}
+
+/* Flap */
+
+.envelope-flap{
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:100%;
+    height:110px;
+
+    background:#efe8dc;
+
+    clip-path:polygon(0 0,100% 0,50% 100%);
+
+    transform-origin:top;
+
+    animation:openFlap .9s ease forwards;
+
+    animation-delay:.5s;
+}
+
+/* Letter */
+
+.envelope-letter{
+
+    position:absolute;
+
+    left:8%;
+
+    top:12%;
+
+    width:84%;
+
+    height:170px;
+
+    background:white;
+
+    border-radius:4px;
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,.12);
+
+    animation:pullLetter 1.4s ease forwards;
+
+    animation-delay:1s;
+}
+
+.letter-content{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    height:100%;
+
+    font-family:var(--heading-font);
+
+    font-size:1.3rem;
+
+    color:#555;
+}
+.opening-background {
+
+    position: absolute;
+    inset: 0;
+
+    background-image: inherit;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+}
+
+/* =======================================================
+   ANIMATION
+======================================================= */
+
+@keyframes openFlap{
+
+    to{
+
+        transform:rotateX(180deg);
+
+    }
+
+}
+
+@keyframes pullLetter{
+
+    to{
+
+        transform:translateY(-85px);
+
+    }
+
+}

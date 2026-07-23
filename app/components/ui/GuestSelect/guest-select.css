@@ -1,0 +1,57 @@
+.guest-placeholder{
+
+    color:#9a9a9a;
+
+}
+
+.guest-one{
+
+    height:54px;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 18px;
+
+    border:1px solid rgba(199,165,106,.35);
+
+    border-radius:16px;
+
+    background:#fff;
+
+    font-family:var(--body-font);
+
+    font-size:16px;
+
+    color:var(--text-color);
+
+}
+
+.guest-dropdown{
+
+    position:absolute;
+
+    top:calc(100% + 8px);
+
+    left:0;
+
+    right:0;
+
+    background:#fff;
+
+    border:1px solid rgba(199,165,106,.25);
+
+    border-radius:16px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    overflow:hidden;
+
+    z-index:100;
+
+    display:flex;
+
+    flex-direction:column;
+
+}

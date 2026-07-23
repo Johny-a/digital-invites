@@ -1,0 +1,87 @@
+/* =======================================================
+   INFO BLOCK
+======================================================= */
+
+.info-block{
+
+    text-align:center;
+
+    max-width:360px;
+
+    margin:0 auto;
+
+    padding-bottom:40px;
+
+}
+
+.info-block__icon{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    margin-bottom:22px;
+
+    color:var(--accent-color);
+
+}
+
+.info-block__title{
+
+    margin:0;
+
+    font-family:var(--heading-font), serif;
+
+    color:var(--text-color);
+
+    font-size:24px;
+
+    font-weight:500;
+
+    line-height:1.6;
+
+}
+
+.info-block__subtitle{
+
+    margin-top:12px;
+
+    font-family:var(--body-font), serif;
+
+    color:var(--text-light);
+
+    font-size:16px;
+
+    line-height:1.8;
+
+}
+
+.info-block__actions{
+
+    margin-top:34px;
+
+}
+
+@media (max-width:768px){
+
+    .info-block{
+
+        max-width:300px;
+
+    }
+
+    .info-block__title{
+
+        font-size:22px;
+
+    }
+
+    .info-block__subtitle{
+
+        font-size:15px;
+
+    }
+
+}

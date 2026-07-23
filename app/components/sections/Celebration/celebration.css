@@ -1,0 +1,134 @@
+/* =======================================================
+   CELEBRATION
+======================================================= */
+
+.celebration{
+
+    text-align:center;
+
+    padding:70px 0 30px;
+
+}
+
+.section-divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin:-45px 0 24px;
+}
+
+.section-divider span{
+    width:80px;
+    height:2px;
+    background:rgba(199,165,106,.35);
+}
+
+.section-divider-icon{
+    color:var(--accent-color);
+    font-size:11px;
+    line-height:1;
+}
+
+@media (max-width:480px){
+    .section-divider span{
+        width:58px;
+    }
+}
+/* =======================================================
+   CELEBRATION INFO
+======================================================= */
+
+.celebration .info-block{
+
+    margin-top:34px;
+
+}
+
+.celebration .btn{
+
+    margin:34px auto 0;
+
+}
+
+.celebration-icon{
+
+    width:52px;
+    height:52px;
+
+    color:#c7a56a;
+
+    margin-bottom:12px;
+
+    opacity:.95;
+
+}
+
+.celebration-place-wrap{
+
+    margin:20px 0 0;
+
+}
+
+.celebration-place{
+
+    font-family:"Noto Naskh Arabic", serif;
+
+    font-size:2.15rem;
+
+    font-weight:600;
+
+    line-height:1.45;
+
+    color:#222;
+
+}
+
+.celebration-time{
+
+    margin-top:28px;
+
+    font-family:var(--heading-font);
+
+    font-size:1.75rem;
+
+    font-style:italic;
+
+    color:#666;
+
+}
+
+.celebration-note{
+
+    margin-top:28px;
+
+    max-width:300px;
+
+    margin-left:auto;
+
+    margin-right:auto;
+
+    font-family:"Noto Naskh Arabic", serif;
+
+    font-size:1.35rem;
+
+    line-height:2;
+
+    color:#2b2b2b;
+
+}
+.celebration-address{
+
+    margin-top:10px;
+
+    font-family:"Noto Naskh Arabic", serif;
+
+    font-size:1.2rem;
+
+    font-weight:700;
+
+    color:#555;
+
+    line-height:1.8;
+
+}

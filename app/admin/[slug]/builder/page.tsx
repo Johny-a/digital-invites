@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import InvitationPlayer from "@/app/components/InvitationPlayer";
 import { createClient } from "@supabase/supabase-js";
+import {
+    HEADING_FONTS,
+    BODY_FONTS,
+    ACCENT_FONTS,
+} from "@/app/components/design/constants";
+import { DESIGN_PRESETS } from "@/app/components/design/presets";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -117,6 +123,63 @@ gift_note?: string;
   ending_message: string;
 
   template_id: string;
+
+design?: {
+
+    typography:{
+
+        heading:string;
+
+        body:string;
+
+        accent:string;
+
+    };
+
+    opening:{
+
+        style:string;
+
+    };
+
+    countdown:{
+
+        style:string;
+
+    };
+
+    paper:{
+
+        width:string;
+
+        texture:string;
+
+    };
+
+    colors:{
+
+        accent:string;
+
+        overlay:number;
+
+    };
+
+
+    music:{
+
+        autoplay:boolean;
+
+        volume:number;
+
+    };
+
+    animations:{
+
+        style:string;
+
+    };
+
+};
 };
 
 const EMPTY_EVENT: EventData = {
@@ -155,24 +218,59 @@ after_note: "",
   invitation_request_line: "",
 
   gallery: [],
-  gifts: [],
-  ending_message: "",
+gifts: [],
+ending_message: "",
 
-  template_id: "classic",
+template_id: "floral",
+
+design: {
+  typography: {
+    heading: "Cormorant Garamond",
+    body: "Cormorant Garamond",
+    accent: "Cormorant Garamond",
+  },
+
+  opening: {
+    style: "none",
+  },
+
+  countdown: {
+    style: "classic",
+  },
+
+  paper: {
+    width: "normal",
+    texture: "classic",
+  },
+
+  colors: {
+    accent: "#C7A56A",
+    overlay: 0.25,
+  },
+
+  music: {
+    autoplay: true,
+    volume: 0.6,
+  },
+
+  animations: {
+    style: "fade",
+  },
+},
 };
 
 const SLIDES = [
   "hero",
   "invitation",
-  "houses", // ✅ ADD HERE
+  "houses",
   "ceremony",
   "after",
   "celebration",
   "gifts",
   "rsvp",
-  "photos",
   "ending",
   "media",
+  "design",
 ] as const;
 const BG_SLIDES = [
   "hero",
@@ -183,9 +281,9 @@ const BG_SLIDES = [
   "celebration",
   "gifts",
   "rsvp",
-  "photos",
   "ending",
 ] as const;
+
 
 
 type Tab = (typeof SLIDES)[number];
@@ -200,6 +298,34 @@ export default function BuilderPage() {
 const [adminLang, setAdminLang] = useState<"en" | "ar">("en");
   const [previewSlide, setPreviewSlide] = useState(0);
   const [event, setEvent] = useState<EventData>(EMPTY_EVENT);
+
+  // Mirrors the dynamic slide order InvitationPlayer builds for itself
+  // (it drops "houses"/"after" when empty and inserts "photos" before
+  // "ending" when a gallery exists), so tab clicks land on the right
+  // page in the live preview instead of an off-by-N slide.
+  const previewHasHouses = !!(event.groom_place || event.bride_place);
+  const previewHasAfter = !!(
+    event.after_place ||
+    event.after_time ||
+    event.after_map ||
+    event.after_note
+  );
+  const previewHasGallery =
+    Array.isArray(event.gallery) && event.gallery.length > 0;
+
+  const PREVIEW_SLIDES = [
+    "hero",
+    "invitation",
+    ...(previewHasHouses ? ["houses"] : []),
+    "ceremony",
+    ...(previewHasAfter ? ["after"] : []),
+    "celebration",
+    "gifts",
+    "rsvp",
+    ...(previewHasGallery ? ["photos"] : []),
+    "ending",
+  ];
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -231,13 +357,25 @@ const [bgTarget, setBgTarget] = useState("hero");
         return;
       }
 
-      setEvent({
-        ...EMPTY_EVENT,
-        ...data,
-        gallery: Array.isArray(data.gallery) ? data.gallery : [],
-        gifts: Array.isArray(data.gifts) ? data.gifts : [],
-        template_id: data.template_id || "classic",
-      });
+setEvent({
+    ...EMPTY_EVENT,
+    ...data,
+
+    design:{
+        ...EMPTY_EVENT.design,
+        ...(data.design || {}),
+    },
+
+    gallery:Array.isArray(data.gallery)
+        ? data.gallery
+        : [],
+
+    gifts:Array.isArray(data.gifts)
+        ? data.gifts
+        : [],
+
+    template_id:data.template_id || "classic",
+});
 
       setLoading(false);
     };
@@ -249,6 +387,49 @@ const [bgTarget, setBgTarget] = useState("hero");
     setEvent((e) => ({ ...e, ...patch }));
     setDirty(true);
   };
+const applyPreset = (preset: any) => {
+
+    updateEvent({
+
+        design: {
+
+            ...event.design,
+
+            typography: {
+                ...event.design?.typography,
+                ...preset.typography,
+            },
+
+            colors: {
+                ...event.design?.colors,
+                ...preset.colors,
+            },
+
+            paper: {
+                ...event.design?.paper,
+                ...preset.paper,
+            },
+
+            countdown: {
+                ...event.design?.countdown,
+                ...preset.countdown,
+            },
+
+            opening: {
+                ...event.design?.opening,
+                ...preset.opening,
+            },
+
+            animations: {
+                ...event.design?.animations,
+                ...preset.animations,
+            },
+
+        },
+
+    });
+
+};
 
 const saveEvent = async () => {
   if (!event.id || saving) return;
@@ -259,9 +440,8 @@ const saveEvent = async () => {
   const { error } = await supabase
     .from("events")
     .update({
-      ...rest,
-      cover_image: event.ending_photo,
-    })
+  ...rest,
+})
     .eq("id", id);
 
   setSaving(false);
@@ -331,9 +511,9 @@ const saveEvent = async () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 p-8">
+      <div className="h-[calc(100vh-72px)] max-w-screen-2xl mx-auto grid lg:grid-cols-[480px_1fr] gap-6 p-6 overflow-hidden">
         {/* LEFT PANEL */}
-        <div className="bg-[#111118] rounded-2xl p-6 space-y-4 overflow-y-auto max-h-[85vh]">
+        <div className="h-full overflow-y-auto rounded-2xl bg-[#111118] p-6 pr-4">
           {/* Tabs */}
           <div className="flex gap-2 flex-wrap">
 <div className="flex gap-2 mt-4">
@@ -360,7 +540,10 @@ const saveEvent = async () => {
                 key={t}
                 onClick={() => {
                   setTab(t);
-                  setPreviewSlide(SLIDES.indexOf(t));
+                  const idx = PREVIEW_SLIDES.indexOf(t);
+                  // tabs like "media"/"design" have no matching preview
+                  // slide — leave the preview on whatever page it's on
+                  if (idx !== -1) setPreviewSlide(idx);
                 }}
                 className={`px-3 py-2 rounded ${
                   tab === t ? "bg-purple-600" : "bg-white/10"
@@ -375,14 +558,15 @@ const saveEvent = async () => {
           <div>
             <div className="text-sm mb-1">Template</div>
             <select
-              className="w-full bg-black/40 border rounded px-3 py-2"
-              value={event.template_id}
-              onChange={(e) => updateEvent({ template_id: e.target.value })}
-            >
-              <option value="classic">Classic</option>
-              <option value="modern">Modern</option>
-              <option value="minimal">Minimal</option>
-            </select>
+    className="w-full bg-black/40 border rounded px-3 py-2"
+    value={event.template_id || "floral"}
+    onChange={(e) =>
+        updateEvent({ template_id: e.target.value })
+    }
+>
+    <option value="floral">Floral</option>
+    <option value="minimalist">Minimalist</option>
+</select>
           </div>
 
 {tab === "hero" && (
@@ -994,7 +1178,33 @@ onChange={(e) =>
         <option value="video">Video</option>
       </select>
     </div>
+<div>
+    <label className="text-sm">Opening Cover Image</label>
 
+    <input
+        type="file"
+        accept="image/*"
+        onChange={async (e) => {
+
+            const f = e.target.files?.[0];
+            if (!f) return;
+
+            const url = await uploadFile(f, "cover");
+
+            updateEvent({
+                cover_image: url,
+            });
+
+        }}
+    />
+
+    {event.cover_image && (
+        <img
+            src={event.cover_image}
+            className="mt-2 h-32 rounded-lg object-cover"
+        />
+    )}
+</div>
     {/* Upload video */}
     <div>
       <label className="text-sm">Background Video</label>
@@ -1089,41 +1299,211 @@ updateEvent({ bg_images: newImages });
   </div>
 )}
 
-          {/* PHOTOS */}
-          {tab === "photos" && (
-  <>
-    <input
-      type="file"
-      accept="image/*"
-      onChange={async (e) => {
-        const f = e.target.files?.[0];
-        if (!f) return;
-        const url = await uploadFile(f, "gallery");
-        updateEvent({ gallery: [...(event.gallery || []), url] });
-      }}
-    />
+{tab === "design" && (
 
-    <div className="grid grid-cols-3 gap-2">
-      {(event.gallery || []).map((img, i) => (
-        <div key={i} className="relative group">
-          <img src={img} className="h-24 w-full object-cover rounded" />
+<div className="space-y-8">
 
-          {/* Delete button */}
-          <button
-            onClick={() => {
-              const arr = (event.gallery || []).filter((_, idx) => idx !== i);
-              updateEvent({ gallery: arr });
-            }}
-            className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
-          >
-            ✕
-          </button>
+{/* ========================= */}
+{/* THEME PRESET */}
+{/* ========================= */}
+
+<div className="space-y-5">
+
+    <h2 className="text-xl font-semibold">
+        Theme Preset
+    </h2>
+
+    <select
+        className="w-full bg-black/40 border rounded px-3 py-2"
+        defaultValue=""
+        onChange={(e) => {
+
+            if (!e.target.value) return;
+
+            applyPreset(
+                DESIGN_PRESETS[
+                    e.target.value as keyof typeof DESIGN_PRESETS
+                ].design
+            );
+
+        }}
+    >
+
+        <option value="">
+            Select Preset
+        </option>
+
+        {Object.entries(DESIGN_PRESETS).map(([id, preset]) => (
+
+            <option
+                key={id}
+                value={id}
+            >
+                {preset.name}
+            </option>
+
+        ))}
+
+    </select>
+
+</div>
+
+    {/* ========================= */}
+    {/* TYPOGRAPHY */}
+    {/* ========================= */}
+
+    <div className="space-y-5">
+
+        <h2 className="text-xl font-semibold">
+            Typography
+        </h2>
+
+        {/* Heading */}
+
+        <div>
+
+            <label className="block text-sm mb-2">
+                Heading Font
+            </label>
+
+            <select
+                className="w-full bg-black/40 border rounded px-3 py-2"
+                value={event.design?.typography.heading}
+                onChange={(e)=>
+                    updateEvent({
+
+                        design:{
+
+                            ...event.design!,
+
+                            typography:{
+
+                                ...event.design!.typography,
+
+                                heading:e.target.value,
+
+                            },
+
+                        },
+
+                    })
+                }
+            >
+
+                {HEADING_FONTS.map(font=>(
+
+                    <option
+                        key={font}
+                        value={font}
+                    >
+                        {font}
+                    </option>
+
+                ))}
+
+            </select>
+
         </div>
-      ))}
-    </div>
-  </>
-)}
 
+        {/* Body */}
+
+        <div>
+
+            <label className="block text-sm mb-2">
+                Body Font
+            </label>
+
+            <select
+                className="w-full bg-black/40 border rounded px-3 py-2"
+                value={event.design?.typography.body}
+                onChange={(e)=>
+                    updateEvent({
+
+                        design:{
+
+                            ...event.design!,
+
+                            typography:{
+
+                                ...event.design!.typography,
+
+                                body:e.target.value,
+
+                            },
+
+                        },
+
+                    })
+                }
+            >
+
+                {BODY_FONTS.map(font=>(
+
+                    <option
+                        key={font}
+                        value={font}
+                    >
+                        {font}
+                    </option>
+
+                ))}
+
+            </select>
+
+        </div>
+
+        {/* Accent */}
+
+        <div>
+
+            <label className="block text-sm mb-2">
+                Accent Font
+            </label>
+
+            <select
+                className="w-full bg-black/40 border rounded px-3 py-2"
+                value={event.design?.typography.accent}
+                onChange={(e)=>
+                    updateEvent({
+
+                        design:{
+
+                            ...event.design!,
+
+                            typography:{
+
+                                ...event.design!.typography,
+
+                                accent:e.target.value,
+
+                            },
+
+                        },
+
+                    })
+                }
+            >
+
+                {ACCENT_FONTS.map(font=>(
+
+                    <option
+                        key={font}
+                        value={font}
+                    >
+                        {font}
+                    </option>
+
+                ))}
+
+            </select>
+
+        </div>
+
+    </div>
+
+</div>
+
+)}
 
           {/* GIFTS */}
 {tab === "gifts" && (
@@ -1283,18 +1663,35 @@ onChange={(e) =>
 
         </div>
 
-        {/* RIGHT PREVIEW */}
-        <div className="flex justify-center">
-          <div className="relative bg-black rounded-[2rem] overflow-hidden aspect-[9/16] max-h-[80vh] w-full max-w-[360px] shadow-2xl border border-white/10">
-            <InvitationPlayer
-  event={event}
-  templateId={event.template_id}
-  editorMode
-  forcedPage={previewSlide}
-  language={adminLang}
-/>
+        {/* RIGHT PANEL — LIVE PREVIEW */}
+        {/* hidden on mobile: there was never a mobile preview before this
+            fix, so keeping it desktop-only is strictly additive and
+            doesn't change existing mobile behavior */}
+        <div className="hidden lg:flex h-full items-center justify-center lg:sticky lg:top-0 overflow-hidden">
+          <div
+            className="relative w-[375px] h-[min(780px,calc(100vh-160px))] rounded-[2.5rem] border-[10px] border-black bg-black shadow-2xl overflow-hidden"
+            style={{
+              // Any ancestor with a `transform` becomes the containing
+              // block for descendants that use `position: fixed`. The
+              // invitation's FixedBackground relies on position:fixed to
+              // stay pinned behind the scrolling paper — without this,
+              // it would render fixed to the real browser window instead
+              // of staying inside this phone frame.
+              transform: "translateZ(0)",
+            }}
+          >
+            <div className="relative w-full h-full overflow-y-auto overflow-x-hidden bg-black">
+              <InvitationPlayer
+                event={event}
+                templateId={event.template_id}
+                editorMode
+                forcedPage={previewSlide}
+                language={adminLang}
+              />
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   );
