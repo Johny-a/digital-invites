@@ -45,9 +45,9 @@ audioRef
 
 }: any) {
 
-const bgImages = useMemo(
-    () => Object.values(safeEvent.bg_images || {}),
-    [safeEvent.bg_images]
+const bgImages: string[] = useMemo(
+  () => Object.values(safeEvent.bg_images || {}) as string[],
+  [safeEvent.bg_images]
 );
 return (
 
