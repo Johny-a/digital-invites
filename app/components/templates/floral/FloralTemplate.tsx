@@ -849,7 +849,7 @@ wasPlayingRef.current = true;
     width: `${gallery.length * 100}%`,
   }}
 >
-  {gallery.map((img, i) => (
+  {gallery.map((img: string, i: number) => (
     <div key={i} className="w-full flex-shrink-0 flex justify-center">
 <img
   src={getOptimizedSrc(img)}
@@ -863,7 +863,7 @@ loading="lazy"
 
         {/* Dots (Instagram style) */}
         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-          {gallery.map((_, i) => (
+          {gallery.map((_: string, i: number) => (
             <button
               key={i}
               onClick={() => setPhotoIndex(i)}
@@ -914,7 +914,7 @@ loading="lazy"
     <p className="text-white/60 text-sm">{language === "ar" ? "لا توجد وسائل هدايا" : "No gift methods added."}</p>
   )}
 
-  {safeEvent.gifts?.map((g, i) => (
+  {safeEvent.gifts?.map((g: any, i: number) => (
 <div
   key={i}
   className="border border-white/20 rounded-xl p-4 flex items-center justify-between gap-3 bg-black/30"
