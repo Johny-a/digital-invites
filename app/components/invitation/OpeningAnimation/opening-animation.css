@@ -112,7 +112,7 @@
 @keyframes hintBreathe {
   0%,
   100% {
-    opacity: 0.45;
+    opacity: 0.44;
   }
   50% {
     opacity: 0.95;
