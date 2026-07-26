@@ -746,7 +746,6 @@ return (
         ""
     }
 
-    initials={initials}
 
     onStart={async () => {
         try {
