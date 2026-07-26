@@ -1,4 +1,3 @@
-THIS_IS_A_TEST
 "use client";
 
 import { useEffect, useRef, useState } from "react";
