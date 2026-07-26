@@ -935,3 +935,38 @@
     }
 
 }
+.wax-monogram{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    z-index:20;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+
+    font-family:"Cormorant Garamond",serif;
+    font-size:30px;
+    font-weight:700;
+    letter-spacing:1px;
+
+    color:#f6dfab;
+
+    text-shadow:
+        0 1px 0 rgba(255,255,255,.45),
+        0 2px 8px rgba(0,0,0,.35);
+
+    transition:opacity .25s ease;
+    pointer-events:none;
+}
+
+.wax-heart{
+    font-size:16px;
+    color:#f2d27c;
+}
+
+.wax-monogram.hide{
+    opacity:0;
+}

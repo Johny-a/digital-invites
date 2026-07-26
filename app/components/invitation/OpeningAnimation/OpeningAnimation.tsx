@@ -1,21 +1,31 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./opening-animation.css";
 
 interface OpeningAnimationProps {
-  image: string;
-  onStart?: () => void;
-  onFinish: () => void;
+    image: string;
+    initials: string;
+    onStart?: () => void;
+    onFinish: () => void;
+    onReady?: () => void;
 }
 export default function OpeningAnimation({
-  image,
-  onStart,
-  onFinish,
+    image,
+    initials,
+    onStart,
+    onFinish,
+    onReady,
 }: OpeningAnimationProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [started, setStarted] = useState(false);
   const [showPhoto, setShowPhoto] = useState(false);
 const [videoReady, setVideoReady] = useState(false);
+useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+
+    v.load();
+}, []);
 
   const start = async () => {
     if (started || !videoReady) return;
@@ -40,13 +50,16 @@ const [videoReady, setVideoReady] = useState(false);
     muted
     playsInline
     preload="auto"
-    onCanPlayThrough={() => setVideoReady(true)}
+    onCanPlayThrough={() => {
+    setVideoReady(true);
+    onReady?.();
+}}
     onEnded={() => {
         setShowPhoto(true);
 
         setTimeout(() => {
             onFinish();
-        }, 3000);
+        }, 5500);
     }}
 >
         <source
@@ -55,6 +68,11 @@ const [videoReady, setVideoReady] = useState(false);
         />
       </video>
 
+<div className={`wax-monogram ${started ? "hide" : ""}`}>
+    {initials[0]}
+    <span className="wax-heart">♥</span>
+    {initials[1]}
+</div>
       <div className={`opening-cover ${showPhoto ? "show" : ""}`}>
         <img src={image} alt="" />
       </div>

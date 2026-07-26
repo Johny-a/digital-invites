@@ -100,10 +100,10 @@ description={
     <img src="/ornaments/divider.png" alt="" />
 </div>
 <div className="celebration-bottom-note">
-    يلي الإكليل حفل عشاء في مسبح
+    يلي الإكليل حفل عشاء في
     <br />
     <strong className="restaurant-name">
-        CACHADA
+        Piscine Cachada
     </strong>
 </div>
 

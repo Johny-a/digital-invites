@@ -297,31 +297,43 @@ const [fade, setFade] = useState(false);
 const videoRef = useRef<HTMLVideoElement>(null);
 const audioRef = useRef<HTMLAudioElement>(null);
 const touchStartX = useRef<number | null>(null);
+
 const [initialLoading, setInitialLoading] = useState(true);
+const [openingVideoReady, setOpeningVideoReady] = useState(false);
 
 const loadVideo = (src: string) =>
   new Promise<void>((resolve) => {
+
     const video = document.createElement("video");
 
     video.preload = "auto";
-    video.src = src;
+    video.muted = true;
+    video.playsInline = true;
 
     let done = false;
 
     const finish = () => {
       if (done) return;
       done = true;
+
+      video.removeEventListener("canplaythrough", finish);
+      video.removeEventListener("loadeddata", finish);
+      video.removeEventListener("canplay", finish);
+      video.removeEventListener("error", finish);
+
       resolve();
     };
 
-    video.oncanplaythrough = finish;
-video.onloadeddata = finish;
-video.oncanplay = finish;
-    video.onerror = finish;
+    video.addEventListener("canplaythrough", finish, { once: true });
+    video.addEventListener("loadeddata", finish, { once: true });
+    video.addEventListener("canplay", finish, { once: true });
+    video.addEventListener("error", finish, { once: true });
 
-    // Safari fallback
-    setTimeout(finish, 5000);
-  });
+    video.src = src;
+    video.load();
+
+    setTimeout(finish, 8000);
+});
 
 const loadAudio = (src: string) =>
   new Promise<void>((resolve) => {
@@ -351,46 +363,57 @@ useEffect(() => {
 
     const preload = async () => {
 
-        const tasks: Promise<void>[] = [];
+    // =========================
+    // PHASE 1 (CRITICAL)
+    // =========================
 
-        Object.values(safeEvent.bg_images || {}).forEach((src) => {
-            if (src) tasks.push(loadImage(getOptimizedSrc(src)));
-        });
+    await Promise.all([
 
-        safeEvent.gallery?.forEach((src) => {
-            tasks.push(loadImage(getOptimizedSrc(src)));
-        });
+        loadVideo("/envelope/envelope.mp4"),
 
-        if (safeEvent.cover_image)
-            tasks.push(loadImage(getOptimizedSrc(safeEvent.cover_image)));
+        safeEvent.cover_image
+            ? loadImage(getOptimizedSrc(safeEvent.cover_image))
+            : Promise.resolve(),
 
-        if (safeEvent.ending_photo)
-            tasks.push(loadImage(getOptimizedSrc(safeEvent.ending_photo)));
+        safeEvent.music_url
+            ? loadAudio(safeEvent.music_url)
+            : Promise.resolve(),
 
-        if (safeEvent.bg_video)
-            tasks.push(loadVideo(safeEvent.bg_video));
+    ]);
 
-        if (safeEvent.music_url)
-            tasks.push(loadAudio(safeEvent.music_url));
-// Preload the opening envelope video
-tasks.push(loadVideo("/envelope/envelope.mp4"));
-        let loaded = 0;
+    if (mounted) {
+        setLoadingProgress(3);
+        setAssetsReady(true);
+    }
 
-        tasks.forEach((p) =>
-            p.then(() => {
-                loaded++;
-                if (mounted)
-                    setLoadingProgress(loaded);
-            })
-        );
+    // =========================
+    // PHASE 2 (BACKGROUND)
+    // =========================
 
-        await Promise.all(tasks);
-await new Promise(resolve => requestAnimationFrame(() => resolve(null)));
-        if (mounted) {
-            setAssetsReady(true);
-            setInitialLoading(false);
-        }
-    };
+    const tasks: Promise<void>[] = [];
+
+    Object.values(safeEvent.bg_images || {}).forEach((src) => {
+        if (src) tasks.push(loadImage(getOptimizedSrc(src)));
+    });
+
+    safeEvent.gallery?.forEach((src) => {
+        tasks.push(loadImage(getOptimizedSrc(src)));
+    });
+
+    if (safeEvent.ending_photo)
+        tasks.push(loadImage(getOptimizedSrc(safeEvent.ending_photo)));
+
+    tasks.push(loadImage("/bg-images/Church.jpeg"));
+    tasks.push(loadImage("/bg-images/restaurant.png"));
+
+    if (safeEvent.bg_video)
+        tasks.push(loadVideo(safeEvent.bg_video));
+
+    await Promise.all(tasks);
+};
+
+
+
 
     preload();
 
@@ -398,6 +421,11 @@ await new Promise(resolve => requestAnimationFrame(() => resolve(null)));
         mounted = false;
     };
 }, []);
+useEffect(() => {
+    if (assetsReady && openingVideoReady) {
+        setInitialLoading(false);
+    }
+}, [assetsReady, openingVideoReady]);
 
 useEffect(() => {
   if (typeof forcedPage === "number") {
@@ -531,12 +559,8 @@ const submitRSVP = async () => {
 
   
 
-const totalAssets =
-  Object.values(safeEvent.bg_images || {}).filter(Boolean).length +
-  (safeEvent.gallery?.length ?? 0) +
-  (safeEvent.ending_photo ? 1 : 0) +
-  (safeEvent.bg_video ? 1 : 0) +
-  (safeEvent.music_url ? 1 : 0);
+const totalAssets = 3;
+
 const progressPercent = Math.min(
   (loadingProgress / Math.max(totalAssets, 1)) * 100,
   100
@@ -738,29 +762,33 @@ return (
     </ThemeProvider>
 )}
 
-        {!initialLoading && showOverlay && (
-    <OpeningAnimation
-    image={
-        safeEvent.cover_image ||
-        safeEvent.ending_photo ||
-        Object.values(safeEvent.bg_images || {})[0] ||
-        ""
-    }
-
-
-    onStart={async () => {
-        try {
-            if (audioRef.current) {
-                audioRef.current.muted = false;
-
-                await audioRef.current.play();
-            }
-        } catch {}
+        <div
+    style={{
+        visibility: showOverlay ? "visible" : "hidden",
+        pointerEvents: showOverlay ? "auto" : "none",
     }}
+>
+    <OpeningAnimation
+        image={
+            safeEvent.cover_image ||
+            safeEvent.ending_photo ||
+            Object.values(safeEvent.bg_images || {})[0] ||
+            ""
+        }
+initials={initials}
+        onReady={() => setOpeningVideoReady(true)}
+        onStart={async () => {
+            try {
+                if (audioRef.current) {
+                    audioRef.current.muted = false;
+                    await audioRef.current.play();
+                }
+            } catch {}
+        }}
+        onFinish={handleOpenInvitation}
+    />
+</div>
 
-    onFinish={handleOpenInvitation}
-/>
-)}
     </>
 );
 
