@@ -15,42 +15,40 @@ export default function OpeningAnimation({
 
   const [started, setStarted] = useState(false);
   const [showPhoto, setShowPhoto] = useState(false);
+const [videoReady, setVideoReady] = useState(false);
 
   const start = async () => {
-    if (started) return;
+    if (started || !videoReady) return;
 
     setStarted(true);
 
     onStart?.();
 
     try {
-      await videoRef.current?.play();
+        await videoRef.current?.play();
     } catch (e) {
-      console.error(e);
+        console.error(e);
     }
-  };
+};
 
   return (
     <div className="opening" onClick={start}>
 
       <video
-        ref={videoRef}
-        className={`opening-video ${showPhoto ? "hide" : ""}`}
-        muted
-        playsInline
-        preload="auto"
-        onEnded={() => {
+    ref={videoRef}
+    className={`opening-video ${showPhoto ? "hide" : ""}`}
+    muted
+    playsInline
+    preload="auto"
+    onCanPlayThrough={() => setVideoReady(true)}
+    onEnded={() => {
+        setShowPhoto(true);
 
-          setShowPhoto(true);
-
-          setTimeout(() => {
-
+        setTimeout(() => {
             onFinish();
-
-          },3000);
-
-        }}
-      >
+        }, 3000);
+    }}
+>
         <source
           src="/envelope/envelope.mp4"
           type="video/mp4"

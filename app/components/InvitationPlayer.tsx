@@ -372,7 +372,8 @@ useEffect(() => {
 
         if (safeEvent.music_url)
             tasks.push(loadAudio(safeEvent.music_url));
-
+// Preload the opening envelope video
+tasks.push(loadVideo("/envelope/envelope.mp4"));
         let loaded = 0;
 
         tasks.forEach((p) =>
