@@ -237,6 +237,8 @@ const SLIDES = gallery.length > 0
 const bgImages = safeEvent.bg_images || {};
 const [assetsReady, setAssetsReady] = useState(false);
 const [loadingProgress, setLoadingProgress] = useState(0);
+// ✅ total number of assets being tracked, computed once the preload task list is built
+const [totalAssets, setTotalAssets] = useState(1);
 const [photoIndex, setPhotoIndex] = useState(0);
 const [photoOffset, setPhotoOffset] = useState(0);
 const [isDragging, setIsDragging] = useState(false);
@@ -358,62 +360,77 @@ audio.oncanplay = finish;
     // Safari fallback
     setTimeout(finish, 5000);
   });
+
+// ✅ REWORKED PRELOAD: the envelope video loads FIRST, on its own, so it
+// isn't competing for bandwidth with every image/audio request. Only once
+// it has fully buffered do we kick off the rest of the assets (images,
+// music, other background video) in parallel. Nothing — including the
+// opening video/animation — is shown until everything is done, so the
+// loading screen stays up the whole time and the video never appears
+// half-loaded (which is what was causing the white flash).
 useEffect(() => {
     let mounted = true;
 
     const preload = async () => {
+        let loadedCount = 0;
+        // +1 slot reserved for the envelope video counted below
+        const track = (p: Promise<void>) =>
+            p.then(() => {
+                loadedCount += 1;
+                if (mounted) setLoadingProgress(loadedCount);
+            });
 
-    // =========================
-    // PHASE 1 (CRITICAL)
-    // =========================
+        // --- STEP 1: envelope video, loaded alone and first ---
+        await track(loadVideo("/envelope/envelope.mp4"));
+        if (mounted) setLoadingProgress(loadedCount);
 
-    await Promise.all([
+        // --- STEP 2: everything else, in parallel ---
+        const tasks: Promise<void>[] = [];
 
-        loadVideo("/envelope/envelope.mp4"),
+        // Cover image
+        if (safeEvent.cover_image) {
+            tasks.push(track(loadImage(getOptimizedSrc(safeEvent.cover_image))));
+        }
 
-        safeEvent.cover_image
-            ? loadImage(getOptimizedSrc(safeEvent.cover_image))
-            : Promise.resolve(),
+        // Music
+        if (safeEvent.music_url) {
+            tasks.push(track(loadAudio(safeEvent.music_url)));
+        }
 
-        safeEvent.music_url
-            ? loadAudio(safeEvent.music_url)
-            : Promise.resolve(),
+        // Background images (per-slide)
+        Object.values(safeEvent.bg_images || {}).forEach((src) => {
+            if (src) tasks.push(track(loadImage(getOptimizedSrc(src))));
+        });
 
-    ]);
+        // Gallery / photos page images
+        safeEvent.gallery?.forEach((src) => {
+            if (src) tasks.push(track(loadImage(getOptimizedSrc(src))));
+        });
 
-    if (mounted) {
-        setLoadingProgress(3);
-        setAssetsReady(true);
-    }
+        // Ending photo
+        if (safeEvent.ending_photo) {
+            tasks.push(track(loadImage(getOptimizedSrc(safeEvent.ending_photo))));
+        }
 
-    // =========================
-    // PHASE 2 (BACKGROUND)
-    // =========================
+        // Static template background images
+        tasks.push(track(loadImage("/bg-images/Church.jpeg")));
+        tasks.push(track(loadImage("/bg-images/restaurant.png")));
 
-    const tasks: Promise<void>[] = [];
+        // Optional background video
+        if (safeEvent.bg_video) {
+            tasks.push(track(loadVideo(safeEvent.bg_video)));
+        }
 
-    Object.values(safeEvent.bg_images || {}).forEach((src) => {
-        if (src) tasks.push(loadImage(getOptimizedSrc(src)));
-    });
+        // total = the envelope video (already counted) + everything else
+        if (mounted) setTotalAssets(Math.max(tasks.length + 1, 1));
 
-    safeEvent.gallery?.forEach((src) => {
-        tasks.push(loadImage(getOptimizedSrc(src)));
-    });
+        // Wait for every remaining asset to finish before proceeding
+        await Promise.all(tasks);
 
-    if (safeEvent.ending_photo)
-        tasks.push(loadImage(getOptimizedSrc(safeEvent.ending_photo)));
-
-    tasks.push(loadImage("/bg-images/Church.jpeg"));
-    tasks.push(loadImage("/bg-images/restaurant.png"));
-
-    if (safeEvent.bg_video)
-        tasks.push(loadVideo(safeEvent.bg_video));
-
-    await Promise.all(tasks);
-};
-
-
-
+        if (mounted) {
+            setAssetsReady(true);
+        }
+    };
 
     preload();
 
@@ -421,6 +438,7 @@ useEffect(() => {
         mounted = false;
     };
 }, []);
+
 useEffect(() => {
     if (assetsReady && openingVideoReady) {
         setInitialLoading(false);
@@ -558,8 +576,6 @@ const submitRSVP = async () => {
 
 
   
-
-const totalAssets = 3;
 
 const progressPercent = Math.min(
   (loadingProgress / Math.max(totalAssets, 1)) * 100,
@@ -735,7 +751,15 @@ const templateProps = {
 return (
     <>
 {initialLoading && (
-    <div className="loading-screen">
+    <div
+        className="loading-screen"
+        style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            background: "#000",
+        }}
+    >
         <div className="loading-spinner" />
         <div className="loading-title">
             Preparing your experience...
@@ -762,32 +786,41 @@ return (
     </ThemeProvider>
 )}
 
-        <div
-    style={{
-        visibility: showOverlay ? "visible" : "hidden",
-        pointerEvents: showOverlay ? "auto" : "none",
-    }}
->
-    <OpeningAnimation
-        image={
-            safeEvent.cover_image ||
-            safeEvent.ending_photo ||
-            Object.values(safeEvent.bg_images || {})[0] ||
-            ""
-        }
-initials={initials}
-        onReady={() => setOpeningVideoReady(true)}
-        onStart={async () => {
-            try {
-                if (audioRef.current) {
-                    audioRef.current.muted = false;
-                    await audioRef.current.play();
-                }
-            } catch {}
-        }}
-        onFinish={handleOpenInvitation}
-    />
-</div>
+        {/* ✅ Opening animation/video only mounts once every asset above has
+            finished loading (assetsReady). Until then, only the loading
+            screen is visible. */}
+        {assetsReady && (
+            <div
+                style={{
+                    visibility: showOverlay ? "visible" : "hidden",
+                    pointerEvents: showOverlay ? "auto" : "none",
+                    position: "fixed",
+                    inset: 0,
+                    background: "#000",
+                    zIndex: 9998,
+                }}
+            >
+                <OpeningAnimation
+                    image={
+                        safeEvent.cover_image ||
+                        safeEvent.ending_photo ||
+                        Object.values(safeEvent.bg_images || {})[0] ||
+                        ""
+                    }
+                    initials={initials}
+                    onReady={() => setOpeningVideoReady(true)}
+                    onStart={async () => {
+                        try {
+                            if (audioRef.current) {
+                                audioRef.current.muted = false;
+                                await audioRef.current.play();
+                            }
+                        } catch {}
+                    }}
+                    onFinish={handleOpenInvitation}
+                />
+            </div>
+        )}
 
     </>
 );
