@@ -10,10 +10,7 @@ import OpeningAnimation from "@/app/components/invitation/OpeningAnimation/Openi
 const isMobile =
   typeof window !== "undefined" && window.innerWidth < 768;
 
-const getOptimizedSrc = (src: string) =>
-  isMobile
-    ? `${src}?width=600&quality=50`
-    : `${src}?width=1200&quality=70`;
+const getOptimizedSrc = (src: string) => src;
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -186,12 +183,23 @@ export default function InvitationPlayer({
 }) {
 
   // ✅ ADD HERE
-  const loadImage = (src: string) =>
+const loadImage = (src: string) =>
     new Promise<void>((resolve) => {
-      const img = new window.Image();
-      img.src = src;
-      img.onload = () => resolve();
-      img.onerror = () => resolve();
+        const img = new window.Image();
+
+        img.onload = async () => {
+            try {
+                if ("decode" in img) {
+                    await img.decode();
+                }
+            } catch {}
+
+            resolve();
+        };
+
+        img.onerror = () => resolve();
+
+        img.src = src;
     });
 
   const safeEvent = useMemo(() => ({
@@ -295,7 +303,7 @@ const loadVideo = (src: string) =>
   new Promise<void>((resolve) => {
     const video = document.createElement("video");
 
-    video.preload = "metadata";
+    video.preload = "auto";
     video.src = src;
 
     let done = false;
@@ -306,8 +314,9 @@ const loadVideo = (src: string) =>
       resolve();
     };
 
-    video.onloadeddata = finish;
-    video.oncanplay = finish;
+    video.oncanplaythrough = finish;
+video.onloadeddata = finish;
+video.oncanplay = finish;
     video.onerror = finish;
 
     // Safari fallback
@@ -318,7 +327,7 @@ const loadAudio = (src: string) =>
   new Promise<void>((resolve) => {
     const audio = document.createElement("audio");
 
-    audio.preload = "metadata";
+    audio.preload = "auto";
     audio.src = src;
 
     let done = false;
@@ -329,8 +338,9 @@ const loadAudio = (src: string) =>
       resolve();
     };
 
-    audio.onloadeddata = finish;
-    audio.oncanplay = finish;
+    audio.oncanplaythrough = finish;
+audio.onloadeddata = finish;
+audio.oncanplay = finish;
     audio.onerror = finish;
 
     // Safari fallback
@@ -374,7 +384,7 @@ useEffect(() => {
         );
 
         await Promise.all(tasks);
-
+await new Promise(resolve => requestAnimationFrame(() => resolve(null)));
         if (mounted) {
             setAssetsReady(true);
             setInitialLoading(false);
@@ -621,16 +631,11 @@ const handleOpenInvitation = async () => {
 
     try {
 
-        if (audioRef.current) {
-    try {
-        await audioRef.current.play();
-    } catch (e) {
-        console.error(e);
-    }
-}
-
-setStarted(true);
-setShowOverlay(false);
+        
+setTimeout(() => {
+    setStarted(true);
+    setShowOverlay(false);
+}, 500);
 
     } catch (e) {
         console.error(e);
@@ -716,12 +721,13 @@ return (
     </div>
 )}
         <audio
-            ref={audioRef}
-            src={safeEvent.music_url}
-            loop
-            preload="auto"
-            playsInline
-        />
+    ref={audioRef}
+    src={safeEvent.music_url}
+    preload="auto"
+    playsInline
+    loop
+    crossOrigin="anonymous"
+/>
 
         {started && (
     <ThemeProvider event={safeEvent}>
@@ -739,7 +745,19 @@ return (
         Object.values(safeEvent.bg_images || {})[0] ||
         ""
     }
+
     initials={initials}
+
+    onStart={async () => {
+        try {
+            if (audioRef.current) {
+                audioRef.current.muted = false;
+
+                await audioRef.current.play();
+            }
+        } catch {}
+    }}
+
     onFinish={handleOpenInvitation}
 />
 )}

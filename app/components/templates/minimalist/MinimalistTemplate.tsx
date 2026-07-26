@@ -110,7 +110,10 @@ return (
  <section className="ceremony-hero">
 
     <img
-        src="/bg-images/Church.jpeg"
+    src="/bg-images/Church.jpeg"
+    loading="eager"
+    decoding="async"
+    fetchPriority="high"
         alt="Church"
         className="ceremony-image"
     />
@@ -161,7 +164,10 @@ return (
 <section className="celebration-hero">
 
     <img
-        src="/bg-images/restaurant.png"
+    src="/bg-images/restaurant.png"
+    loading="eager"
+    decoding="async"
+    fetchPriority="high"
         alt="Celebration"
         className="celebration-image"
     />

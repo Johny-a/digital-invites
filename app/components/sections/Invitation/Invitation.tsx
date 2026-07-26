@@ -58,33 +58,29 @@ const secondInitial =
 
       <div className="invite-parents">
 
-        {event.invitation_parents_left && (
-          <p className="invite-parent-name">
-
-    <span className="invite-parent-label">
-        {event.parents_label_left_en || "Mr. & Mrs."}
-    </span>
-
-    <span className="invite-parent-person">
-        {event.invitation_parents_left}
-    </span>
-
-</p>
-        )}
-
         {event.invitation_parents_right && (
-          <p className="invite-parent-name">
-
+  <p className="invite-parent-name">
     <span className="invite-parent-label">
-        {event.parents_label_right_en || "Mr. & Mrs."}
+      {event.parents_label_right_en || "Mr. & Mrs."}
     </span>
 
     <span className="invite-parent-person">
-        {event.invitation_parents_right}
+      {event.invitation_parents_right}
+    </span>
+  </p>
+)}
+
+{event.invitation_parents_left && (
+  <p className="invite-parent-name">
+    <span className="invite-parent-label">
+      {event.parents_label_left_en || "Mr. & Mrs."}
     </span>
 
-</p>
-        )}
+    <span className="invite-parent-person">
+      {event.invitation_parents_left}
+    </span>
+  </p>
+)}
 
       </div>
 
