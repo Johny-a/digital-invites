@@ -3,14 +3,11 @@ import "./opening-animation.css";
 
 interface OpeningAnimationProps {
   image: string;
-  initials: string;
   onStart?: () => void;
   onFinish: () => void;
 }
-
 export default function OpeningAnimation({
   image,
-  initials,
   onStart,
   onFinish,
 }: OpeningAnimationProps) {
