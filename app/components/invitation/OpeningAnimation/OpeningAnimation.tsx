@@ -58,7 +58,9 @@ const [videoReady, setVideoReady] = useState(false);
       <div className={`opening-cover ${showPhoto ? "show" : ""}`}>
         <img src={image} alt="" />
       </div>
-
+<div className={`tap-hint ${started ? "hide" : ""}`}>
+  ✦ Click to Open ✦
+</div>
     </div>
   );
 }
