@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import "./opening-animation.css";
-import OpeningParticles from "./OpeningParticles";
+import "./OpeningAnimation/opening-animation.css";
+import OpeningParticles from "./OpeningAnimation/OpeningParticles";
 
 interface OpeningAnimationProps {
   image: string;
