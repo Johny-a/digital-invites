@@ -85,6 +85,13 @@ export default function Celebration({
             View Map
         </Button>
     )}
+<div className="section-divider">
+    <img
+        src="/ornaments/divider.png"
+        alt=""
+        aria-hidden="true"
+    />
+</div>
 
     
 

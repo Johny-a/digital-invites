@@ -717,3 +717,203 @@
     }
 
 }
+
+/* ==========================================
+   CEREMONY HERO
+========================================== */
+
+.ceremony-hero{
+    position:relative;
+    width:100%;
+    min-height:720px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
+    background:#000;
+}
+.ceremony-image{
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+    object-position:center;
+
+    z-index:0;
+}
+
+.ceremony-hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    z-index:1;
+}
+
+.ceremony-overlay{
+    position:relative;
+    z-index:2;
+
+    width:min(100%,420px);
+
+    padding:0px 35px;
+
+    background:rgba(0,0,0,.35);
+
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+
+    border:none;
+
+    border-radius:24px;
+
+    box-shadow:0 25px 60px rgba(0,0,0,.35);
+}
+
+.ceremony-overlay,
+.ceremony-overlay h1,
+.ceremony-overlay h2,
+.ceremony-overlay h3,
+.ceremony-overlay h4,
+.ceremony-overlay p,
+.ceremony-overlay span,
+.ceremony-overlay a{
+    color:#fff !important;
+    text-shadow:0 2px 8px rgba(0,0,0,.55);
+}
+
+.ceremony-overlay button,
+.ceremony-overlay .button{
+    background:#fff;
+    color:#222 !important;
+}
+/* Force every ceremony text to white */
+
+.ceremony-hero *{
+    color:#fff !important;
+}
+
+.ceremony-hero h1,
+.ceremony-hero h2,
+.ceremony-hero h3,
+.ceremony-hero h4,
+.ceremony-hero h5,
+.ceremony-hero p,
+.ceremony-hero span,
+.ceremony-hero div,
+.ceremony-hero small{
+    color:#fff !important;
+    text-shadow:
+        0 3px 10px rgba(0,0,0,.75);
+}
+/* ==========================================
+   CELEBRATION HERO
+========================================== */
+
+.celebration-hero{
+    position:relative;
+    width:100%;
+    min-height:0px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
+}
+
+.celebration-image{
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+    object-position:center;
+
+    z-index:0;
+}
+
+.celebration-hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    z-index:1;
+}
+
+.celebration-overlay{
+    position:relative;
+    z-index:2;
+
+    width:min(100%,420px);
+
+    padding:40px 35px;
+
+    background:rgba(0,0,0,.35);
+
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+
+    border-radius:24px;
+
+    box-shadow:0 25px 60px rgba(0,0,0,.35);
+}
+
+/* Force all text white */
+
+.celebration-hero *{
+    color:#fff !important;
+}
+
+.celebration-hero h1,
+.celebration-hero h2,
+.celebration-hero h3,
+.celebration-hero h4,
+.celebration-hero p,
+.celebration-hero span,
+.celebration-hero div{
+    color:#fff !important;
+    text-shadow:0 3px 10px rgba(0,0,0,.75);
+}
+
+/* Button */
+
+.celebration-overlay button,
+.celebration-overlay .button{
+    background:#fff;
+    color:#222 !important;
+}
+/* ==========================================
+   SECTION DIVIDER
+========================================== */
+
+.section-divider{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    margin-top:-28px;
+    margin-bottom:-28px;
+
+    position:relative;
+    z-index:5;
+}
+
+.section-divider img{
+    width:240px;
+    max-width:100%;
+    height:auto;
+    display:block;
+    opacity:.95;
+}

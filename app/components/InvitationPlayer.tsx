@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 import FloralTemplate from "./templates/floral/FloralTemplate";
 import MinimalistTemplate from "./templates/minimalist/MinimalistTemplate";
 import ThemeProvider from "@/app/components/design/ThemeProvider";
-import OpeningOverlay from "@/app/components/opening/OpeningOverlay";
+import OpeningAnimation from "@/app/components/invitation/OpeningAnimation/OpeningAnimation";
 
 const isMobile =
   typeof window !== "undefined" && window.innerWidth < 768;
@@ -581,6 +581,11 @@ const heroNames = getText(
   safeEvent.hero_names_ar
 );
 
+const initials = heroNames
+  .split("&")
+  .map(name => name.trim().charAt(0).toUpperCase())
+  .join("");
+
 const t = (key: keyof typeof translations.en) => {
 
   if (!language) return translations.en[key];
@@ -616,23 +621,16 @@ const handleOpenInvitation = async () => {
 
     try {
 
-        setTimeout(async () => {
-    if (audioRef.current) {
-        try {
-            await audioRef.current.play();
-        } catch (e) {
-            console.error(e);
-        }
+        if (audioRef.current) {
+    try {
+        await audioRef.current.play();
+    } catch (e) {
+        console.error(e);
     }
-}, 2100);
+}
 
-setTimeout(() => {
-    setStarted(true);
-}, 2100);
-
-setTimeout(() => {
-    setShowOverlay(false);
-}, 2600);
+setStarted(true);
+setShowOverlay(false);
 
     } catch (e) {
         console.error(e);
@@ -734,19 +732,17 @@ return (
 )}
 
         {!initialLoading && showOverlay && (
-            <OpeningOverlay
-                coverImage={
-                    safeEvent.cover_image ||
-                    safeEvent.ending_photo ||
-                    Object.values(safeEvent.bg_images || {})[0] ||
-                    ""
-                }
-                names={heroNames}
-                tagline={safeEvent.hero_tagline}
-                opening={opening}
-                onOpen={handleOpenInvitation}
-            />
-        )}
+    <OpeningAnimation
+    image={
+        safeEvent.cover_image ||
+        safeEvent.ending_photo ||
+        Object.values(safeEvent.bg_images || {})[0] ||
+        ""
+    }
+    initials={initials}
+    onFinish={handleOpenInvitation}
+/>
+)}
     </>
 );
 

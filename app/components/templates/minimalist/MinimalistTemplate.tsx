@@ -107,16 +107,26 @@ return (
                 CEREMONY
             ========================== */}
 
-            <Paper>
+ <section className="ceremony-hero">
 
-<Ceremony
-    place={safeEvent.ceremony_place}
-    time={safeEvent.ceremony_time}
-    note={safeEvent.ceremony_note}
-    mapUrl={safeEvent.ceremony_map}
-/>
+    <img
+        src="/bg-images/Church.jpeg"
+        alt="Church"
+        className="ceremony-image"
+    />
 
-            </Paper>
+    <div className="ceremony-overlay">
+
+        <Ceremony
+            place={safeEvent.ceremony_place}
+            time={safeEvent.ceremony_time}
+            note={safeEvent.ceremony_note}
+            mapUrl={safeEvent.ceremony_map}
+        />
+
+    </div>
+
+</section>
 
            
 
@@ -148,16 +158,26 @@ return (
                 CELEBRATION
             ========================== */}
 
-<Paper>
+<section className="celebration-hero">
 
-    <Celebration
-    venue={safeEvent.celebration_place}
-    time={safeEvent.celebration_time}
-    address={safeEvent.celebration_note_bottom}
-    mapUrl={safeEvent.celebration_map}
-/>
+    <img
+        src="/bg-images/restaurant.png"
+        alt="Celebration"
+        className="celebration-image"
+    />
 
-</Paper>
+    <div className="celebration-overlay">
+
+        <Celebration
+            venue={safeEvent.celebration_place}
+            time={safeEvent.celebration_time}
+            address={safeEvent.celebration_note_bottom}
+            mapUrl={safeEvent.celebration_map}
+        />
+
+    </div>
+
+</section>
 
 <Spacer h={60} />
 

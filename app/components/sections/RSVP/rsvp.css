@@ -217,11 +217,40 @@
 @media (max-width:600px){
 
     .rsvp-choice{
+        display:flex;
+        flex-direction:column;
+        gap:18px;
 
-        grid-template-columns:1fr;
+        border:none;
+        background:transparent;
 
+        margin:0 auto 34px;
     }
 
+    .rsvp-option{
+        width:100%;
+        min-height:72px;
+
+        border:1px solid rgba(199,165,106,.35) !important;
+        border-radius:999px;
+
+        background:#fff;
+
+        justify-content:center;
+
+        font-size:18px;
+
+        box-shadow:
+            0 8px 20px rgba(0,0,0,.05);
+    }
+
+    .rsvp-option:first-child{
+        border-right:none;
+    }
+
+    .rsvp-icon{
+        display:none;
+    }
 }
 
 /* ==========================================================

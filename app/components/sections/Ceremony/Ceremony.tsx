@@ -96,8 +96,11 @@ description={
         </Button>
 
     )}
+<div className="section-divider">
+    <img src="/ornaments/divider.png" alt="" />
+</div>
 <div className="celebration-bottom-note">
-    يلي الإكليل حفل عشاء في مطعم
+    يلي الإكليل حفل عشاء في مسبح
     <br />
     <strong className="restaurant-name">
         CACHADA

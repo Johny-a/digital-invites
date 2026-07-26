@@ -24,7 +24,7 @@
 
     font-size:1.55rem;
 
-    line-height:2.2;
+    line-height:.2;
 
     color:#2b2b2b;
 
@@ -48,14 +48,14 @@
 
     background:#dddddd;
 
-    margin-bottom:28px;
+    margin-bottom:5px;
 }
 
 .ceremony-place{
 
     font-family:"Noto Naskh Arabic", serif;
 
-    font-size:2.25rem;
+    font-size:2rem;
 
     font-weight:600;
 
@@ -96,7 +96,7 @@
 
     color:#c7a56a;
 
-    margin-bottom:12px;
+    margin-bottom:2px;
 
     opacity:.95;
 }
@@ -152,7 +152,7 @@
 
 }
 .celebration-bottom-note{
-    margin-top:32px;
+    margin-top:-55px;
     text-align:center;
 
     font-family:"Noto Naskh Arabic", serif;
