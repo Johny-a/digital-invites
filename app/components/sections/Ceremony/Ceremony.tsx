@@ -11,6 +11,9 @@ type Props = {
     time?: string;
     note?: string;
     mapUrl?: string;
+
+    ceremonyBottomNote?: string;
+ceremonyBottomRestaurant?: string;
 };
 export default function Ceremony({
     title = "Wedding Ceremony",
@@ -18,7 +21,10 @@ export default function Ceremony({
     time,
     note,
     mapUrl,
-}: Props){
+
+    ceremonyBottomNote,
+ceremonyBottomRestaurant,
+}: Props) {
 
     return(
 
@@ -87,25 +93,33 @@ description={
 >
 
     {mapUrl && (
-
+    <div style={{ position: "relative", zIndex: 100 }}>
         <Button
             variant="secondary"
             onClick={() => window.open(mapUrl, "_blank")}
         >
             View Map
         </Button>
+    </div>
+)}
 
-    )}
-<div className="section-divider">
+<div
+    className="section-divider"
+    style={{ position: "relative", zIndex: 1 }}
+>
     <img src="/ornaments/divider.png" alt="" />
 </div>
-<div className="celebration-bottom-note">
-    يلي الإكليل حفل عشاء في
-    <br />
-    <strong className="restaurant-name">
-        Piscine Cachada
-    </strong>
-</div>
+{(ceremonyBottomNote || ceremonyBottomRestaurant) && (
+    <div className="celebration-bottom-note">
+        {ceremonyBottomNote}
+
+        <br />
+
+        <strong className="restaurant-name">
+            {ceremonyBottomRestaurant}
+        </strong>
+    </div>
+)}
 
 </InfoBlock>
 

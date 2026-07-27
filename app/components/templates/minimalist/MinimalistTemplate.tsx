@@ -107,25 +107,34 @@ return (
                 CEREMONY
             ========================== */}
 
- <section className="ceremony-hero">
+ <section
+    className={`ceremony-hero ${
+        safeEvent.ceremony_image ? "has-image" : "no-image"
+    }`}
+>
 
-    <img
-    src="/bg-images/Church.jpeg"
-    loading="eager"
-    decoding="async"
-    fetchPriority="high"
-        alt="Church"
-        className="ceremony-image"
-    />
+    {safeEvent.ceremony_image && (
+        <img
+            src={safeEvent.ceremony_image}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            alt="Church"
+            className="ceremony-image"
+        />
+    )}
 
     <div className="ceremony-overlay">
 
         <Ceremony
-            place={safeEvent.ceremony_place}
-            time={safeEvent.ceremony_time}
-            note={safeEvent.ceremony_note}
-            mapUrl={safeEvent.ceremony_map}
-        />
+    place={safeEvent.ceremony_place}
+    time={safeEvent.ceremony_time}
+    note={safeEvent.ceremony_note}
+    mapUrl={safeEvent.ceremony_map}
+
+    ceremonyBottomNote={safeEvent.ceremony_bottom_note}
+ceremonyBottomRestaurant={safeEvent.ceremony_bottom_restaurant}
+/>
 
     </div>
 
@@ -161,16 +170,22 @@ return (
                 CELEBRATION
             ========================== */}
 
-<section className="celebration-hero">
+<section
+    className={`celebration-hero ${
+        safeEvent.celebration_image ? "has-image" : "no-image"
+    }`}
+>
 
-    <img
-    src="/bg-images/restaurant.png"
-    loading="eager"
-    decoding="async"
-    fetchPriority="high"
-        alt="Celebration"
-        className="celebration-image"
-    />
+    {safeEvent.celebration_image && (
+        <img
+            src={safeEvent.celebration_image}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            alt="Celebration"
+            className="celebration-image"
+        />
+    )}
 
     <div className="celebration-overlay">
 

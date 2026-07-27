@@ -171,3 +171,16 @@
 
     color:#222;
 }
+/* Ceremony bottom text */
+
+.ceremony-hero.has-image .celebration-bottom-note,
+.ceremony-hero.has-image .restaurant-name{
+    color:#fff !important;
+    text-shadow:0 3px 10px rgba(0,0,0,.75);
+}
+
+.ceremony-hero.no-image .celebration-bottom-note,
+.ceremony-hero.no-image .restaurant-name{
+    color:#222 !important;
+    text-shadow:none;
+}

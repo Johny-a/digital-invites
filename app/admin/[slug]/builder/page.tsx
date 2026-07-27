@@ -20,7 +20,8 @@ type EventData = {
   id?: string;
 ceremony_note?: string;
 cover_image?: string;
-
+ceremony_image?: string;
+celebration_image?: string;
 groom_title?: string;
 groom_title_ar?: string;
 groom_note?: string;
@@ -30,6 +31,9 @@ bride_title?: string;
 bride_title_ar?: string;
 bride_note?: string;
 bride_note_ar?: string;
+
+ceremony_bottom_note?: string;
+ceremony_bottom_restaurant?: string;
 
 houses_footer?: string;
 houses_footer_ar?: string;
@@ -187,6 +191,8 @@ const EMPTY_EVENT: EventData = {
   hero_tagline: "",
   hero_headline: "",
 gift_note: "",
+ceremony_image: "",
+celebration_image: "",
 ceremony_note: "",
   bg_mode: "slideshow",
   bg_images: {},
@@ -197,6 +203,8 @@ after_place: "",
 after_time: "",
 after_map: "",
 after_note: "",
+ceremony_bottom_note: "",
+ceremony_bottom_restaurant: "",
 
   ending_photo: "",
 
@@ -374,7 +382,7 @@ setEvent({
         ? data.gifts
         : [],
 
-    template_id:data.template_id || "classic",
+    template_id: data.template_id || "floral",
 });
 
       setLoading(false);
@@ -880,22 +888,44 @@ onChange={(e) =>
     />
 
     {/* ✅ NEW FIELD */}
-    <textarea
-      className="w-full bg-black/40 border rounded px-4 py-2"
-      placeholder="Extra text under title (e.g. Dear family and friends...)"
-value={
-  adminLang === "ar"
-    ? event.ceremony_note_ar || ""
-    : event.ceremony_note || ""
-}
-onChange={(e) =>
-  updateEvent(
-    adminLang === "ar"
-      ? { ceremony_note_ar: e.target.value }
-      : { ceremony_note: e.target.value }
-  )
-}
-    />
+<textarea
+    className="w-full bg-black/40 border rounded px-4 py-2"
+    placeholder="Extra text under title (e.g. Dear family and friends...)"
+    value={
+        adminLang === "ar"
+            ? event.ceremony_note_ar || ""
+            : event.ceremony_note || ""
+    }
+    onChange={(e) =>
+        updateEvent(
+            adminLang === "ar"
+                ? { ceremony_note_ar: e.target.value }
+                : { ceremony_note: e.target.value }
+        )
+    }
+/>
+
+<input
+    className="w-full bg-black/40 border rounded px-4 py-2"
+    placeholder="Bottom sentence"
+    value={event.ceremony_bottom_note || ""}
+    onChange={(e) =>
+        updateEvent({
+            ceremony_bottom_note: e.target.value,
+        })
+    }
+/>
+
+<input
+    className="w-full bg-black/40 border rounded px-4 py-2"
+    placeholder="Restaurant name"
+    value={event.ceremony_bottom_restaurant || ""}
+    onChange={(e) =>
+        updateEvent({
+            ceremony_bottom_restaurant: e.target.value,
+        })
+    }
+/>
   </>
 )}
 
@@ -1208,6 +1238,61 @@ onChange={(e) =>
         <img
             src={event.cover_image}
             className="mt-2 h-32 rounded-lg object-cover"
+        />
+    )}
+</div>
+{/* Ceremony Background */}
+<div>
+    <label className="text-sm">Ceremony Background</label>
+
+    <input
+        type="file"
+        accept="image/*"
+        className="w-full bg-black/40 border rounded px-3 py-2"
+        onChange={async (e) => {
+            const f = e.target.files?.[0];
+            if (!f) return;
+
+            const url = await uploadFile(f, "ceremony-bg");
+
+            updateEvent({
+                ceremony_image: url,
+            });
+        }}
+    />
+
+    {event.ceremony_image && (
+        <img
+            src={event.ceremony_image}
+            className="mt-2 h-32 w-full rounded-lg object-cover"
+        />
+    )}
+</div>
+
+{/* Celebration Background */}
+<div>
+    <label className="text-sm">Celebration Background</label>
+
+    <input
+        type="file"
+        accept="image/*"
+        className="w-full bg-black/40 border rounded px-3 py-2"
+        onChange={async (e) => {
+            const f = e.target.files?.[0];
+            if (!f) return;
+
+            const url = await uploadFile(f, "celebration-bg");
+
+            updateEvent({
+                celebration_image: url,
+            });
+        }}
+    />
+
+    {event.celebration_image && (
+        <img
+            src={event.celebration_image}
+            className="mt-2 h-32 w-full rounded-lg object-cover"
         />
     )}
 </div>

@@ -78,19 +78,21 @@ export default function Celebration({
 />
 
     {mapUrl && (
+    <div style={{ position: "relative", zIndex: 100 }}>
         <Button
             variant="secondary"
             onClick={() => window.open(mapUrl, "_blank")}
         >
             View Map
         </Button>
-    )}
-<div className="section-divider">
-    <img
-        src="/ornaments/divider.png"
-        alt=""
-        aria-hidden="true"
-    />
+    </div>
+)}
+
+<div
+    className="section-divider"
+    style={{ position: "relative", zIndex: 1 }}
+>
+    <img src="/ornaments/divider.png" alt="" />
 </div>
 
     

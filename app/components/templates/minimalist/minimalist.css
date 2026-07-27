@@ -724,7 +724,7 @@ will-change:opacity,transform;
     align-items:center;
 
     overflow:hidden;
-    background:#000;
+background: white;
 }
 .ceremony-image{
     position:absolute;
@@ -745,13 +745,11 @@ image-rendering:auto;
     z-index:0;
 }
 
-.ceremony-hero::before{
+.ceremony-hero.has-image::before{
     content:"";
     position:absolute;
     inset:0;
-
     background:rgba(0,0,0,.45);
-
     z-index:1;
 }
 
@@ -761,54 +759,31 @@ image-rendering:auto;
 
     width:min(100%,420px);
 
-    padding:0px 35px;
-
-    background:rgba(0,0,0,.35);
-
-background:rgba(0,0,0,.45);
+    padding:0 35px;
 
     border:none;
-
     border-radius:24px;
+}
 
+.ceremony-hero.has-image .ceremony-overlay{
+    background:rgba(0,0,0,.45);
     box-shadow:0 25px 60px rgba(0,0,0,.35);
 }
 
-.ceremony-overlay,
-.ceremony-overlay h1,
-.ceremony-overlay h2,
-.ceremony-overlay h3,
-.ceremony-overlay h4,
-.ceremony-overlay p,
-.ceremony-overlay span,
-.ceremony-overlay a{
-    color:#fff !important;
-    text-shadow:0 2px 8px rgba(0,0,0,.55);
+.ceremony-hero.no-image .ceremony-overlay{
+    background:transparent;
+    box-shadow:none;
 }
 
-.ceremony-overlay button,
-.ceremony-overlay .button{
-    background:#fff;
-    color:#222 !important;
-}
-/* Force every ceremony text to white */
-
-.ceremony-hero *{
+.ceremony-hero.has-image
+:is(h1,h2,h3,h4,h5,p,span,div,small){
     color:#fff !important;
+    text-shadow:0 3px 10px rgba(0,0,0,.75);
 }
 
-.ceremony-hero h1,
-.ceremony-hero h2,
-.ceremony-hero h3,
-.ceremony-hero h4,
-.ceremony-hero h5,
-.ceremony-hero p,
-.ceremony-hero span,
-.ceremony-hero div,
-.ceremony-hero small{
-    color:#fff !important;
-    text-shadow:
-        0 3px 10px rgba(0,0,0,.75);
+.ceremony-hero.no-image *{
+    color:#111 !important;
+    text-shadow:none !important;
 }
 /* ==========================================
    CELEBRATION HERO
@@ -824,7 +799,7 @@ background:rgba(0,0,0,.45);
     align-items:center;
 
     overflow:hidden;
-    background:#000;
+    background: white;
 }
 
 .celebration-image{
@@ -834,19 +809,18 @@ background:rgba(0,0,0,.45);
     width:100%;
     height:100%;
 
-    object-fit:cover;
-    object-position:center center;
+    object-fit:contain;
+    object-position:center 150%;
+    background:#000;
 
     z-index:0;
 }
 
-.celebration-hero::before{
+.celebration-hero.has-image::before{
     content:"";
     position:absolute;
     inset:0;
-
     background:rgba(0,0,0,.45);
-
     z-index:1;
 }
 
@@ -858,30 +832,30 @@ background:rgba(0,0,0,.45);
 
     padding:40px 35px;
 
-    background:rgba(0,0,0,.35);
-
-background:rgba(0,0,0,.45);
-
     border-radius:24px;
+}
 
+.celebration-hero.has-image .celebration-overlay{
+    background:rgba(0,0,0,.45);
     box-shadow:0 25px 60px rgba(0,0,0,.35);
+}
+
+.celebration-hero.no-image .celebration-overlay{
+    background:transparent;
+    box-shadow:none;
 }
 
 /* Force all text white */
 
-.celebration-hero *{
-    color:#fff !important;
-}
-
-.celebration-hero h1,
-.celebration-hero h2,
-.celebration-hero h3,
-.celebration-hero h4,
-.celebration-hero p,
-.celebration-hero span,
-.celebration-hero div{
+.celebration-hero.has-image
+:is(h1,h2,h3,h4,h5,p,span,div,small){
     color:#fff !important;
     text-shadow:0 3px 10px rgba(0,0,0,.75);
+}
+
+.celebration-hero.no-image *{
+    color:#111 !important;
+    text-shadow:none !important;
 }
 
 /* Button */
@@ -929,4 +903,15 @@ background:rgba(0,0,0,.45);
         font-size:21px;
     }
 
+}
+/* Ceremony button */
+.ceremony-hero .button,
+.ceremony-hero button{
+    color:#111 !important;
+}
+
+/* Celebration button */
+.celebration-hero .button,
+.celebration-hero button{
+    color:#111 !important;
 }
